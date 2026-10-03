@@ -8,6 +8,7 @@ export interface ModalProps {
   title?: string;
   children: React.ReactNode;
   maxWidth?: string;
+  className?: string;
 }
 
 export function Modal({
@@ -15,7 +16,8 @@ export function Modal({
   onClose,
   title,
   children,
-  maxWidth = '500px'
+  maxWidth = '540px',
+  className = ''
 }: ModalProps) {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -35,53 +37,72 @@ export function Modal({
 
   return (
     <div
+      className="ui-modal-overlay"
       style={{
         position: 'fixed',
         top: 0,
         left: 0,
         width: '100vw',
         height: '100vh',
-        background: 'rgba(0, 0, 0, 0.8)',
-        backdropFilter: 'blur(8px)',
-        WebkitBackdropFilter: 'blur(8px)',
+        background: 'rgba(1, 30, 20, 0.72)',
+        backdropFilter: 'blur(6px)',
+        WebkitBackdropFilter: 'blur(6px)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 1000,
-        padding: '1rem'
+        padding: '1rem',
+        boxSizing: 'border-box'
       }}
       onClick={onClose}
     >
       <div
+        className={`ui-modal-card ${className}`}
         style={{
           maxWidth,
           width: '100%',
-          background: 'rgba(15, 23, 42, 0.95)',
-          border: '1px solid rgba(255, 255, 255, 0.12)',
+          maxHeight: '90vh',
+          overflowY: 'auto',
+          background: '#FFFFFF',
           borderRadius: '16px',
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+          boxShadow: '0 25px 60px -15px rgba(0, 0, 0, 0.35)',
+          border: '1px solid rgba(1, 78, 54, 0.15)',
           padding: '2rem',
-          position: 'relative'
+          position: 'relative',
+          boxSizing: 'border-box'
         }}
         onClick={(e) => e.stopPropagation()}
       >
+        <button
+          onClick={onClose}
+          style={{
+            position: 'absolute',
+            top: '1.25rem',
+            right: '1.25rem',
+            width: '36px',
+            height: '36px',
+            borderRadius: '50%',
+            background: 'var(--green-soft, #EEF5F2)',
+            border: 'none',
+            color: 'var(--green-deep, #013A28)',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '1.25rem',
+            fontWeight: 700,
+            lineHeight: 1,
+            zIndex: 10,
+            transition: 'background 0.2s'
+          }}
+          aria-label="Close modal"
+        >
+          ✕
+        </button>
+
         {title && (
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#f8fafc' }}>{title}</h3>
-            <button
-              onClick={onClose}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: '#94a3b8',
-                cursor: 'pointer',
-                fontSize: '1.2rem',
-                lineHeight: 1
-              }}
-              aria-label="Close modal"
-            >
-              ✕
-            </button>
+          <div style={{ marginBottom: '1.25rem', paddingRight: '2rem' }}>
+            <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--green-deep, #013A28)' }}>{title}</h3>
           </div>
         )}
         {children}

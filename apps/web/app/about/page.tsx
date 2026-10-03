@@ -39,15 +39,15 @@ export default function AboutPage() {
       <Navbar onOpenModal={() => setModalOpen(true)} />
 
       {/* Hero */}
-      <section style={{ padding: '5rem 0 3.5rem', background: 'linear-gradient(180deg, #FFFFFF 0%, var(--bg-canvas) 100%)', borderBottom: '1px solid var(--border-subtle)' }}>
+      <section className="page-hero-header">
         <div className="container" style={{ textAlign: 'center', maxWidth: '820px' }}>
           <span className="pill-badge pill-green" style={{ marginBottom: '1rem' }}>
             ABOUT e-GP TENDER BD
           </span>
-          <h1 style={{ fontSize: '3.2rem', color: 'var(--green-deep)', marginBottom: '1.25rem' }}>
+          <h1 className="page-hero-title">
             Professional Support for Better Tender Preparation.
           </h1>
-          <p style={{ fontSize: '1.15rem', color: 'var(--text-body)', lineHeight: 1.6 }}>
+          <p className="page-hero-sub">
             e-GP Tender BD provides professional e-GP tender support and consulting services for businesses across Bangladesh.
           </p>
         </div>
@@ -56,7 +56,7 @@ export default function AboutPage() {
       {/* Narrative Section */}
       <section className="section-padding">
         <div className="container" style={{ maxWidth: '860px' }}>
-          <div style={{ background: '#FFFFFF', border: '1px solid var(--border-card)', borderRadius: 'var(--radius-lg)', padding: '3.5rem', boxShadow: 'var(--shadow-card)', marginBottom: '4rem' }}>
+          <div className="about-narrative-card">
             <h2 style={{ fontSize: '1.85rem', color: 'var(--green-deep)', marginBottom: '1.25rem' }}>
               Making Electronic Public Procurement Workable &amp; Reliable
             </h2>
@@ -75,25 +75,19 @@ export default function AboutPage() {
               <h2 style={{ fontSize: '2.4rem', color: 'var(--green-deep)' }}>Our Approach</h2>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.75rem' }}>
+            <div className="about-principles-grid">
               {pillars.map((p, idx) => (
                 <div
                   key={idx}
-                  style={{
-                    background: '#FFFFFF',
-                    border: '1px solid var(--border-card)',
-                    borderRadius: 'var(--radius-md)',
-                    padding: '2.5rem 2rem',
-                    boxShadow: 'var(--shadow-sm)'
-                  }}
+                  className="about-principle-card"
                 >
                   <div style={{ width: '52px', height: '52px', borderRadius: '10px', background: 'var(--green-soft)', color: 'var(--green-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.25rem' }}>
                     {p.icon}
                   </div>
-                  <h3 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--green-deep)', marginBottom: '0.5rem' }}>
+                  <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--green-deep)', marginBottom: '0.5rem' }}>
                     {p.keyword}
                   </h3>
-                  <p style={{ fontSize: '1rem', color: 'var(--text-muted)' }}>
+                  <p style={{ fontSize: '0.95rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
                     {p.desc}
                   </p>
                 </div>

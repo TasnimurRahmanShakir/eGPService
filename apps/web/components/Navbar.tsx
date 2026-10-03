@@ -54,10 +54,10 @@ export function Navbar({ onOpenModal }: NavbarProps) {
         </nav>
 
         {/* Desktop CTA & Mobile Toggle */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+        <div className="nav-actions-col">
           <button
             onClick={onOpenModal}
-            className="btn-red"
+            className="btn-red nav-cta-desktop"
             id="nav-cta-btn"
           >
             Get Tender Support ▸
@@ -66,14 +66,6 @@ export function Navbar({ onOpenModal }: NavbarProps) {
           <button
             className="mobile-menu-toggle"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            style={{
-              display: 'none',
-              background: 'none',
-              border: 'none',
-              color: 'var(--green-deep)',
-              cursor: 'pointer',
-              padding: '6px'
-            }}
             aria-label="Toggle menu"
           >
             {mobileMenuOpen ? <X size={26} /> : <Menu size={26} />}
@@ -81,22 +73,16 @@ export function Navbar({ onOpenModal }: NavbarProps) {
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu Drawer */}
       {mobileMenuOpen && (
-        <div style={{ background: '#FFFFFF', borderBottom: '1px solid var(--border-card)', padding: '1.25rem 1.5rem' }}>
-          <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <div className="mobile-nav-drawer">
+          <ul className="mobile-nav-list">
             {navLinks.map((link) => (
               <li key={link.href}>
                 <Link
                   href={link.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  style={{
-                    display: 'block',
-                    fontSize: '1rem',
-                    fontWeight: 600,
-                    color: pathname === link.href ? 'var(--green-primary)' : 'var(--text-headline)',
-                    textDecoration: 'none'
-                  }}
+                  className={`mobile-nav-link ${pathname === link.href ? 'active' : ''}`}
                 >
                   {link.label}
                 </Link>
@@ -106,7 +92,7 @@ export function Navbar({ onOpenModal }: NavbarProps) {
               <button
                 onClick={() => { setMobileMenuOpen(false); onOpenModal(); }}
                 className="btn-red"
-                style={{ width: '100%' }}
+                style={{ width: '100%', justifyContent: 'center' }}
               >
                 Get Tender Support ▸
               </button>

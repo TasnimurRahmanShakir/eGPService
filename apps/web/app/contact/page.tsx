@@ -36,15 +36,15 @@ export default function ContactPage() {
       <Navbar onOpenModal={() => setModalOpen(true)} />
 
       {/* Hero */}
-      <section style={{ padding: '5rem 0 3.5rem', background: 'linear-gradient(180deg, #FFFFFF 0%, var(--bg-canvas) 100%)', borderBottom: '1px solid var(--border-subtle)' }}>
+      <section className="page-hero-header">
         <div className="container" style={{ textAlign: 'center', maxWidth: '760px' }}>
           <span className="pill-badge pill-green" style={{ marginBottom: '1rem' }}>
             GET IN TOUCH
           </span>
-          <h1 style={{ fontSize: '3.2rem', color: 'var(--green-deep)', marginBottom: '1.25rem' }}>
+          <h1 className="page-hero-title">
             Let&apos;s Talk About Your Tender.
           </h1>
-          <p style={{ fontSize: '1.15rem', color: 'var(--text-body)', lineHeight: 1.6 }}>
+          <p className="page-hero-sub">
             Have a tender coming up or need help with the e-GP process? Send us the details and we&apos;ll help you identify the next step.
           </p>
         </div>

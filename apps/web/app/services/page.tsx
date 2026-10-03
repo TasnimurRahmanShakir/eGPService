@@ -90,10 +90,10 @@ export default function ServicesPage() {
           <span className="pill-badge pill-green" style={{ marginBottom: '1rem' }}>
             OUR SERVICE OFFERINGS
           </span>
-          <h1 style={{ fontSize: '3.2rem', color: 'var(--green-deep)', marginBottom: '1.25rem' }}>
+          <h1 className="page-hero-title">
             e-GP Support, Built Around Your Process.
           </h1>
-          <p style={{ fontSize: '1.15rem', color: 'var(--text-body)', lineHeight: 1.6 }}>
+          <p className="page-hero-sub">
             Practical guidance, meticulous documentation, and reliable execution for contractors and businesses participating in Bangladesh government procurement.
           </p>
         </div>
@@ -106,31 +106,9 @@ export default function ServicesPage() {
             {servicesList.map((svc) => (
               <div
                 key={svc.num}
-                style={{
-                  background: '#FFFFFF',
-                  border: '1px solid var(--border-card)',
-                  borderRadius: 'var(--radius-lg)',
-                  padding: '2.5rem 3rem',
-                  boxShadow: 'var(--shadow-card)',
-                  display: 'grid',
-                  gridTemplateColumns: '80px 1fr',
-                  gap: '2rem',
-                  alignItems: 'flex-start'
-                }}
+                className="service-breakdown-card"
               >
-                <div style={{
-                  width: '64px',
-                  height: '64px',
-                  borderRadius: 'var(--radius-md)',
-                  background: 'var(--green-soft)',
-                  color: 'var(--green-primary)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '1.4rem',
-                  fontWeight: 800,
-                  fontFamily: 'var(--font-sans)'
-                }}>
+                <div className="service-number-box">
                   {svc.num}
                 </div>
 
@@ -142,10 +120,10 @@ export default function ServicesPage() {
                     {svc.desc}
                   </p>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '0.75rem', marginBottom: '2rem' }}>
+                  <div className="service-points-grid">
                     {svc.points.map((pt, idx) => (
                       <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <div style={{ width: '18px', height: '18px', borderRadius: '50%', background: 'var(--green-soft)', color: 'var(--green-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <div style={{ width: '18px', height: '18px', borderRadius: '50%', background: 'var(--green-soft)', color: 'var(--green-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                           <Check size={12} strokeWidth={3} />
                         </div>
                         <span style={{ fontSize: '0.9rem', color: 'var(--text-headline)', fontWeight: 500 }}>{pt}</span>
