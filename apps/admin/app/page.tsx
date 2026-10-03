@@ -253,7 +253,7 @@ export default function AdminDashboard() {
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
             <a 
-              href="http://localhost:3000" 
+              href="/" 
               target="_blank" 
               rel="noreferrer"
               className="btn-sm btn-admin-ghost"
