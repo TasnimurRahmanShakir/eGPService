@@ -2,16 +2,17 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'e-GP Tender BD | Professional e-GP Registration, Preparation & Submission Support',
-  description: 'Expert guidance for Bangladesh government electronic procurement (e-GP). We simplify e-GP registration, BOQ preparation, document compliance, and error-free tender submission. Make every submission count.',
+  title: 'e-GP Tender BD | e-GP Registration & Tender Support in Bangladesh',
+  description: 'Professional e-GP registration, tender preparation, tender submission, consultancy and training support for businesses in Bangladesh.',
   keywords: [
-    'e-GP Bangladesh',
+    'e-GP registration Bangladesh',
     'e-GP tender support',
-    'e-GP registration BD',
-    'BOQ preparation',
-    'tender submission service Dhaka',
-    'e-GP consulting Bangladesh',
-    'CPTU tender help'
+    'e-GP tender submission',
+    'e-GP consultant Bangladesh',
+    'tender preparation Bangladesh',
+    'e-GP consultancy Dhaka',
+    'tender submission service Bangladesh',
+    'e-GP training Bangladesh'
   ],
   authors: [{ name: 'e-GP Tender BD' }],
   metadataBase: new URL('https://egptenderbd.com')
@@ -20,7 +21,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#006A4E'
+  themeColor: '#013A28'
 };
 
 export default function RootLayout({
