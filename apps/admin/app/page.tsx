@@ -253,7 +253,7 @@ export default function AdminDashboard() {
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
             <a 
-              href="/" 
+              href={process.env.NEXT_PUBLIC_MAIN_SITE_URL || "https://egptenderbd.com"} 
               target="_blank" 
               rel="noreferrer"
               className="btn-sm btn-admin-ghost"

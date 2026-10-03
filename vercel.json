@@ -12,13 +12,13 @@
   },
   "rewrites": [
     {
-      "source": "/admin",
-      "destination": {
-        "service": "admin"
-      }
-    },
-    {
-      "source": "/admin/(.*)",
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "admin\\..*"
+        }
+      ],
       "destination": {
         "service": "admin"
       }
