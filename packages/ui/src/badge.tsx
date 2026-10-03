@@ -3,7 +3,7 @@
 import React from 'react';
 
 export interface BadgeProps {
-  variant?: 'yellow' | 'green' | 'red' | 'neutral';
+  variant?: 'yellow' | 'green' | 'red' | 'blue' | 'neutral';
   dot?: boolean;
   children: React.ReactNode;
   className?: string;
@@ -39,6 +39,13 @@ export function Badge({
           color: '#D81E36',
           border: '1px solid #F9CFD4',
           dotColor: '#D81E36'
+        };
+      case 'blue':
+        return {
+          bg: '#EBF3FE',
+          color: '#0284C7',
+          border: '1px solid #BAE6FD',
+          dotColor: '#0284C7'
         };
       case 'neutral':
       default:

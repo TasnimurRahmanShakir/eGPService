@@ -3,7 +3,7 @@
 import React from 'react';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'red' | 'primary' | 'green' | 'secondary' | 'outline-white' | 'ghost';
+  variant?: 'red' | 'primary' | 'green' | 'secondary' | 'outline-white' | 'ghost' | 'danger';
   size?: 'sm' | 'md' | 'lg';
   icon?: React.ReactNode;
   children?: React.ReactNode;
@@ -22,6 +22,7 @@ export function Button({
     switch (variant) {
       case 'red':
       case 'primary':
+      case 'danger':
         return {
           backgroundColor: '#D81E36',
           color: '#FFFFFF',
