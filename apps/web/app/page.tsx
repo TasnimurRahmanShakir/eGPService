@@ -5,7 +5,6 @@ import Link from 'next/link';
 import {
   ShieldCheck,
   CheckCircle,
-  Clock,
   ArrowRight,
   Phone,
   FileText,
@@ -37,151 +36,47 @@ export default function HomePage() {
 
       {/* HERO SECTION */}
       <section className="hero-wrapper">
-        <div className="container hero-grid-split">
-          {/* Left Column */}
-          <div>
-            <h1 className="hero-headline">
-              Make Every{' '}
-              <span className="hero-headline-accent">Submission Count.</span>
-            </h1>
+        <div className="container hero-content-center">
+          <h1 className="hero-headline">
+            Make Every{' '}
+            <span className="hero-headline-accent">Submission Count.</span>
+          </h1>
 
-            <p className="hero-subhead">
-              Professional e-GP registration, tender preparation and submission support for businesses in Bangladesh.
-            </p>
+          <p className="hero-subhead">
+            Professional e-GP registration, tender preparation and submission support for businesses in Bangladesh.
+          </p>
 
-            <div className="hero-cta-group">
-              <button
-                onClick={() => setModalOpen(true)}
-                className="btn-red"
-                id="hero-primary-cta"
-              >
-                Get Tender Support ▸
-              </button>
-              <Link href="/services" className="btn-outline-green">
-                Explore Services
-              </Link>
-            </div>
-
-            <div style={{ marginTop: '2.5rem', display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <div style={{ width: '22px', height: '22px', borderRadius: '50%', background: 'var(--green-soft)', color: 'var(--green-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Check size={14} strokeWidth={3} />
-                </div>
-                <span style={{ fontSize: '0.88rem', fontWeight: 600, color: 'var(--text-headline)' }}>
-                  Error-Free Tender Formats
-                </span>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <div style={{ width: '22px', height: '22px', borderRadius: '50%', background: 'var(--green-soft)', color: 'var(--green-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Check size={14} strokeWidth={3} />
-                </div>
-                <span style={{ fontSize: '0.88rem', fontWeight: 600, color: 'var(--text-headline)' }}>
-                  Accurate BOQ Formulation
-                </span>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <div style={{ width: '22px', height: '22px', borderRadius: '50%', background: 'var(--green-soft)', color: 'var(--green-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Check size={14} strokeWidth={3} />
-                </div>
-                <span style={{ fontSize: '0.88rem', fontWeight: 600, color: 'var(--text-headline)' }}>
-                  Timely Deadline Submission
-                </span>
-              </div>
-            </div>
+          <div className="hero-cta-group">
+            <button
+              onClick={() => setModalOpen(true)}
+              className="btn-red"
+              id="hero-primary-cta"
+            >
+              Get Tender Support ▸
+            </button>
+            <Link href="/services" className="btn-outline-green">
+              Explore Services
+            </Link>
           </div>
 
-          {/* Right Column: Tender Readiness Cockpit Mockup */}
-          <div>
-            <div className="readiness-mockup-frame">
-              <div className="mockup-header-row">
-                <div>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                    TENDER READINESS COCKPIT
-                  </span>
-                  <div style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--green-deep)', marginTop: '2px' }}>
-                    Live Verification Pipeline
-                  </div>
-                </div>
-                <div className="pill-badge pill-gold">
-                  <Clock size={12} />
-                  <span>Submission Ready</span>
-                </div>
+          <div className="hero-benefits-row">
+            <div className="hero-benefit-item">
+              <div className="hero-check-circle">
+                <Check size={14} strokeWidth={3} />
               </div>
-
-              {/* Progress Steps */}
-              <div className="mockup-step-row completed">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div style={{ width: '22px', height: '22px', borderRadius: '50%', background: 'var(--green-primary)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 800 }}>
-                    ✓
-                  </div>
-                  <div>
-                    <div style={{ fontWeight: 700, color: 'var(--green-deep)' }}>1. e-GP Registration &amp; Account Setup</div>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Organization verified &amp; active digital key</div>
-                  </div>
-                </div>
-                <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--green-primary)' }}>PASSED</span>
+              <span className="hero-benefit-text">Error-Free Tender Formats</span>
+            </div>
+            <div className="hero-benefit-item">
+              <div className="hero-check-circle">
+                <Check size={14} strokeWidth={3} />
               </div>
-
-              <div className="mockup-step-row completed">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div style={{ width: '22px', height: '22px', borderRadius: '50%', background: 'var(--green-primary)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 800 }}>
-                    ✓
-                  </div>
-                  <div>
-                    <div style={{ fontWeight: 700, color: 'var(--green-deep)' }}>2. Tender Review &amp; BOQ Formulation</div>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Excel schedule &amp; line items validated</div>
-                  </div>
-                </div>
-                <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--green-primary)' }}>AUDITED</span>
+              <span className="hero-benefit-text">Accurate BOQ Formulation</span>
+            </div>
+            <div className="hero-benefit-item">
+              <div className="hero-check-circle">
+                <Check size={14} strokeWidth={3} />
               </div>
-
-              <div className="mockup-step-row completed">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div style={{ width: '22px', height: '22px', borderRadius: '50%', background: 'var(--green-primary)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 800 }}>
-                    ✓
-                  </div>
-                  <div>
-                    <div style={{ fontWeight: 700, color: 'var(--green-deep)' }}>3. Document Check &amp; Security Packaging</div>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Bank guarantee &amp; technical certificates verified</div>
-                  </div>
-                </div>
-                <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--green-primary)' }}>CONFIRMED</span>
-              </div>
-
-              <div className="mockup-step-row completed">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div style={{ width: '22px', height: '22px', borderRadius: '50%', background: 'var(--green-primary)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 800 }}>
-                    ✓
-                  </div>
-                  <div>
-                    <div style={{ fontWeight: 700, color: 'var(--green-deep)' }}>4. Sealed Bid Online Upload</div>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Final hash generated &amp; submission acknowledged</div>
-                  </div>
-                </div>
-                <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--green-primary)' }}>100% READY</span>
-              </div>
-
-              {/* Card Footer Call */}
-              <div style={{ marginTop: '1.25rem', paddingTop: '1.25rem', borderTop: '1px solid var(--border-subtle)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                  Questions regarding your tender?
-                </div>
-                <a
-                  href="tel:+8801886970197"
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    fontSize: '0.85rem',
-                    fontWeight: 700,
-                    color: 'var(--green-primary)',
-                    textDecoration: 'none'
-                  }}
-                >
-                  <Phone size={14} />
-                  +880 1886-970197
-                </a>
-              </div>
+              <span className="hero-benefit-text">Timely Deadline Submission</span>
             </div>
           </div>
         </div>
