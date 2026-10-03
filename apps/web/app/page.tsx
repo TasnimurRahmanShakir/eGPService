@@ -23,6 +23,7 @@ import {
   Sparkles,
   Users
 } from 'lucide-react';
+import { Button, Badge, Modal } from '@egp/ui';
 
 interface Tender {
   id: string;
@@ -918,134 +919,114 @@ export default function Home() {
         </div>
       </footer>
 
-      {/* Demo Modal */}
-      {showDemoModal && (
-        <div 
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100vw',
-            height: '100vh',
-            background: 'rgba(0, 0, 0, 0.8)',
-            backdropFilter: 'blur(8px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 1000,
-            padding: '1rem'
-          }}
-          onClick={() => setShowDemoModal(false)}
-        >
-          <div 
-            className="glass-card" 
-            style={{ maxWidth: '500px', width: '100%', padding: '2.5rem', position: 'relative' }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {submittedDemo ? (
-              <div style={{ textAlign: 'center', padding: '1.5rem 0' }}>
-                <div style={{ width: '60px', height: '60px', borderRadius: '50%', background: 'rgba(16, 185, 129, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', color: '#10b981' }}>
-                  <CheckCircle2 size={32} />
-                </div>
-                <h3 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '0.75rem' }}>Briefing Request Dispatched</h3>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.925rem', marginBottom: '1.5rem' }}>
-                  Our public sector procurement solutions team will provide an architectural walkthrough tailored to your agency.
-                </p>
-                <button className="btn btn-primary" onClick={() => { setShowDemoModal(false); setSubmittedDemo(false); }}>
-                  Close Window
-                </button>
-              </div>
-            ) : (
-              <div>
-                <h3 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '0.5rem' }}>Request Platform Sandbox Briefing</h3>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginBottom: '1.5rem' }}>
-                  Schedule a private session to evaluate the eGP Solution engine and Turborepo architecture.
-                </p>
-
-                <form onSubmit={(e) => { e.preventDefault(); setSubmittedDemo(true); }}>
-                  <div style={{ marginBottom: '1rem' }}>
-                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.4rem' }}>
-                      Agency / Corporate Entity Name
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="e.g. Ministry of Digital Infrastructure"
-                      style={{
-                        width: '100%',
-                        padding: '0.75rem 1rem',
-                        borderRadius: 'var(--radius-sm)',
-                        background: 'rgba(255, 255, 255, 0.05)',
-                        border: '1px solid var(--border-subtle)',
-                        color: 'var(--text-main)',
-                        fontSize: '0.9rem',
-                        outline: 'none'
-                      }}
-                    />
-                  </div>
-
-                  <div style={{ marginBottom: '1rem' }}>
-                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.4rem' }}>
-                      Official Email Address
-                    </label>
-                    <input
-                      type="email"
-                      required
-                      placeholder="director@agency.gov"
-                      style={{
-                        width: '100%',
-                        padding: '0.75rem 1rem',
-                        borderRadius: 'var(--radius-sm)',
-                        background: 'rgba(255, 255, 255, 0.05)',
-                        border: '1px solid var(--border-subtle)',
-                        color: 'var(--text-main)',
-                        fontSize: '0.9rem',
-                        outline: 'none'
-                      }}
-                    />
-                  </div>
-
-                  <div style={{ marginBottom: '1.5rem' }}>
-                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.4rem' }}>
-                      Primary Scope
-                    </label>
-                    <select
-                      style={{
-                        width: '100%',
-                        padding: '0.75rem 1rem',
-                        borderRadius: 'var(--radius-sm)',
-                        background: '#0d1527',
-                        border: '1px solid var(--border-subtle)',
-                        color: 'var(--text-main)',
-                        fontSize: '0.9rem',
-                        outline: 'none'
-                      }}
-                    >
-                      <option>National E-Procurement Transformation</option>
-                      <option>Enterprise Sourcing & Sealed Bidding</option>
-                      <option>Automated Due Diligence & Vendor Scoring</option>
-                      <option>Audit Trail & OCDS Compliance</option>
-                    </select>
-                  </div>
-
-                  <div style={{ display: 'flex', gap: '0.75rem' }}>
-                    <button type="submit" className="btn btn-primary" style={{ flex: 1 }} id="modal-submit-btn">
-                      Confirm Schedule
-                    </button>
-                    <button 
-                      type="button" 
-                      className="btn btn-secondary" 
-                      onClick={() => setShowDemoModal(false)}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </form>
-              </div>
-            )}
+      {/* Shared Modal from @egp/ui */}
+      <Modal
+        isOpen={showDemoModal}
+        onClose={() => setShowDemoModal(false)}
+        maxWidth="500px"
+      >
+        {submittedDemo ? (
+          <div style={{ textAlign: 'center', padding: '1.5rem 0' }}>
+            <div style={{ width: '60px', height: '60px', borderRadius: '50%', background: 'rgba(16, 185, 129, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', color: '#10b981' }}>
+              <CheckCircle2 size={32} />
+            </div>
+            <h3 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '0.75rem', color: '#f8fafc' }}>Briefing Request Dispatched</h3>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.925rem', marginBottom: '1.5rem' }}>
+              Our public sector procurement solutions team will provide an architectural walkthrough tailored to your agency.
+            </p>
+            <Button variant="primary" onClick={() => { setShowDemoModal(false); setSubmittedDemo(false); }}>
+              Close Window
+            </Button>
           </div>
-        </div>
-      )}
+        ) : (
+          <div>
+            <h3 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '0.5rem', color: '#f8fafc' }}>Request Platform Sandbox Briefing</h3>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginBottom: '1.5rem' }}>
+              Schedule a private session to evaluate the eGP Solution engine and Turborepo architecture.
+            </p>
+
+            <form onSubmit={(e) => { e.preventDefault(); setSubmittedDemo(true); }}>
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.4rem' }}>
+                  Agency / Corporate Entity Name
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Ministry of Digital Infrastructure"
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem 1rem',
+                    borderRadius: 'var(--radius-sm)',
+                    background: 'rgba(255, 255, 255, 0.05)',
+                    border: '1px solid var(--border-subtle)',
+                    color: 'var(--text-main)',
+                    fontSize: '0.9rem',
+                    outline: 'none'
+                  }}
+                />
+              </div>
+
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.4rem' }}>
+                  Official Email Address
+                </label>
+                <input
+                  type="email"
+                  required
+                  placeholder="director@agency.gov"
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem 1rem',
+                    borderRadius: 'var(--radius-sm)',
+                    background: 'rgba(255, 255, 255, 0.05)',
+                    border: '1px solid var(--border-subtle)',
+                    color: 'var(--text-main)',
+                    fontSize: '0.9rem',
+                    outline: 'none'
+                  }}
+                />
+              </div>
+
+              <div style={{ marginBottom: '1.5rem' }}>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.4rem' }}>
+                  Primary Scope
+                </label>
+                <select
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem 1rem',
+                    borderRadius: 'var(--radius-sm)',
+                    background: '#0d1527',
+                    border: '1px solid var(--border-subtle)',
+                    color: 'var(--text-main)',
+                    fontSize: '0.9rem',
+                    outline: 'none'
+                  }}
+                >
+                  <option>National E-Procurement Transformation</option>
+                  <option>Enterprise Sourcing & Sealed Bidding</option>
+                  <option>Automated Due Diligence & Vendor Scoring</option>
+                  <option>Audit Trail & OCDS Compliance</option>
+                </select>
+              </div>
+
+              <div style={{ display: 'flex', gap: '0.75rem' }}>
+                <Button type="submit" variant="primary" style={{ flex: 1 }} id="modal-submit-btn">
+                  Confirm Schedule
+                </Button>
+                <Button 
+                  type="button" 
+                  variant="secondary" 
+                  onClick={() => setShowDemoModal(false)}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </form>
+          </div>
+        )}
+      </Modal>
     </main>
   );
 }

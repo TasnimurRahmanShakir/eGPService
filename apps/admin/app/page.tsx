@@ -23,6 +23,7 @@ import {
   ExternalLink,
   Filter
 } from 'lucide-react';
+import { Button, Badge, Card, StatCard } from '@egp/ui';
 
 interface AdminTender {
   id: string;
@@ -286,51 +287,36 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
-              {/* Metrics */}
+              {/* Shared Stat Cards from @egp/ui */}
               <div className="metrics-row">
-                <div className="metric-card">
-                  <div className="metric-title">
-                    <span>Active Solicitations</span>
-                    <Layers size={16} style={{ color: 'var(--primary)' }} />
-                  </div>
-                  <div className="metric-val">42</div>
-                  <div className="metric-sub sub-positive">
-                    <ArrowUpRight size={13} /> +8 published this week
-                  </div>
-                </div>
-
-                <div className="metric-card">
-                  <div className="metric-title">
-                    <span>Fiscal Value Under Bid</span>
-                    <DollarSign size={16} style={{ color: 'var(--accent-emerald)' }} />
-                  </div>
-                  <div className="metric-val">$184.2M</div>
-                  <div className="metric-sub sub-positive">
-                    <ArrowUpRight size={13} /> 100% Escrow backed
-                  </div>
-                </div>
-
-                <div className="metric-card">
-                  <div className="metric-title">
-                    <span>Pending Evaluations</span>
-                    <FileText size={16} style={{ color: 'var(--accent-amber)' }} />
-                  </div>
-                  <div className="metric-val">12</div>
-                  <div className="metric-sub sub-warning">
-                    3 closing today
-                  </div>
-                </div>
-
-                <div className="metric-card">
-                  <div className="metric-title">
-                    <span>Anti-Collusion Flagged</span>
-                    <ShieldAlert size={16} style={{ color: 'var(--accent-rose)' }} />
-                  </div>
-                  <div className="metric-val">1</div>
-                  <div className="metric-sub sub-danger">
-                    Anomalous IP cluster detected
-                  </div>
-                </div>
+                <StatCard
+                  title="Active Solicitations"
+                  value="42"
+                  subText="+8 published this week"
+                  subType="positive"
+                  icon={<Layers size={16} />}
+                />
+                <StatCard
+                  title="Fiscal Value Under Bid"
+                  value="$184.2M"
+                  subText="100% Escrow backed"
+                  subType="positive"
+                  icon={<DollarSign size={16} />}
+                />
+                <StatCard
+                  title="Pending Evaluations"
+                  value="12"
+                  subText="3 closing today"
+                  subType="warning"
+                  icon={<FileText size={16} />}
+                />
+                <StatCard
+                  title="Anti-Collusion Flagged"
+                  value="1"
+                  subText="Anomalous IP cluster detected"
+                  subType="danger"
+                  icon={<ShieldAlert size={16} />}
+                />
               </div>
 
               {/* Tenders Table */}
@@ -364,36 +350,42 @@ export default function AdminDashboard() {
                         <td style={{ color: 'var(--text-muted)' }}>{t.department}</td>
                         <td style={{ fontFamily: 'var(--font-mono)' }}>{t.budget}</td>
                         <td>
-                          <span className={`badge ${t.riskScore === 'Low' ? 'badge-green' : t.riskScore === 'Medium' ? 'badge-yellow' : 'badge-red'}`}>
+                          <Badge 
+                            variant={t.riskScore === 'Low' ? 'green' : t.riskScore === 'Medium' ? 'yellow' : 'red'}
+                            dot
+                          >
                             {t.riskScore} Risk
-                          </span>
+                          </Badge>
                         </td>
                         <td>
-                          <span className={`badge ${t.status === 'Published' ? 'badge-green' : t.status === 'Pending Review' ? 'badge-yellow' : t.status === 'Rejected' ? 'badge-red' : 'badge-blue'}`}>
+                          <Badge 
+                            variant={t.status === 'Published' ? 'green' : t.status === 'Pending Review' ? 'yellow' : t.status === 'Rejected' ? 'red' : 'blue'}
+                          >
                             {t.status}
-                          </span>
+                          </Badge>
                         </td>
                         <td>
                           <div style={{ display: 'flex', gap: '0.4rem' }}>
                             {t.status === 'Pending Review' && (
                               <>
-                                <button 
-                                  className="btn-sm btn-admin-primary"
+                                <Button 
+                                  size="sm"
+                                  variant="primary"
                                   onClick={() => handleApproveTender(t.id)}
+                                  icon={<CheckCircle size={13} />}
                                 >
-                                  <CheckCircle size={13} />
                                   Approve
-                                </button>
-                                <button 
-                                  className="btn-sm btn-admin-danger"
+                                </Button>
+                                <Button 
+                                  size="sm"
+                                  variant="danger"
                                   onClick={() => handleRejectTender(t.id)}
-                                >
-                                  <XCircle size={13} />
-                                </button>
+                                  icon={<XCircle size={13} />}
+                                />
                               </>
                             )}
                             {t.status !== 'Pending Review' && (
-                              <button className="btn-sm btn-admin-ghost">Inspect Details</button>
+                              <Button size="sm" variant="ghost">Inspect Details</Button>
                             )}
                           </div>
                         </td>

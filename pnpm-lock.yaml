@@ -41,6 +41,8 @@ importers:
 
   apps/web: {}
 
+  packages/ui: {}
+
 packages:
 
   '@emnapi/runtime@1.11.3':
