@@ -14,11 +14,19 @@ egp-solution/
 ├── package.json           # Root package scripts and Turbo orchestrator
 ├── node_modules/          # Single shared node_modules for the entire repository
 └── apps/
-    └── web/               # Next.js 15 procurement platform website (no separate node_modules needed)
+    ├── web/               # Next.js 15 public procurement portal (Port 3000)
+    │   ├── app/
+    │   │   ├── layout.tsx
+    │   │   ├── page.tsx   # Live Tender Board, Scoring Matrix & ROI Calculator
+    │   │   └── globals.css
+    │   ├── next.config.mjs
+    │   ├── tsconfig.json
+    │   └── package.json
+    └── admin/             # Next.js 15 Procurement Admin Panel & Command Center (Port 3002)
         ├── app/
         │   ├── layout.tsx
-        │   ├── page.tsx   # Interactive Sandbox, Tender Matrix & ROI calculator
-        │   └── globals.css# Glassmorphic dark design system
+        │   ├── page.tsx   # Cockpit, Tenders Review, Vendor Due Diligence, Decryption Quorum
+        │   └── globals.css
         ├── next.config.mjs
         ├── tsconfig.json
         └── package.json
