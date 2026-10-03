@@ -40,11 +40,6 @@ export default function HomePage() {
         <div className="container hero-grid-split">
           {/* Left Column */}
           <div>
-            <div className="pill-badge pill-green">
-              <span className="pill-dot"></span>
-              Professional e-GP Tender Support &amp; Consulting in Bangladesh
-            </div>
-
             <h1 className="hero-headline">
               Make Every{' '}
               <span className="hero-headline-accent">Submission Count.</span>

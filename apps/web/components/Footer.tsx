@@ -33,7 +33,7 @@ export function Footer() {
               </span>
             </div>
             <p style={{ color: 'rgba(255, 255, 255, 0.75)', fontSize: '0.9rem', lineHeight: 1.6, marginBottom: '1.25rem' }}>
-              Professional e-GP Tender Support &amp; Consulting in Bangladesh. Helping contractors navigate registration, preparation, and online submission with confidence.
+              Helping contractors and businesses navigate e-GP registration, tender preparation, and online submission with confidence.
             </p>
             <div style={{ fontSize: '0.82rem', color: 'var(--gold-accent)', fontWeight: 600 }}>
               Register. Prepare. Submit.
