@@ -4,29 +4,59 @@ import React from 'react';
 
 export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
-  glow?: boolean;
+  variant?: 'white' | 'offwhite' | 'green' | 'dark';
+  border?: boolean;
 }
 
 export function Card({
   children,
-  glow = false,
+  variant = 'white',
+  border = true,
   className = '',
   style,
   ...props
 }: CardProps) {
+  const getVariantStyles = (): React.CSSProperties => {
+    switch (variant) {
+      case 'offwhite':
+        return {
+          backgroundColor: '#F6FAF8',
+          color: '#14231D',
+          border: border ? '1px solid #E3EBE7' : 'none',
+        };
+      case 'green':
+        return {
+          backgroundColor: '#006A4E',
+          color: '#FFFFFF',
+          border: 'none',
+        };
+      case 'dark':
+        return {
+          backgroundColor: '#0B3D2E',
+          color: '#FFFFFF',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+        };
+      case 'white':
+      default:
+        return {
+          backgroundColor: '#FFFFFF',
+          color: '#14231D',
+          border: border ? '1px solid #E3EBE7' : 'none',
+        };
+    }
+  };
+
   return (
     <div
       style={{
-        background: 'rgba(15, 24, 46, 0.65)',
-        border: glow ? '1px solid rgba(56, 189, 248, 0.35)' : '1px solid rgba(255, 255, 255, 0.08)',
-        borderRadius: '16px',
-        backdropFilter: 'blur(16px)',
-        boxShadow: glow ? '0 0 30px rgba(56, 189, 248, 0.15)' : '0 2px 8px rgba(0, 0, 0, 0.3)',
-        padding: '1.5rem',
-        transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-        ...style
+        borderRadius: '12px',
+        padding: '1.75rem',
+        boxShadow: variant === 'dark' || variant === 'green' ? 'none' : '0 8px 24px rgba(11, 61, 46, 0.08)',
+        transition: 'all 0.25s ease',
+        ...getVariantStyles(),
+        ...style,
       }}
-      className={`egp-ui-card ${className}`}
+      className={`egp-card ${className}`}
       {...props}
     >
       {children}

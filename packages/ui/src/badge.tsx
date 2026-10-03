@@ -3,7 +3,7 @@
 import React from 'react';
 
 export interface BadgeProps {
-  variant?: 'green' | 'yellow' | 'blue' | 'red';
+  variant?: 'yellow' | 'green' | 'red' | 'neutral';
   dot?: boolean;
   children: React.ReactNode;
   className?: string;
@@ -11,7 +11,7 @@ export interface BadgeProps {
 }
 
 export function Badge({
-  variant = 'blue',
+  variant = 'yellow',
   dot = false,
   children,
   className = '',
@@ -19,34 +19,34 @@ export function Badge({
 }: BadgeProps) {
   const getColors = () => {
     switch (variant) {
-      case 'green':
-        return {
-          bg: 'rgba(16, 185, 129, 0.15)',
-          color: '#34d399',
-          border: '1px solid rgba(16, 185, 129, 0.3)',
-          dotColor: '#10b981'
-        };
       case 'yellow':
         return {
-          bg: 'rgba(245, 158, 11, 0.15)',
-          color: '#fbbf24',
-          border: '1px solid rgba(245, 158, 11, 0.3)',
-          dotColor: '#f59e0b'
+          bg: '#FFC72C',
+          color: '#14231D',
+          border: '1px solid #F3BA20',
+          dotColor: '#006A4E'
+        };
+      case 'green':
+        return {
+          bg: '#EBF5F1',
+          color: '#006A4E',
+          border: '1px solid #C2E2D7',
+          dotColor: '#006A4E'
         };
       case 'red':
         return {
-          bg: 'rgba(244, 63, 94, 0.15)',
-          color: '#fb7185',
-          border: '1px solid rgba(244, 63, 94, 0.3)',
-          dotColor: '#f43f5e'
+          bg: '#FDF0F1',
+          color: '#D81E36',
+          border: '1px solid #F9CFD4',
+          dotColor: '#D81E36'
         };
-      case 'blue':
+      case 'neutral':
       default:
         return {
-          bg: 'rgba(56, 189, 248, 0.15)',
-          color: '#7dd3fc',
-          border: '1px solid rgba(56, 189, 248, 0.3)',
-          dotColor: '#38bdf8'
+          bg: '#F6FAF8',
+          color: '#5B6B64',
+          border: '1px solid #E3EBE7',
+          dotColor: '#5B6B64'
         };
     }
   };
@@ -58,26 +58,25 @@ export function Badge({
       style={{
         display: 'inline-flex',
         alignItems: 'center',
-        gap: '0.35rem',
-        padding: '0.2rem 0.65rem',
+        gap: '0.4rem',
+        padding: '0.25rem 0.75rem',
         borderRadius: '9999px',
-        fontSize: '0.75rem',
-        fontWeight: 600,
+        fontSize: '0.78rem',
+        fontWeight: 700,
         backgroundColor: current.bg,
         color: current.color,
         border: current.border,
         ...style
       }}
-      className={`egp-ui-badge ${className}`}
+      className={`egp-badge ${className}`}
     >
       {dot && (
         <span
           style={{
-            width: '6px',
-            height: '6px',
+            width: '7px',
+            height: '7px',
             borderRadius: '50%',
             backgroundColor: current.dotColor,
-            boxShadow: `0 0 6px ${current.dotColor}`
           }}
         />
       )}

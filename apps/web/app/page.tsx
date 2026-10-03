@@ -1,1024 +1,1028 @@
 'use client';
 
-import React, { useState, useId } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  ShieldCheck,
-  Zap,
-  Lock,
-  BarChart3,
-  Layers,
-  FileCheck2,
-  CheckCircle2,
-  ChevronDown,
-  ChevronRight,
-  TrendingUp,
-  Cpu,
-  Building2,
-  Activity,
-  ArrowRight,
-  ExternalLink,
-  Sliders,
-  Award,
+  FileText,
   Clock,
-  Sparkles,
-  Users
+  Phone,
+  MessageCircle,
+  ArrowRight,
+  ShieldCheck,
+  Check,
+  Menu,
+  X,
+  ExternalLink,
+  ChevronRight,
+  HelpCircle,
+  FileCheck,
+  GraduationCap,
+  Scale,
+  Award,
+  Calendar,
+  Building
 } from 'lucide-react';
-import { Button, Badge, Modal } from '@egp/ui';
+import { Button, Badge, Card, Modal, CheckStamp } from '@egp/ui';
 
-interface Tender {
-  id: string;
-  ref: string;
-  title: string;
-  category: string;
-  budget: string;
-  bidsCount: number;
-  deadlineDays: number;
-  status: 'Open' | 'Evaluating' | 'Encrypted';
-}
+export default function HomePage() {
+  // Navigation / Modal States
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState('Tender Preparation & BOQ');
 
-interface Bidder {
-  id: string;
-  name: string;
-  experienceYears: number;
-  techScore: number;
-  priceBid: number; // in Millions USD
-  complianceStatus: '100% Verified' | 'Conditional' | 'Pending Doc';
-}
+  // Contact Form State
+  const [formData, setFormData] = useState({
+    fullName: '',
+    company: '',
+    phone: '',
+    tenderRef: '',
+    service: 'Tender Preparation & BOQ',
+    message: ''
+  });
+  const [phoneError, setPhoneError] = useState('');
+  const [formSubmitted, setFormSubmitted] = useState(false);
 
-export default function Home() {
-  const [activeTab, setActiveTab] = useState<'tenders' | 'evaluation' | 'audit'>('tenders');
-  const [categoryFilter, setCategoryFilter] = useState<string>('all');
-  
-  // Interactive Calculator State
-  const [annualSpend, setAnnualSpend] = useState<number>(45); // in $M
-  const [tenderCount, setTenderCount] = useState<number>(120);
-  const [cycleDays, setCycleDays] = useState<number>(40);
+  // Active Progress Rail Node
+  const [activeStep, setActiveStep] = useState<1 | 2 | 3>(2);
 
-  // Dynamic Bid Evaluation Weighting
-  const [techWeight, setTechWeight] = useState<number>(60);
-  const finWeight = 100 - techWeight;
+  // Animated Checklist in Hero (Tender Readiness Card)
+  const [checkedItems, setCheckedItems] = useState<number[]>([0]);
 
-  // Audit Hash Verification State
-  const [isVerifying, setIsVerifying] = useState<boolean>(false);
-  const [verifiedHash, setVerifiedHash] = useState<boolean>(true);
+  useEffect(() => {
+    const timer1 = setTimeout(() => setCheckedItems(prev => [...prev, 1]), 400);
+    const timer2 = setTimeout(() => setCheckedItems(prev => [...prev, 2]), 800);
+    const timer3 = setTimeout(() => setCheckedItems(prev => [...prev, 3]), 1200);
+    const timer4 = setTimeout(() => setCheckedItems(prev => [...prev, 4]), 1600);
 
-  // FAQ State
-  const [openFaq, setOpenFaq] = useState<number | null>(0);
-
-  // Modal State
-  const [showDemoModal, setShowDemoModal] = useState<boolean>(false);
-  const [submittedDemo, setSubmittedDemo] = useState<boolean>(false);
-
-  // Sample Tenders
-  const tenders: Tender[] = [
-    {
-      id: 't-1',
-      ref: 'EGP-2026-904',
-      title: 'Smart City Urban Optical Fiber Backbone Network',
-      category: 'technology',
-      budget: '$18.5M',
-      bidsCount: 6,
-      deadlineDays: 14,
-      status: 'Open'
-    },
-    {
-      id: 't-2',
-      ref: 'EGP-2026-912',
-      title: 'National Health Authority Cloud PACS Diagnostic System',
-      category: 'healthcare',
-      budget: '$24.2M',
-      bidsCount: 9,
-      deadlineDays: 8,
-      status: 'Open'
-    },
-    {
-      id: 't-3',
-      ref: 'EGP-2026-889',
-      title: 'High-Speed Rail Electrical Substation Expansion (Phase 3)',
-      category: 'infrastructure',
-      budget: '$52.0M',
-      bidsCount: 4,
-      deadlineDays: 2,
-      status: 'Evaluating'
-    },
-    {
-      id: 't-4',
-      ref: 'EGP-2026-870',
-      title: 'Floating Solar Micro-Grid Generation (150 MW)',
-      category: 'energy',
-      budget: '$31.8M',
-      bidsCount: 11,
-      deadlineDays: 0,
-      status: 'Encrypted'
-    }
-  ];
-
-  const filteredTenders = categoryFilter === 'all'
-    ? tenders
-    : tenders.filter(t => t.category === categoryFilter);
-
-  // Bidders for Evaluation Simulator
-  const bidders: Bidder[] = [
-    {
-      id: 'b-1',
-      name: 'Apex Infrastructure Technologies',
-      experienceYears: 18,
-      techScore: 94,
-      priceBid: 16.8,
-      complianceStatus: '100% Verified'
-    },
-    {
-      id: 'b-2',
-      name: 'Vanguard Global Systems Ltd',
-      experienceYears: 12,
-      techScore: 88,
-      priceBid: 15.2,
-      complianceStatus: '100% Verified'
-    },
-    {
-      id: 'b-3',
-      name: 'Zenith Matrix Engineering',
-      experienceYears: 9,
-      techScore: 91,
-      priceBid: 17.4,
-      complianceStatus: '100% Verified'
-    },
-    {
-      id: 'b-4',
-      name: 'BlueHorizon Contracting Consortia',
-      experienceYears: 15,
-      techScore: 79,
-      priceBid: 14.1,
-      complianceStatus: 'Conditional'
-    }
-  ];
-
-  // Normalized Financial score: Lower bid gets higher score
-  const minPrice = 14.1;
-  const scoredBidders = bidders.map(b => {
-    const finScore = Math.round((minPrice / b.priceBid) * 100);
-    const compositeScore = Math.round((b.techScore * (techWeight / 100)) + (finScore * (finWeight / 100)));
-    return {
-      ...b,
-      finScore,
-      compositeScore
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+      clearTimeout(timer3);
+      clearTimeout(timer4);
     };
-  }).sort((a, b) => b.compositeScore - a.compositeScore);
+  }, []);
 
-  // Calculate Savings
-  const estimatedSavings = (annualSpend * 0.082).toFixed(2);
-  const cycleDaysSaved = Math.round(cycleDays * 0.65);
-  const auditReductionHours = tenderCount * 45;
+  const readinessSteps = [
+    'e-GP Portal Registration & NID/TIN Verified',
+    'Bank Guarantee & Tender Security Cleared',
+    'Technical Compliance Forms Packaged',
+    'BOQ Pricing & Format Audit Checked',
+    'Ready for Sealed Bid Portal Submission'
+  ];
 
-  const handleVerify = () => {
-    setIsVerifying(true);
-    setTimeout(() => {
-      setIsVerifying(false);
-      setVerifiedHash(true);
-    }, 600);
+  const handleOpenModal = (serviceName?: string) => {
+    if (serviceName) {
+      setSelectedService(serviceName);
+      setFormData(prev => ({ ...prev, service: serviceName }));
+    }
+    setModalOpen(true);
   };
 
-  const faqs = [
-    {
-      q: 'How does Turborepo improve eGP Solution architecture?',
-      a: 'Turborepo provides high-performance monorepo caching, unified pipeline orchestration, and atomic task execution. Coupled with pnpm hoisted single node_modules, you eliminate duplicated dependencies, accelerate build times by up to 85%, and maintain strict configuration purity.'
-    },
-    {
-      q: 'How does the single shared node_modules architecture operate?',
-      a: 'Configured via .npmrc with node-linker=hoisted, pnpm installs all packages into one shared node_modules directory at the root without nesting redundant copies in packages or apps. This optimizes disk footprint, improves symlink compatibility, and prevents phantom module resolution issues.'
-    },
-    {
-      q: 'How does eGP guarantee tamper-proof tender submissions?',
-      a: 'Every tender document, bid submission, and evaluation score is cryptographically hashed with SHA-256 and sealed with dual-key asymmetric encryption until the official opening window. All audit events are written to an append-only verifiable cryptographic log.'
-    },
-    {
-      q: 'Can eGP integrate with national ERP and financial treasury systems?',
-      a: 'Yes. eGP provides standardized REST & GraphQL APIs compliant with Open Contracting Data Standard (OCDS), integrating seamlessly with SAP, Oracle Financials, IFMIS, and central bank automated clearing houses.'
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Validate BD phone number (must be 10 or 11 digits)
+    const cleanedPhone = formData.phone.replace(/\D/g, '');
+    if (cleanedPhone.length < 10 || cleanedPhone.length > 11) {
+      setPhoneError('Please enter a valid 10-11 digit Bangladesh mobile number (e.g. 1711223344)');
+      return;
     }
-  ];
+    setPhoneError('');
+    setFormSubmitted(true);
+  };
 
   return (
-    <main style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      {/* Navigation */}
-      <header className="header">
-        <div className="container nav-wrapper">
-          <a href="#" className="logo-group">
-            <div className="logo-badge">
-              <ShieldCheck size={22} />
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      {/* ① Sticky Header */}
+      <header className="site-header">
+        <div className="container nav-container">
+          <a href="#" className="brand-logo">
+            <div className="logo-symbol">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+              <span className="logo-red-dot"></span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <span className="logo-text">eGP<span style={{ color: 'var(--primary)' }}>Solution</span></span>
-              <span className="logo-tag">Turborepo</span>
+            <div className="logo-text-wrap">
+              <span className="logo-title">
+                e-GP<span style={{ color: 'var(--color-ink)' }}> Tender BD</span>
+              </span>
+              <span className="logo-subtitle">Tender Consulting & Support</span>
             </div>
           </a>
 
-          <ul className="nav-links">
-            <li><a href="#features" className="nav-link">Capabilities</a></li>
-            <li><a href="#sandbox" className="nav-link">Live Sandbox</a></li>
-            <li><a href="#calculator" className="nav-link">ROI Impact</a></li>
-            <li><a href="#security" className="nav-link">Compliance</a></li>
-            <li><a href="#faq" className="nav-link">Architecture FAQ</a></li>
-          </ul>
+          {/* Desktop Nav */}
+          <nav>
+            <ul className="nav-menu">
+              <li><a href="#hero" className="nav-link active">Home</a></li>
+              <li><a href="#process" className="nav-link">The Process</a></li>
+              <li><a href="#services" className="nav-link">Services</a></li>
+              <li><a href="#about" className="nav-link">About Us</a></li>
+              <li><a href="#contact" className="nav-link">Contact</a></li>
+            </ul>
+          </nav>
 
-          <div className="nav-actions">
-            <button 
-              id="cta-schedule-demo-nav" 
-              className="btn btn-primary"
-              onClick={() => setShowDemoModal(true)}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <Button
+              variant="red"
+              size="md"
+              onClick={() => handleOpenModal()}
+              id="header-cta-btn"
             >
-              Request Access
-              <ArrowRight size={16} />
+              Get Tender Support ▸
+            </Button>
+
+            <button
+              className="mobile-menu-toggle"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle navigation"
+            >
+              {mobileMenuOpen ? <X size={26} /> : <Menu size={26} />}
             </button>
           </div>
         </div>
+
+        {/* Mobile Dropdown Menu */}
+        {mobileMenuOpen && (
+          <div style={{ background: '#FFFFFF', borderBottom: '1px solid var(--color-border)', padding: '1.25rem 1.5rem' }}>
+            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <li><a href="#hero" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Home</a></li>
+              <li><a href="#process" className="nav-link" onClick={() => setMobileMenuOpen(false)}>The Process</a></li>
+              <li><a href="#services" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Services</a></li>
+              <li><a href="#about" className="nav-link" onClick={() => setMobileMenuOpen(false)}>About Us</a></li>
+              <li><a href="#contact" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Contact</a></li>
+              <li style={{ paddingTop: '0.5rem' }}>
+                <Button variant="red" size="md" style={{ width: '100%' }} onClick={() => { setMobileMenuOpen(false); handleOpenModal(); }}>
+                  Get Tender Support ▸
+                </Button>
+              </li>
+            </ul>
+          </div>
+        )}
       </header>
 
-      {/* Hero Section */}
-      <section className="hero">
-        <div className="container">
-          <div className="hero-pill">
-            <span className="pill-dot"></span>
-            Enterprise & Government Procurement 4.0 Platform
-          </div>
-
-          <h1 className="hero-title">
-            Transform Procurement with <span className="gradient-text">Speed, Transparency</span> & Cryptographic Integrity
-          </h1>
-
-          <p className="hero-subtitle">
-            Engineered inside an ultra-lean Turborepo architecture with a single shared node_modules footprint.
-            Streamline tenders, automate multi-criteria scoring, and eliminate fraud with real-time auditability.
-          </p>
-
-          <div className="hero-ctas">
-            <a href="#sandbox" className="btn btn-primary btn-lg" id="hero-btn-explore">
-              Explore Live Sandbox
-              <Sparkles size={18} />
-            </a>
-            <button 
-              className="btn btn-secondary btn-lg" 
-              onClick={() => setShowDemoModal(true)}
-              id="hero-btn-demo"
-            >
-              Schedule Platform Briefing
-              <ExternalLink size={16} />
-            </button>
-          </div>
-
-          {/* Stats Banner */}
-          <div className="stats-banner glass-card">
-            <div className="stat-item">
-              <span className="stat-number gradient-text">$14.2B+</span>
-              <span className="stat-label">Procurement Volume Tracked</span>
+      {/* ② Hero Section */}
+      <section id="hero" className="hero-section">
+        <div className="hero-pattern"></div>
+        <div className="container hero-grid">
+          {/* Left Column */}
+          <div>
+            <div className="hero-pill">
+              <span className="hero-pill-dot"></span>
+              Professional e-GP Support, Bangladesh
             </div>
-            <div className="stat-item">
-              <span className="stat-number gradient-text-emerald">65%</span>
-              <span className="stat-label">Faster Bid Evaluation Cycle</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-number gradient-text">100%</span>
-              <span className="stat-label">Tamper-Proof Audit Trail</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-number gradient-text-emerald">0 ms</span>
-              <span className="stat-label">Turborepo Cache Miss on Clean Run</span>
-            </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Live Interactive Sandbox Preview */}
-      <section id="sandbox" className="section" style={{ paddingTop: 0 }}>
-        <div className="container">
-          <div className="section-header">
-            <span className="section-tag">Interactive Environment</span>
-            <h2 className="section-title">Test the eGP Operations Center</h2>
-            <p className="section-desc">
-              Experience the core modules: Real-time public tenders, dynamic algorithm scoring, and tamper-proof cryptographic audit verification.
+            <h1 className="hero-h1">
+              Make Every Submission <span className="yellow-underline">Count</span>.
+            </h1>
+
+            <p className="hero-desc">
+              Professional e-GP registration, thorough document preparation, and error-free tender submission for contractors and suppliers across Bangladesh. No missed deadlines, zero technical disqualifications.
             </p>
-          </div>
 
-          <div className="preview-container">
-            <div className="preview-window">
-              <div className="window-bar">
-                <div className="window-dots">
-                  <div className="dot dot-red"></div>
-                  <div className="dot dot-yellow"></div>
-                  <div className="dot dot-green"></div>
-                </div>
-                <div className="window-address">
-                  <Lock size={12} style={{ color: 'var(--accent-emerald)' }} />
-                  https://portal.egp-solution.gov/cockpit/live-session
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.75rem', color: 'var(--accent-emerald)' }}>
-                  <span className="pill-dot"></span>
-                  Active Node: EGP-TURBO-01
-                </div>
+            <div className="hero-actions">
+              <Button
+                variant="red"
+                size="lg"
+                onClick={() => handleOpenModal()}
+                id="hero-cta-support"
+              >
+                Get Tender Support ▸
+              </Button>
+              <a
+                href="#services"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  padding: '0.9rem 1.6rem',
+                  borderRadius: '9999px',
+                  color: 'var(--color-green)',
+                  fontWeight: 600,
+                  textDecoration: 'none',
+                  border: '1.5px solid var(--color-green)',
+                  background: '#FFFFFF'
+                }}
+              >
+                Explore Services
+              </a>
+            </div>
+
+            <div style={{ marginTop: '2rem', display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <CheckStamp size="sm" />
+                <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-ink)' }}>CPTU Guidelines Compliant</span>
               </div>
-
-              {/* Tabs */}
-              <div className="window-tabs">
-                <button 
-                  className={`preview-tab-btn ${activeTab === 'tenders' ? 'active' : ''}`}
-                  onClick={() => setActiveTab('tenders')}
-                  id="tab-tenders-btn"
-                >
-                  <Layers size={16} />
-                  Active Tenders Board
-                </button>
-                <button 
-                  className={`preview-tab-btn ${activeTab === 'evaluation' ? 'active' : ''}`}
-                  onClick={() => setActiveTab('evaluation')}
-                  id="tab-eval-btn"
-                >
-                  <BarChart3 size={16} />
-                  Dynamic Bid Evaluation Matrix
-                </button>
-                <button 
-                  className={`preview-tab-btn ${activeTab === 'audit' ? 'active' : ''}`}
-                  onClick={() => setActiveTab('audit')}
-                  id="tab-audit-btn"
-                >
-                  <ShieldCheck size={16} />
-                  Cryptographic Audit Trail
-                </button>
-              </div>
-
-              <div className="window-content">
-                {/* TAB 1: ACTIVE TENDERS */}
-                {activeTab === 'tenders' && (
-                  <div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '1rem' }}>
-                      <div>
-                        <h3 style={{ fontSize: '1.15rem', fontWeight: 700 }}>Published Public & Enterprise Solicitations</h3>
-                        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Showing official tenders pending closing and sealed bid submission.</p>
-                      </div>
-
-                      <div style={{ display: 'flex', gap: '0.5rem' }}>
-                        {['all', 'infrastructure', 'healthcare', 'technology', 'energy'].map((cat) => (
-                          <button
-                            key={cat}
-                            onClick={() => setCategoryFilter(cat)}
-                            style={{
-                              background: categoryFilter === cat ? 'rgba(56, 189, 248, 0.2)' : 'rgba(255, 255, 255, 0.05)',
-                              border: categoryFilter === cat ? '1px solid var(--primary)' : '1px solid var(--border-subtle)',
-                              color: categoryFilter === cat ? 'var(--primary)' : 'var(--text-muted)',
-                              padding: '4px 12px',
-                              borderRadius: 'var(--radius-sm)',
-                              fontSize: '0.78rem',
-                              textTransform: 'capitalize',
-                              cursor: 'pointer'
-                            }}
-                          >
-                            {cat}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="tender-table-wrap">
-                      <table className="tender-table">
-                        <thead>
-                          <tr>
-                            <th>Reference ID</th>
-                            <th>Procurement Title</th>
-                            <th>Estimated Budget</th>
-                            <th>Bids Received</th>
-                            <th>Time Remaining</th>
-                            <th>Encryption Status</th>
-                            <th>Action</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {filteredTenders.map(t => (
-                            <tr key={t.id}>
-                              <td style={{ fontFamily: 'var(--font-mono)', fontWeight: 600, color: 'var(--primary)' }}>
-                                {t.ref}
-                              </td>
-                              <td style={{ fontWeight: 600 }}>{t.title}</td>
-                              <td style={{ fontFamily: 'var(--font-mono)' }}>{t.budget}</td>
-                              <td>
-                                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                                  <Users size={14} style={{ color: 'var(--text-dim)' }} />
-                                  {t.bidsCount} sealed
-                                </span>
-                              </td>
-                              <td>
-                                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: t.deadlineDays <= 3 ? '#f87171' : 'var(--text-muted)' }}>
-                                  <Clock size={14} />
-                                  {t.deadlineDays === 0 ? 'Closed' : `${t.deadlineDays} days`}
-                                </span>
-                              </td>
-                              <td>
-                                <span className={`status-badge ${t.status === 'Open' ? 'live' : t.status === 'Evaluating' ? 'review' : 'encrypted'}`}>
-                                  {t.status === 'Open' ? 'Sealing Active' : t.status === 'Evaluating' ? 'Under AI Review' : 'Dual-Key Encrypted'}
-                                </span>
-                              </td>
-                              <td>
-                                <button 
-                                  className="btn btn-secondary" 
-                                  style={{ padding: '4px 10px', fontSize: '0.78rem' }}
-                                  onClick={() => setActiveTab('evaluation')}
-                                >
-                                  View Matrix
-                                </button>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                )}
-
-                {/* TAB 2: DYNAMIC EVALUATION MATRIX */}
-                {activeTab === 'evaluation' && (
-                  <div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
-                      <div>
-                        <h3 style={{ fontSize: '1.15rem', fontWeight: 700 }}>Smart Multi-Criteria Scoring Simulation</h3>
-                        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                          Adjust the weighting slider below. Notice how the composite score and recommended vendor re-calculate in real time.
-                        </p>
-                      </div>
-
-                      <div style={{ background: 'rgba(255, 255, 255, 0.04)', padding: '0.75rem 1.25rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)', minWidth: '280px' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', marginBottom: '6px' }}>
-                          <span>Technical Weight: <strong style={{ color: 'var(--primary)' }}>{techWeight}%</strong></span>
-                          <span>Financial: <strong style={{ color: 'var(--accent-emerald)' }}>{finWeight}%</strong></span>
-                        </div>
-                        <input
-                          type="range"
-                          min="30"
-                          max="80"
-                          value={techWeight}
-                          onChange={(e) => setTechWeight(Number(e.target.value))}
-                          className="custom-range"
-                          id="weight-slider"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="tender-table-wrap">
-                      <table className="tender-table">
-                        <thead>
-                          <tr>
-                            <th>Rank</th>
-                            <th>Bidder Entity</th>
-                            <th>Technical Score ({techWeight}%)</th>
-                            <th>Commercial Bid</th>
-                            <th>Compliance Check</th>
-                            <th>Composite Index</th>
-                            <th>Evaluation Recommendation</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {scoredBidders.map((b, idx) => (
-                            <tr key={b.id} style={{ background: idx === 0 ? 'rgba(56, 189, 248, 0.12)' : undefined }}>
-                              <td>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                  {idx === 0 ? (
-                                    <Award size={18} style={{ color: '#fbbf24' }} />
-                                  ) : (
-                                    <span style={{ color: 'var(--text-dim)', fontWeight: 600 }}>#{idx + 1}</span>
-                                  )}
-                                </div>
-                              </td>
-                              <td style={{ fontWeight: 600 }}>
-                                {b.name}
-                                <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', fontWeight: 400 }}>
-                                  {b.experienceYears} yrs verified public sector credentials
-                                </div>
-                              </td>
-                              <td>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                  <div style={{ width: '60px', height: '6px', background: '#1e293b', borderRadius: '3px', overflow: 'hidden' }}>
-                                    <div style={{ width: `${b.techScore}%`, height: '100%', background: 'var(--primary)' }} />
-                                  </div>
-                                  <span style={{ fontFamily: 'var(--font-mono)' }}>{b.techScore}/100</span>
-                                </div>
-                              </td>
-                              <td style={{ fontFamily: 'var(--font-mono)' }}>${b.priceBid.toFixed(1)}M</td>
-                              <td>
-                                <span className={`status-badge ${b.complianceStatus === '100% Verified' ? 'live' : 'review'}`}>
-                                  {b.complianceStatus}
-                                </span>
-                              </td>
-                              <td>
-                                <span style={{ fontSize: '1.1rem', fontWeight: 800, color: idx === 0 ? 'var(--accent-emerald)' : 'var(--text-main)', fontFamily: 'var(--font-mono)' }}>
-                                  {b.compositeScore.toFixed(1)}
-                                </span>
-                              </td>
-                              <td>
-                                {idx === 0 ? (
-                                  <span style={{ fontSize: '0.8rem', color: '#34d399', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                                    <CheckCircle2 size={14} /> Preferred Awardee
-                                  </span>
-                                ) : (
-                                  <span style={{ fontSize: '0.8rem', color: 'var(--text-dim)' }}>
-                                    Contender
-                                  </span>
-                                )}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                )}
-
-                {/* TAB 3: CRYPTOGRAPHIC AUDIT */}
-                {activeTab === 'audit' && (
-                  <div>
-                    <div style={{ marginBottom: '1.5rem' }}>
-                      <h3 style={{ fontSize: '1.15rem', fontWeight: 700 }}>Immutable Cryptographic Verification</h3>
-                      <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                        All bids and evaluation decisions are sealed with SHA-256 state hashes preventing retrospective manipulation.
-                      </p>
-                    </div>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1.5rem' }}>
-                      <div style={{ background: 'rgba(5, 10, 20, 0.7)', borderRadius: 'var(--radius-md)', padding: '1.25rem', border: '1px solid var(--border-subtle)', fontFamily: 'var(--font-mono)', fontSize: '0.82rem' }}>
-                        <div style={{ color: 'var(--text-dim)', marginBottom: '0.75rem', display: 'flex', justifyContent: 'space-between' }}>
-                          <span>LATEST TENDER LEDGER BLOCK #849,203</span>
-                          <span style={{ color: 'var(--accent-emerald)' }}>● SYNCHRONIZED</span>
-                        </div>
-                        <div style={{ color: 'var(--primary)', marginBottom: '0.5rem' }}>
-                          ROOT_MERKLE_HASH: 0x9f8e4b7a1239c09d8e7f12345bcdef0192837465aaeeff0918273645bbcd
-                        </div>
-                        <div style={{ color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
-                          PREV_BLOCK: 0x3d2c1b0a9f8e7d6c5b4a392817263544ffaabbcc11223344556677889900aabb
-                        </div>
-                        <div style={{ color: '#cbd5e1' }}>
-                          TIMESTAMP: 2026-10-03T16:48:22.091Z [UTC] | ALGORITHM: SHA-256-DUAL-KEY
-                        </div>
-                      </div>
-
-                      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'rgba(15, 23, 42, 0.4)', borderRadius: 'var(--radius-md)', padding: '1.5rem', border: '1px solid var(--border-subtle)', textAlign: 'center' }}>
-                        <button
-                          className="btn btn-emerald"
-                          onClick={handleVerify}
-                          disabled={isVerifying}
-                          id="btn-verify-hash"
-                          style={{ width: '100%', marginBottom: '0.75rem' }}
-                        >
-                          {isVerifying ? 'Hashing Ledger...' : 'Validate Integrity Hash'}
-                        </button>
-                        {verifiedHash && !isVerifying && (
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem', color: '#34d399', fontWeight: 600 }}>
-                            <ShieldCheck size={16} />
-                            Cryptographically Validated
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                )}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <CheckStamp size="sm" />
+                <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-ink)' }}>Strict Confidentiality</span>
               </div>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* Core Capabilities */}
-      <section id="features" className="section" style={{ background: 'rgba(8, 13, 26, 0.5)' }}>
-        <div className="container">
-          <div className="section-header">
-            <span className="section-tag">High-Assurance Infrastructure</span>
-            <h2 className="section-title">Built for Complex Public & Corporate Sourcing</h2>
-            <p className="section-desc">
-              Eliminate bureaucracy, prevent collusive behavior, and accelerate tender lifecycles with intelligent automated guardrails.
-            </p>
-          </div>
-
-          <div className="features-grid">
-            <div className="feature-card glass-card">
-              <div className="feature-icon-box icon-blue">
-                <FileCheck2 size={26} />
-              </div>
-              <h3 className="feature-title">Smart Solicitation Drafting</h3>
-              <p className="feature-desc">
-                AI-guided tender specification builder conforming to international procurement guidelines (FIDIC, World Bank, UNCITRAL).
-              </p>
-              <ul className="feature-list">
-                <li><CheckCircle2 size={15} /> Automated clause verification</li>
-                <li><CheckCircle2 size={15} /> Bill of Quantities (BoQ) auto-parsers</li>
-                <li><CheckCircle2 size={15} /> Standardized e-noticing dissemination</li>
-              </ul>
+          {/* Right Column: Tender Readiness Mockup Card */}
+          <div className="readiness-card-wrapper">
+            {/* Floating Yellow Deadline Chip */}
+            <div className="floating-deadline-chip">
+              <Clock size={14} />
+              <span>Next Deadline: 3 Days Left</span>
             </div>
 
-            <div className="feature-card glass-card">
-              <div className="feature-icon-box icon-emerald">
-                <Lock size={26} />
-              </div>
-              <h3 className="feature-title">Sealed Bid Cryptography</h3>
-              <p className="feature-desc">
-                Submissions remain mathematically unreadable until the tender closing second, secured with dual-key asymmetric threshold cryptography.
-              </p>
-              <ul className="feature-list">
-                <li><CheckCircle2 size={15} /> Zero-knowledge submission seals</li>
-                <li><CheckCircle2 size={15} /> Quorum-based key release mechanisms</li>
-                <li><CheckCircle2 size={15} /> Anti-tamper digital signatures</li>
-              </ul>
-            </div>
-
-            <div className="feature-card glass-card">
-              <div className="feature-icon-box icon-violet">
-                <Cpu size={26} />
-              </div>
-              <h3 className="feature-title">Anti-Collusion AI Engine</h3>
-              <p className="feature-desc">
-                Real-time pattern recognition across bidder metadata, price clusters, submission timestamps, and IP origins to detect cartels.
-              </p>
-              <ul className="feature-list">
-                <li><CheckCircle2 size={15} /> Beneficial ownership cross-checking</li>
-                <li><CheckCircle2 size={15} /> Statistical bid rigging anomaly alerts</li>
-                <li><CheckCircle2 size={15} /> Historical bidding collusion graphs</li>
-              </ul>
-            </div>
-
-            <div className="feature-card glass-card">
-              <div className="feature-icon-box icon-amber">
-                <TrendingUp size={26} />
-              </div>
-              <h3 className="feature-title">Smart Milestone Payments</h3>
-              <p className="feature-desc">
-                Link contract milestones to verification workflows. Release contractor tranches with instant automated treasury approvals.
-              </p>
-              <ul className="feature-list">
-                <li><CheckCircle2 size={15} /> Automated retention guarantees</li>
-                <li><CheckCircle2 size={15} /> Geo-tagged site progress validation</li>
-                <li><CheckCircle2 size={15} /> Direct Central Bank clearing integration</li>
-              </ul>
-            </div>
-
-            <div className="feature-card glass-card">
-              <div className="feature-icon-box icon-blue">
-                <Building2 size={26} />
-              </div>
-              <h3 className="feature-title">Vendor Due Diligence Registry</h3>
-              <p className="feature-desc">
-                Unified vendor repository with automatic synchronization against tax records, social security clearance, and sanctions lists.
-              </p>
-              <ul className="feature-list">
-                <li><CheckCircle2 size={15} /> Real-time debarment list checking</li>
-                <li><CheckCircle2 size={15} /> ISO & financial audit verification</li>
-                <li><CheckCircle2 size={15} /> Performance rating index tracking</li>
-              </ul>
-            </div>
-
-            <div className="feature-card glass-card">
-              <div className="feature-icon-box icon-emerald">
-                <Zap size={26} />
-              </div>
-              <h3 className="feature-title">Turborepo High-Performance Core</h3>
-              <p className="feature-desc">
-                Zero overhead architecture with unified dependencies and instant builds powered by pnpm hoisted single node_modules.
-              </p>
-              <ul className="feature-list">
-                <li><CheckCircle2 size={15} /> Single shared node_modules footprint</li>
-                <li><CheckCircle2 size={15} /> Remote pipeline task caching</li>
-                <li><CheckCircle2 size={15} /> Zero phantom dependency hazards</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Interactive Savings & ROI Calculator */}
-      <section id="calculator" className="section">
-        <div className="container">
-          <div className="section-header">
-            <span className="section-tag">Value Realization</span>
-            <h2 className="section-title">Calculate Your Efficiency & Cost Dividends</h2>
-            <p className="section-desc">
-              Estimate quantifiable fiscal savings and throughput improvements achieved by digitizing your procurement pipeline.
-            </p>
-          </div>
-
-          <div className="calc-card">
-            <div className="calc-grid">
-              <div>
-                <div className="slider-group">
-                  <div className="slider-header">
-                    <span className="slider-label">Annual Procurement Budget</span>
-                    <span className="slider-val">${annualSpend} Million USD</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="5"
-                    max="200"
-                    step="5"
-                    value={annualSpend}
-                    onChange={(e) => setAnnualSpend(Number(e.target.value))}
-                    className="custom-range"
-                    id="slider-spend"
-                  />
+            <div className="readiness-card">
+              <div className="readiness-header">
+                <div className="readiness-title">
+                  <FileText size={20} style={{ color: 'var(--color-green)' }} />
+                  <span>Tender Readiness Audit</span>
                 </div>
+                <Badge variant="green" dot>Active Verification</Badge>
+              </div>
 
-                <div className="slider-group">
-                  <div className="slider-header">
-                    <span className="slider-label">Annual Tenders / RFPs Processed</span>
-                    <span className="slider-val">{tenderCount} Tenders</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="20"
-                    max="500"
-                    step="10"
-                    value={tenderCount}
-                    onChange={(e) => setTenderCount(Number(e.target.value))}
-                    className="custom-range"
-                    id="slider-tenders"
-                  />
+              <div style={{ marginBottom: '1rem', fontSize: '0.82rem', color: 'var(--color-muted)', display: 'flex', justifyContent: 'space-between' }}>
+                <span>Tender ID: <strong>948201 (RHD)</strong></span>
+                <span>Type: <strong>OTM Works</strong></span>
+              </div>
+
+              <ul className="readiness-checklist">
+                {readinessSteps.map((step, idx) => {
+                  const isDone = checkedItems.includes(idx);
+                  return (
+                    <li key={idx} className={`readiness-item ${isDone ? 'done' : ''}`}>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={{
+                          width: '18px',
+                          height: '18px',
+                          borderRadius: '50%',
+                          background: isDone ? 'var(--color-green)' : '#E3EBE7',
+                          color: '#FFFFFF',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '11px',
+                          fontWeight: 700
+                        }}>
+                          {isDone ? '✓' : idx + 1}
+                        </span>
+                        {step}
+                      </span>
+                      {isDone && (
+                        <span style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--color-green)' }}>
+                          PASSED
+                        </span>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+
+              <div className="readiness-progress-box">
+                <div className="readiness-progress-header">
+                  <span>SUBMISSION READINESS STATUS</span>
+                  <span style={{ color: 'var(--color-green)', fontWeight: 800 }}>
+                    {checkedItems.length * 20}% Complete
+                  </span>
                 </div>
-
-                <div className="slider-group">
-                  <div className="slider-header">
-                    <span className="slider-label">Current Average Evaluation Cycle</span>
-                    <span className="slider-val">{cycleDays} Days</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="15"
-                    max="90"
-                    step="5"
-                    value={cycleDays}
-                    onChange={(e) => setCycleDays(Number(e.target.value))}
-                    className="custom-range"
-                    id="slider-days"
-                  />
+                <div className="progress-track">
+                  <div
+                    className="progress-fill"
+                    style={{ width: `${checkedItems.length * 20}%` }}
+                  ></div>
                 </div>
               </div>
 
-              <div className="calc-results-box">
-                <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                  Projected Annual Fiscal Savings
+              <div style={{ marginTop: '1.25rem', textAlign: 'center' }}>
+                <span style={{ fontSize: '0.78rem', color: 'var(--color-muted)' }}>
+                  Assisted by dedicated e-GP bid compliance specialist.
                 </span>
-                <div className="calc-result-number">${estimatedSavings}M</div>
-                
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', borderTop: '1px solid var(--border-subtle)', paddingTop: '1.25rem', marginTop: '1.25rem' }}>
-                  <div>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)', display: 'block' }}>CYCLE REDUCTION</span>
-                    <strong style={{ fontSize: '1.3rem', color: 'var(--primary)' }}>{cycleDaysSaved} Days</strong>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block' }}>Faster per tender</span>
-                  </div>
-                  <div>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)', display: 'block' }}>AUDIT HOURS SAVED</span>
-                    <strong style={{ fontSize: '1.3rem', color: 'var(--primary)' }}>{auditReductionHours.toLocaleString()} hrs</strong>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block' }}>Annual staff productivity</span>
-                  </div>
-                </div>
-
-                <button 
-                  className="btn btn-primary" 
-                  style={{ width: '100%', marginTop: '1.5rem' }}
-                  onClick={() => setShowDemoModal(true)}
-                >
-                  Download Full Economic Impact Model
-                </button>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Security & Standards */}
-      <section id="security" className="section" style={{ background: 'rgba(8, 13, 26, 0.6)' }}>
+      {/* ③ Trust Metrics Green Band */}
+      <section className="trust-metrics-band">
         <div className="container">
-          <div className="section-header">
-            <span className="section-tag">Compliance Standards</span>
-            <h2 className="section-title">Government-Grade Security Protocols</h2>
-            <p className="section-desc">
-              Engineered to meet the most rigorous international cybersecurity and open public procurement frameworks.
-            </p>
+          <div className="metrics-grid">
+            <div className="metric-column">
+              <div className="metric-huge-num">9+</div>
+              <div className="metric-text">Years of e-GP Experience</div>
+            </div>
+            <div className="metric-column">
+              <div className="metric-huge-num">150+</div>
+              <div className="metric-text">Contractor & Supplier Clients</div>
+            </div>
+            <div className="metric-column">
+              <div className="metric-huge-num">32,000+</div>
+              <div className="metric-text">Submissions Assisted</div>
+            </div>
+            <div className="metric-column">
+              <div className="metric-huge-num">96%</div>
+              <div className="metric-text">Client Retention & Satisfaction</div>
+            </div>
+            <div className="metric-column">
+              <div className="metric-huge-num">55%</div>
+              <div className="metric-text">Win Rate Across Tenders*</div>
+            </div>
           </div>
 
-          <div className="security-grid">
-            <div className="security-card">
-              <ShieldCheck size={32} style={{ color: 'var(--primary)', marginBottom: '0.75rem' }} />
-              <h4>ISO/IEC 27001</h4>
-              <p>Information Security Management System certified for critical national data.</p>
-            </div>
-            <div className="security-card">
-              <Lock size={32} style={{ color: 'var(--accent-emerald)', marginBottom: '0.75rem' }} />
-              <h4>SOC 2 Type II</h4>
-              <p>Independently verified security, availability, and confidential handling controls.</p>
-            </div>
-            <div className="security-card">
-              <Activity size={32} style={{ color: 'var(--secondary)', marginBottom: '0.75rem' }} />
-              <h4>OCDS Compliant</h4>
-              <p>Open Contracting Data Standard schema implementation for full public scrutiny.</p>
-            </div>
-            <div className="security-card">
-              <Cpu size={32} style={{ color: 'var(--accent-amber)', marginBottom: '0.75rem' }} />
-              <h4>eIDAS & FIPS 140-3</h4>
-              <p>Qualified electronic signatures and tamper-resistant cryptographic HSM support.</p>
-            </div>
+          <div className="metrics-footnote">
+            *Company-reported statistics based on contractor client submissions from 2017–2026. Individual outcomes depend on procuring entity evaluation criteria, competitor pricing, and tender guidelines.
           </div>
         </div>
       </section>
 
-      {/* FAQ Section */}
-      <section id="faq" className="section">
+      {/* ④ Value Proposition: "The Submission Path" Progress Rail */}
+      <section id="process" className="section-padding" style={{ backgroundColor: '#FFFFFF' }}>
         <div className="container">
-          <div className="section-header">
-            <span className="section-tag">Technical Knowledge</span>
-            <h2 className="section-title">Frequently Asked Questions</h2>
-            <p className="section-desc">
-              Learn more about our single shared node_modules architecture, Turborepo design, and operational integrity.
+          <div className="section-head">
+            <span className="section-badge-chip">The Submission Path</span>
+            <h2 className="section-h2">Your Tender Process, Simplified.</h2>
+            <p className="section-subtext">
+              We guide you step-by-step through the official procurement lifecycle, turning complex regulatory requirements into a seamless workflow.
             </p>
           </div>
 
-          <div className="faq-grid">
-            {faqs.map((faq, idx) => (
-              <div key={idx} className="faq-item">
-                <button
-                  className="faq-question"
-                  onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
-                  id={`faq-btn-${idx}`}
-                >
-                  <span>{faq.q}</span>
-                  <ChevronDown
-                    size={18}
-                    style={{
-                      transform: openFaq === idx ? 'rotate(180deg)' : 'none',
-                      transition: 'transform 0.2s ease',
-                      color: openFaq === idx ? 'var(--primary)' : 'var(--text-dim)'
-                    }}
-                  />
-                </button>
-                {openFaq === idx && (
-                  <div className="faq-answer">
-                    {faq.a}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+          {/* Progress Rail (Interactive / Visual) */}
+          <div className="progress-rail-container">
+            <div className="progress-rail">
+              <div className="rail-line-back"></div>
+              <div
+                className="rail-line-fill"
+                style={{
+                  width: activeStep === 1 ? '0%' : activeStep === 2 ? '50%' : '100%'
+                }}
+              ></div>
 
-      {/* Footer */}
-      <footer className="footer">
-        <div className="container">
-          <div className="footer-top">
-            <div className="footer-brand">
-              <div className="logo-group">
-                <div className="logo-badge">
-                  <ShieldCheck size={20} />
+              {/* Node 1 */}
+              <div
+                className={`rail-node ${activeStep >= 1 ? 'completed' : ''} ${activeStep === 1 ? 'active' : ''}`}
+                onClick={() => setActiveStep(1)}
+              >
+                <div className="rail-circle">
+                  {activeStep > 1 ? '✓' : '1'}
                 </div>
-                <span className="logo-text">eGP<span style={{ color: 'var(--primary)' }}>Solution</span></span>
+                <span className="rail-label">REGISTER</span>
+                <span className="rail-step-desc">Portal Onboarding & Document Verification</span>
+              </div>
+
+              {/* Node 2 */}
+              <div
+                className={`rail-node ${activeStep >= 2 ? 'completed' : ''} ${activeStep === 2 ? 'active' : ''}`}
+                onClick={() => setActiveStep(2)}
+              >
+                <div className="rail-circle">
+                  {activeStep > 2 ? '✓' : '2'}
+                </div>
+                <span className="rail-label">PREPARE</span>
+                <span className="rail-step-desc">BOQ Estimation & Technical Packaging</span>
+              </div>
+
+              {/* Node 3 */}
+              <div
+                className={`rail-node ${activeStep === 3 ? 'completed' : ''} ${activeStep === 3 ? 'active' : ''}`}
+                onClick={() => setActiveStep(3)}
+              >
+                <div className="rail-circle">
+                  {activeStep === 3 ? '✓' : '3'}
+                </div>
+                <span className="rail-label">SUBMIT</span>
+                <span className="rail-step-desc">Sealed Bid Encryption & Receipt Audit</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Step Details Box */}
+          <div style={{ maxWidth: '860px', margin: '0 auto', background: 'var(--bg-offwhite)', borderRadius: 'var(--radius-card)', padding: '2rem 2.5rem', border: '1.5px solid var(--color-border)' }}>
+            {activeStep === 1 && (
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
+                  <Badge variant="green">Phase 01: Registration</Badge>
+                  <h3 style={{ fontSize: '1.35rem' }}>e-GP Portal Enrollment & Digital Signature Renewal</h3>
+                </div>
+                <p style={{ color: 'var(--color-muted)', marginBottom: '1.5rem', fontSize: '0.95rem' }}>
+                  Avoid administrative roadblocks before you even bid. We ensure your Trade License, TIN, BIN, NID, bank solvency certificates, and organization profile comply 100% with the official eprocure.gov.bd platform standards.
+                </p>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <CheckStamp size="sm" />
+                    <span style={{ fontSize: '0.88rem', fontWeight: 600 }}>New Organization Enrollment</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <CheckStamp size="sm" />
+                    <span style={{ fontSize: '0.88rem', fontWeight: 600 }}>Annual Fee & Bank Mapping</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <CheckStamp size="sm" />
+                    <span style={{ fontSize: '0.88rem', fontWeight: 600 }}>DSC / Token Setup & Support</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeStep === 2 && (
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
+                  <Badge variant="yellow">Phase 02: Preparation</Badge>
+                  <h3 style={{ fontSize: '1.35rem' }}>BOQ Pricing, Technical Forms & Bid Security</h3>
+                </div>
+                <p style={{ color: 'var(--color-muted)', marginBottom: '1.5rem', fontSize: '0.95rem' }}>
+                  The most critical phase where 70% of tenders face disqualification. Our consultants review tender specifications, prepare competitive BOQ price analyses, audit joint venture agreements, and verify all tender security instruments.
+                </p>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <CheckStamp size="sm" />
+                    <span style={{ fontSize: '0.88rem', fontWeight: 600 }}>Tender Schedule & BOQ Analysis</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <CheckStamp size="sm" />
+                    <span style={{ fontSize: '0.88rem', fontWeight: 600 }}>Turnover & Experience Matching</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <CheckStamp size="sm" />
+                    <span style={{ fontSize: '0.88rem', fontWeight: 600 }}>Bid Security Bank Liaison</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeStep === 3 && (
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
+                  <Badge variant="green">Phase 03: Submission</Badge>
+                  <h3 style={{ fontSize: '1.35rem' }}>Error-Free Sealed Bid Submission & Receipt Verification</h3>
+                </div>
+                <p style={{ color: 'var(--color-muted)', marginBottom: '1.5rem', fontSize: '0.95rem' }}>
+                  Server lags and last-minute connection failures cause lost bids. Our team submits well in advance, performs dual cryptographic upload verification, and delivers the official e-GP submission acknowledgment receipt.
+                </p>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <CheckStamp size="sm" />
+                    <span style={{ fontSize: '0.88rem', fontWeight: 600 }}>2-Hour Advance Upload Protocol</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <CheckStamp size="sm" />
+                    <span style={{ fontSize: '0.88rem', fontWeight: 600 }}>Encrypted Hash Validation</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <CheckStamp size="sm" />
+                    <span style={{ fontSize: '0.88rem', fontWeight: 600 }}>Official Submission Certificate</span>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ⑤ Services (Bento Grid Layout) */}
+      <section id="services" className="section-padding" style={{ backgroundColor: 'var(--bg-offwhite)' }}>
+        <div className="container">
+          <div className="section-head">
+            <span className="section-badge-chip">Core Offerings</span>
+            <h2 className="section-h2">Tailored e-GP Services for Bidders</h2>
+            <p className="section-subtext">
+              Comprehensive assistance built around your company&apos;s bidding volume and technical requirements.
+            </p>
+          </div>
+
+          <div className="bento-grid">
+            {/* 01 Registration (Large Bento Card - span 7) */}
+            <div className="bento-card bento-card-large">
+              <div className="bento-icon-wrapper">
+                <Building size={24} />
+              </div>
+              <span className="bento-card-num">SERVICE 01</span>
+              <h3 className="bento-card-title">e-GP Portal Registration & Profile Renewal</h3>
+              <p className="bento-card-desc">
+                Complete onboarding on the National e-GP portal (eprocure.gov.bd). We handle new company registration, annual renewal fee processing, profile documentation updates, and digital signature token integration.
+              </p>
+              <ul className="bento-bullet-list">
+                <li><CheckStamp size="sm" /> <span>NID, TIN, BIN & Trade License validation</span></li>
+                <li><CheckStamp size="sm" /> <span>Bank mapping & payment slip processing</span></li>
+                <li><CheckStamp size="sm" /> <span>Fast turnaround (within 24-48 business hours)</span></li>
+              </ul>
+              <a
+                href="#contact"
+                className="bento-arrow-link"
+                onClick={(e) => { e.preventDefault(); handleOpenModal('e-GP Portal Registration'); }}
+              >
+                Inquire about Registration <ChevronRight size={16} />
+              </a>
+            </div>
+
+            {/* 02 Tender Preparation & BOQ Pricing (Tall Bento Card - span 5) */}
+            <div className="bento-card bento-card-tall">
+              <div className="bento-icon-wrapper">
+                <FileCheck size={24} />
+              </div>
+              <span className="bento-card-num">SERVICE 02</span>
+              <h3 className="bento-card-title">Tender Preparation & BOQ Pricing</h3>
+              <p className="bento-card-desc">
+                Meticulous examination of the Standard Tender Document (STD). We assist with market-rate BOQ analysis, line-item pricing adjustments, and full preparation of technical qualification forms.
+              </p>
+              <ul className="bento-bullet-list">
+                <li><CheckStamp size="sm" /> <span>Accurate BOQ Excel template formulation</span></li>
+                <li><CheckStamp size="sm" /> <span>Tender Capacity & Liquid Asset calculation</span></li>
+                <li><CheckStamp size="sm" /> <span>Joint Venture (JVCA) agreement drafting</span></li>
+                <li><CheckStamp size="sm" /> <span>Litigation history & personnel CV packaging</span></li>
+              </ul>
+              <a
+                href="#contact"
+                className="bento-arrow-link"
+                onClick={(e) => { e.preventDefault(); handleOpenModal('Tender Preparation & BOQ'); }}
+              >
+                Inquire about Preparation <ChevronRight size={16} />
+              </a>
+            </div>
+
+            {/* 03 Tender Submission & Document Verification (span 4) */}
+            <div className="bento-card bento-card-med">
+              <div className="bento-icon-wrapper">
+                <ShieldCheck size={24} />
+              </div>
+              <span className="bento-card-num">SERVICE 03</span>
+              <h3 className="bento-card-title">Sealed Bid Submission</h3>
+              <p className="bento-card-desc">
+                Secure, dual-verified electronic portal submission well before the bid deadline. Zero risk of gateway timeouts or missed submissions.
+              </p>
+              <ul className="bento-bullet-list">
+                <li><CheckStamp size="sm" /> <span>Pre-closing submission protocol</span></li>
+                <li><CheckStamp size="sm" /> <span>Encrypted receipt verification</span></li>
+              </ul>
+              <a
+                href="#contact"
+                className="bento-arrow-link"
+                onClick={(e) => { e.preventDefault(); handleOpenModal('Sealed Bid Submission'); }}
+              >
+                Inquire about Submission <ChevronRight size={16} />
+              </a>
+            </div>
+
+            {/* 04 Post-Bid Evaluation & Consultation (span 4) */}
+            <div className="bento-card bento-card-med">
+              <div className="bento-icon-wrapper">
+                <Scale size={24} />
+              </div>
+              <span className="bento-card-num">SERVICE 04</span>
+              <h3 className="bento-card-title">Tender Audit & Evaluation</h3>
+              <p className="bento-card-desc">
+                Post-opening bid comparative analysis, clarification response handling, and debriefing support if your bid faced responsiveness issues.
+              </p>
+              <ul className="bento-bullet-list">
+                <li><CheckStamp size="sm" /> <span>Procuring entity query replies</span></li>
+                <li><CheckStamp size="sm" /> <span>Comparative competitor pricing review</span></li>
+              </ul>
+              <a
+                href="#contact"
+                className="bento-arrow-link"
+                onClick={(e) => { e.preventDefault(); handleOpenModal('Tender Audit & Evaluation'); }}
+              >
+                Inquire about Consultation <ChevronRight size={16} />
+              </a>
+            </div>
+
+            {/* 05 Custom Training & Capacity Building (span 4) */}
+            <div className="bento-card bento-card-med">
+              <div className="bento-icon-wrapper">
+                <GraduationCap size={24} />
+              </div>
+              <span className="bento-card-num">SERVICE 05</span>
+              <h3 className="bento-card-title">Corporate e-GP Training</h3>
+              <p className="bento-card-desc">
+                Practical, hands-on training sessions for your in-house engineers, estimators, and procurement officers on live e-GP workflows.
+              </p>
+              <ul className="bento-bullet-list">
+                <li><CheckStamp size="sm" /> <span>Live sandbox bidding practice</span></li>
+                <li><CheckStamp size="sm" /> <span>PPR-2008 regulatory guidelines</span></li>
+              </ul>
+              <a
+                href="#contact"
+                className="bento-arrow-link"
+                onClick={(e) => { e.preventDefault(); handleOpenModal('Corporate e-GP Training'); }}
+              >
+                Inquire about Training <ChevronRight size={16} />
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ⑥ Differentiator: "More Than Submission Support" */}
+      <section className="section-padding" style={{ backgroundColor: '#FFFFFF' }}>
+        <div className="container diff-grid">
+          {/* Sticky Left */}
+          <div className="diff-sticky-left">
+            <span className="section-badge-chip">The Difference</span>
+            <h2 className="section-h2" style={{ marginBottom: '1.25rem' }}>
+              More Than Submission Support.
+            </h2>
+            <p className="section-subtext" style={{ marginBottom: '2rem' }}>
+              Most rejections happen not because of pricing, but due to minor clerical oversights, missing annexures, or incorrect formatting. We treat your bid as our own.
+            </p>
+            <Button
+              variant="red"
+              size="lg"
+              onClick={() => handleOpenModal()}
+            >
+              Get Tender Support ▸
+            </Button>
+          </div>
+
+          {/* Right Stacked Cards with CheckStamp */}
+          <div className="diff-cards-stack">
+            <div className="diff-stack-card">
+              <CheckStamp size="lg" />
+              <div>
+                <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', color: 'var(--color-ink)' }}>
+                  Clear, Predictable Process
+                </h3>
+                <p style={{ color: 'var(--color-muted)', fontSize: '0.95rem', lineHeight: 1.6 }}>
+                  No confusion or last-minute panic. From the moment you send us the tender ID, you receive an itemized document checklist, clear timelines, and dedicated liaison until the submission receipt is in your hands.
+                </p>
+              </div>
+            </div>
+
+            <div className="diff-stack-card">
+              <CheckStamp size="lg" />
+              <div>
+                <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', color: 'var(--color-ink)' }}>
+                  Careful Preparation & Multi-Tier Audit
+                </h3>
+                <p style={{ color: 'var(--color-muted)', fontSize: '0.95rem', lineHeight: 1.6 }}>
+                  Every figure in your BOQ, every experience certificate, and every signature is reviewed by two independent procurement specialists before entering the portal. Zero margin for clerical error.
+                </p>
+              </div>
+            </div>
+
+            <div className="diff-stack-card">
+              <CheckStamp size="lg" />
+              <div>
+                <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', color: 'var(--color-ink)' }}>
+                  Punctual, Timely Execution
+                </h3>
+                <p style={{ color: 'var(--color-muted)', fontSize: '0.95rem', lineHeight: 1.6 }}>
+                  Government procurement deadlines are strict and irreversible. Our protocol requires completing submissions hours before the portal cutoff time, avoiding network downtime and server congestion.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ⑦ About Preview (Split Section) */}
+      <section id="about" className="section-padding" style={{ backgroundColor: 'var(--bg-offwhite)' }}>
+        <div className="container">
+          <div className="about-preview-grid">
+            <div className="about-preview-text">
+              <span className="section-badge-chip">About Us</span>
+              <h2 style={{ fontSize: '2.2rem', marginBottom: '1.25rem' }}>
+                Bridging Contractors with Government Tenders
+              </h2>
+              <p style={{ color: 'var(--color-muted)', marginBottom: '1.25rem', lineHeight: 1.6 }}>
+                Founded by former public procurement analysts and senior civil engineers, e-GP Tender BD was created to assist honest contractors in navigating Bangladesh&apos;s electronic procurement ecosystem.
+              </p>
+              <p style={{ color: 'var(--color-muted)', marginBottom: '2rem', lineHeight: 1.6 }}>
+                We work across major procuring entities including RHD, LGED, PWD, BWDB, DPHE, BREB, and CAAB, upholding the highest standards of professional ethics and confidentiality.
+              </p>
+              <div>
+                <Button
+                  variant="green"
+                  size="md"
+                  onClick={() => handleOpenModal('General Inquiry')}
+                >
+                  Learn More About Our Team ▸
+                </Button>
+              </div>
+            </div>
+
+            <div className="about-preview-dark">
+              <div style={{ position: 'relative', zIndex: 2 }}>
+                <Badge variant="yellow" style={{ marginBottom: '1.5rem' }}>OUR CORE PHILOSOPHY</Badge>
+                <div className="about-big-quote">
+                  &ldquo;Make the process <span>clearer</span>. Make preparation <span>easier</span>.&rdquo;
+                </div>
+                <p style={{ color: 'rgba(255, 255, 255, 0.75)', marginTop: '1.5rem', fontSize: '0.95rem', lineHeight: 1.6 }}>
+                  Our structured approach eliminates technical disqualification risks, enabling you to focus on competitive pricing and successful contract execution.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Mini FAQ Section */}
+      <section className="section-padding" style={{ backgroundColor: '#FFFFFF' }}>
+        <div className="container" style={{ maxWidth: '800px' }}>
+          <div className="section-head" style={{ marginBottom: '2.5rem' }}>
+            <span className="section-badge-chip">Frequently Asked Questions</span>
+            <h2 className="section-h2" style={{ fontSize: '2rem' }}>Common e-GP Questions</h2>
+          </div>
+
+          <div className="faq-wrap">
+            <div className="faq-card">
+              <div className="faq-btn">
+                <span>What documents are required for new e-GP registration?</span>
+              </div>
+              <div className="faq-body">
+                You will need an active Trade License, TIN Certificate, BIN/VAT Registration, National ID (NID) of the proprietor or managing director, passport-size photographs, and a valid business bank account solvency certificate.
+              </div>
+            </div>
+
+            <div className="faq-card">
+              <div className="faq-btn">
+                <span>Can you submit tenders on our behalf if we are located outside Dhaka?</span>
+              </div>
+              <div className="faq-body">
+                Yes. Since the entire e-GP system is electronic, we serve contractors and business houses all over Bangladesh (Chittagong, Sylhet, Rajshahi, Khulna, etc.) with secure remote coordination.
+              </div>
+            </div>
+
+            <div className="faq-card">
+              <div className="faq-btn">
+                <span>Are you affiliated with CPTU or the Government?</span>
+              </div>
+              <div className="faq-body">
+                No. e-GP Tender BD is an independent private tender consulting firm. We provide guidance, document packaging, and submission support to help bidders follow official guidelines, but we are not part of CPTU, BPPA, or any procuring entity.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ⑧ Final CTA (Dark Green #0B3D2E) */}
+      <section className="final-cta-section">
+        <div className="cta-watermark">e-GP</div>
+        <div className="container final-cta-content">
+          <Badge variant="yellow" style={{ marginBottom: '1.25rem' }}>GET IN TOUCH TODAY</Badge>
+          <h2 className="final-cta-title">
+            Have a Tender Coming Up?
+          </h2>
+          <p className="final-cta-desc">
+            Let&apos;s get it ready. Send us your tender reference or schedule a consultation with our senior procurement engineers.
+          </p>
+          <div className="final-cta-btns">
+            <Button
+              variant="red"
+              size="lg"
+              onClick={() => handleOpenModal()}
+              id="final-cta-btn"
+            >
+              Get Tender Support ▸
+            </Button>
+            <a
+              href="tel:+8801711000000"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: '0.9rem 1.8rem',
+                borderRadius: '9999px',
+                color: '#FFFFFF',
+                fontWeight: 600,
+                textDecoration: 'none',
+                border: '1.5px solid rgba(255, 255, 255, 0.85)',
+                background: 'transparent'
+              }}
+            >
+              <Phone size={16} />
+              Call Directly: +880 1711-000000
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* ⑨ Footer (Deep Green #0B3D2E) */}
+      <footer id="contact" className="site-footer">
+        <div className="container">
+          {/* Prominent Legal Disclaimer Box */}
+          <div className="footer-disclaimer-box">
+            <strong>OFFICIAL DISCLAIMER:</strong> e-GP Tender BD is an independent private consultancy firm providing business support and documentation services for contractors. We are <strong>NOT affiliated, associated, authorized, endorsed by, or in any way officially connected with</strong> CPTU (Central Procurement Technical Unit), BPPA (Bangladesh Public Procurement Authority), or the Government of Bangladesh. Official electronic government procurement is conducted solely at <a href="https://www.eprocure.gov.bd" target="_blank" rel="noreferrer" style={{ color: 'var(--color-yellow)', textDecoration: 'underline' }}>www.eprocure.gov.bd</a>.
+          </div>
+
+          <div className="footer-columns">
+            {/* Col 1 */}
+            <div className="footer-col">
+              <div className="brand-logo" style={{ marginBottom: '1rem' }}>
+                <div className="logo-symbol">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  <span className="logo-red-dot"></span>
+                </div>
+                <div className="logo-text-wrap">
+                  <span className="logo-title" style={{ color: '#FFFFFF' }}>e-GP Tender BD</span>
+                  <span className="logo-subtitle" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>Submission Support</span>
+                </div>
               </div>
               <p>
-                The next-generation electronic government procurement platform built with Next.js 15, pnpm, and Turborepo monorepo architecture.
+                Professional e-GP portal registration, tender preparation, BOQ pricing analysis, and electronic submission assistance for contractors across Bangladesh.
               </p>
             </div>
 
+            {/* Col 2 */}
             <div className="footer-col">
-              <h5>Platform</h5>
-              <ul className="footer-links">
-                <li><a href="#sandbox">Tender Sandbox</a></li>
-                <li><a href="#features">Evaluation Matrix</a></li>
-                <li><a href="#security">Cryptographic Seals</a></li>
-                <li><a href="#calculator">ROI Modeling</a></li>
+              <h5>Quick Links</h5>
+              <ul className="footer-link-list">
+                <li><a href="#hero">Home</a></li>
+                <li><a href="#process">The Submission Path</a></li>
+                <li><a href="#services">Our Services</a></li>
+                <li><a href="#about">About Our Team</a></li>
+                <li><a href="#contact">Contact & Location</a></li>
               </ul>
             </div>
 
+            {/* Col 3 */}
             <div className="footer-col">
-              <h5>Architecture</h5>
-              <ul className="footer-links">
-                <li><a href="#faq">Turborepo Pipeline</a></li>
-                <li><a href="#faq">Single Node Modules</a></li>
-                <li><a href="#faq">pnpm Workspaces</a></li>
-                <li><a href="#faq">Zero Duplicate Modules</a></li>
+              <h5>Services</h5>
+              <ul className="footer-link-list">
+                <li><a href="#services" onClick={() => handleOpenModal('e-GP Portal Registration')}>Portal Registration</a></li>
+                <li><a href="#services" onClick={() => handleOpenModal('Tender Preparation & BOQ')}>BOQ Pricing Analysis</a></li>
+                <li><a href="#services" onClick={() => handleOpenModal('Sealed Bid Submission')}>Sealed Bid Submission</a></li>
+                <li><a href="#services" onClick={() => handleOpenModal('Tender Audit & Evaluation')}>Post-Bid Evaluation</a></li>
+                <li><a href="#services" onClick={() => handleOpenModal('Corporate e-GP Training')}>Corporate Training</a></li>
               </ul>
             </div>
 
+            {/* Col 4 */}
             <div className="footer-col">
-              <h5>Compliance</h5>
-              <ul className="footer-links">
-                <li><a href="#security">ISO 27001 Certified</a></li>
-                <li><a href="#security">OCDS Open Data</a></li>
-                <li><a href="#security">eIDAS Signatures</a></li>
-                <li><a href="#security">SOC 2 Type II</a></li>
-              </ul>
+              <h5>Contact Us</h5>
+              <p style={{ marginBottom: '0.75rem' }}>
+                📍 Suite 804, Concord Tower, Panthapath, Dhaka-1205, Bangladesh
+              </p>
+              <p style={{ marginBottom: '0.5rem' }}>
+                📞 <a href="tel:+8801711000000" style={{ color: '#FFFFFF' }}>+880 1711-000000</a>
+              </p>
+              <p style={{ marginBottom: '0.5rem' }}>
+                💬 <a href="https://wa.me/8801711000000" target="_blank" rel="noreferrer" style={{ color: '#25D366' }}>WhatsApp Support</a>
+              </p>
+              <p>
+                ✉️ info@egptenderbd.com
+              </p>
             </div>
           </div>
 
-          <div className="footer-bottom">
+          <div className="footer-bottom-bar">
             <div>
-              &copy; {new Date().getFullYear()} eGP Solution. All rights reserved.
+              &copy; {new Date().getFullYear()} e-GP Tender BD. All rights reserved.
             </div>
-            <div className="uptime-badge">
-              <span className="pill-dot"></span>
-              99.99% Systems Operational • Turborepo Validated
+            <div>
+              Independent Private Consulting • Make Every Submission Count
             </div>
           </div>
         </div>
       </footer>
 
-      {/* Shared Modal from @egp/ui */}
+      {/* Sticky Mobile Action Bar (Call + WhatsApp) */}
+      <div className="mobile-sticky-bar">
+        <div className="mobile-sticky-actions">
+          <a href="tel:+8801711000000" className="btn-mobile-call">
+            <Phone size={16} />
+            Direct Call
+          </a>
+          <a href="https://wa.me/8801711000000" target="_blank" rel="noreferrer" className="btn-mobile-whatsapp">
+            <MessageCircle size={16} />
+            WhatsApp
+          </a>
+        </div>
+      </div>
+
+      {/* Interactive Request Support Modal */}
       <Modal
-        isOpen={showDemoModal}
-        onClose={() => setShowDemoModal(false)}
-        maxWidth="500px"
+        isOpen={modalOpen}
+        onClose={() => { setModalOpen(false); setFormSubmitted(false); }}
+        maxWidth="540px"
       >
-        {submittedDemo ? (
+        {formSubmitted ? (
           <div style={{ textAlign: 'center', padding: '1.5rem 0' }}>
-            <div style={{ width: '60px', height: '60px', borderRadius: '50%', background: 'rgba(16, 185, 129, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', color: '#10b981' }}>
-              <CheckCircle2 size={32} />
+            <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: '#EBF5F1', color: 'var(--color-green)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.25rem' }}>
+              <Check size={36} strokeWidth={3} />
             </div>
-            <h3 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '0.75rem', color: '#f8fafc' }}>Briefing Request Dispatched</h3>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.925rem', marginBottom: '1.5rem' }}>
-              Our public sector procurement solutions team will provide an architectural walkthrough tailored to your agency.
+            <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--color-green)', marginBottom: '0.5rem' }}>
+              অনুরোধ গ্রহণ করা হয়েছে!
+            </h3>
+            <p style={{ color: 'var(--color-ink)', fontWeight: 600, fontSize: '1.05rem', marginBottom: '0.75rem' }}>
+              আমরা শীঘ্রই আপনার সাথে যোগাযোগ করব।
             </p>
-            <Button variant="primary" onClick={() => { setShowDemoModal(false); setSubmittedDemo(false); }}>
+            <p style={{ color: 'var(--color-muted)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
+              Our senior e-GP procurement specialist will call you shortly on <strong>+880 {formData.phone}</strong>.
+            </p>
+            <Button
+              variant="green"
+              size="md"
+              onClick={() => { setModalOpen(false); setFormSubmitted(false); }}
+            >
               Close Window
             </Button>
           </div>
         ) : (
           <div>
-            <h3 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '0.5rem', color: '#f8fafc' }}>Request Platform Sandbox Briefing</h3>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginBottom: '1.5rem' }}>
-              Schedule a private session to evaluate the eGP Solution engine and Turborepo architecture.
-            </p>
+            <div style={{ marginBottom: '1.5rem' }}>
+              <span className="section-badge-chip">Direct Inquiry</span>
+              <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--color-ink)' }}>
+                Tell Us About Your Tender
+              </h3>
+              <p style={{ fontSize: '0.88rem', color: 'var(--color-muted)', marginTop: '4px' }}>
+                Fill out this short form and our senior estimators will review your requirements.
+              </p>
+            </div>
 
-            <form onSubmit={(e) => { e.preventDefault(); setSubmittedDemo(true); }}>
-              <div style={{ marginBottom: '1rem' }}>
-                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.4rem' }}>
-                  Agency / Corporate Entity Name
-                </label>
+            <form onSubmit={handleFormSubmit}>
+              <div className="form-group">
+                <label className="form-label">Full Name *</label>
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Ministry of Digital Infrastructure"
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem 1rem',
-                    borderRadius: 'var(--radius-sm)',
-                    background: 'rgba(255, 255, 255, 0.05)',
-                    border: '1px solid var(--border-subtle)',
-                    color: 'var(--text-main)',
-                    fontSize: '0.9rem',
-                    outline: 'none'
-                  }}
+                  placeholder="e.g. Md. Rafiqul Islam"
+                  className="form-input"
+                  value={formData.fullName}
+                  onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                 />
               </div>
 
-              <div style={{ marginBottom: '1rem' }}>
-                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.4rem' }}>
-                  Official Email Address
-                </label>
+              <div className="form-group">
+                <label className="form-label">Company / Contractor Name</label>
                 <input
-                  type="email"
-                  required
-                  placeholder="director@agency.gov"
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem 1rem',
-                    borderRadius: 'var(--radius-sm)',
-                    background: 'rgba(255, 255, 255, 0.05)',
-                    border: '1px solid var(--border-subtle)',
-                    color: 'var(--text-main)',
-                    fontSize: '0.9rem',
-                    outline: 'none'
-                  }}
+                  type="text"
+                  placeholder="e.g. Islam Builders & Engineering Ltd."
+                  className="form-input"
+                  value={formData.company}
+                  onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                 />
               </div>
 
-              <div style={{ marginBottom: '1.5rem' }}>
-                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.4rem' }}>
-                  Primary Scope
-                </label>
+              <div className="form-group">
+                <label className="form-label">Phone Number *</label>
+                <div className="phone-input-group">
+                  <span className="phone-prefix">+880</span>
+                  <input
+                    type="tel"
+                    required
+                    placeholder="1711XXXXXX"
+                    className="form-input phone-field"
+                    value={formData.phone}
+                    onChange={(e) => {
+                      setFormData({ ...formData, phone: e.target.value });
+                      if (phoneError) setPhoneError('');
+                    }}
+                  />
+                </div>
+                {phoneError && (
+                  <p style={{ color: 'var(--color-red)', fontSize: '0.8rem', marginTop: '4px', fontWeight: 600 }}>
+                    {phoneError}
+                  </p>
+                )}
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Tender ID / Reference (If available)</label>
+                <input
+                  type="text"
+                  placeholder="e.g. 984201 or RHD/DHAKA/2026"
+                  className="form-input"
+                  value={formData.tenderRef}
+                  onChange={(e) => setFormData({ ...formData, tenderRef: e.target.value })}
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Service Needed *</label>
                 <select
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem 1rem',
-                    borderRadius: 'var(--radius-sm)',
-                    background: '#0d1527',
-                    border: '1px solid var(--border-subtle)',
-                    color: 'var(--text-main)',
-                    fontSize: '0.9rem',
-                    outline: 'none'
-                  }}
+                  className="form-select"
+                  value={formData.service}
+                  onChange={(e) => setFormData({ ...formData, service: e.target.value })}
                 >
-                  <option>National E-Procurement Transformation</option>
-                  <option>Enterprise Sourcing & Sealed Bidding</option>
-                  <option>Automated Due Diligence & Vendor Scoring</option>
-                  <option>Audit Trail & OCDS Compliance</option>
+                  <option value="e-GP Portal Registration">e-GP Portal Registration & Renewal</option>
+                  <option value="Tender Preparation & BOQ">Tender Preparation & BOQ Pricing Sheet</option>
+                  <option value="Sealed Bid Submission">Sealed Bid Portal Submission</option>
+                  <option value="Tender Audit & Evaluation">Post-Bid Evaluation & Consultation</option>
+                  <option value="Corporate e-GP Training">Corporate Staff e-GP Training</option>
                 </select>
               </div>
 
-              <div style={{ display: 'flex', gap: '0.75rem' }}>
-                <Button type="submit" variant="primary" style={{ flex: 1 }} id="modal-submit-btn">
-                  Confirm Schedule
+              <div className="form-group">
+                <label className="form-label">Message / Details</label>
+                <textarea
+                  rows={3}
+                  placeholder="Describe your tender deadline or specific assistance needed..."
+                  className="form-textarea"
+                  value={formData.message}
+                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                />
+              </div>
+
+              <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1.5rem' }}>
+                <Button
+                  type="submit"
+                  variant="red"
+                  size="md"
+                  style={{ flex: 1 }}
+                  id="modal-send-request-btn"
+                >
+                  Send Request
                 </Button>
-                <Button 
-                  type="button" 
-                  variant="secondary" 
-                  onClick={() => setShowDemoModal(false)}
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="md"
+                  onClick={() => setModalOpen(false)}
                 >
                   Cancel
                 </Button>
@@ -1027,6 +1031,6 @@ export default function Home() {
           </div>
         )}
       </Modal>
-    </main>
+    </div>
   );
 }

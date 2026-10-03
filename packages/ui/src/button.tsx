@@ -3,7 +3,7 @@
 import React from 'react';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'emerald' | 'danger' | 'ghost';
+  variant?: 'red' | 'primary' | 'green' | 'secondary' | 'outline-white' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
   icon?: React.ReactNode;
   children?: React.ReactNode;
@@ -20,38 +20,38 @@ export function Button({
 }: ButtonProps) {
   const getVariantStyles = (): React.CSSProperties => {
     switch (variant) {
+      case 'red':
       case 'primary':
         return {
-          background: 'linear-gradient(135deg, #0284c7 0%, #38bdf8 100%)',
-          color: '#04101e',
-          boxShadow: '0 4px 14px rgba(56, 189, 248, 0.35)',
-          border: '1px solid transparent'
+          backgroundColor: '#D81E36',
+          color: '#FFFFFF',
+          border: '1px solid transparent',
+          boxShadow: '0 4px 14px rgba(216, 30, 54, 0.25)',
+        };
+      case 'green':
+        return {
+          backgroundColor: '#006A4E',
+          color: '#FFFFFF',
+          border: '1px solid transparent',
+          boxShadow: '0 4px 14px rgba(0, 106, 78, 0.2)',
+        };
+      case 'outline-white':
+        return {
+          backgroundColor: 'transparent',
+          color: '#FFFFFF',
+          border: '1.5px solid rgba(255, 255, 255, 0.85)',
         };
       case 'secondary':
         return {
-          background: 'rgba(255, 255, 255, 0.05)',
-          color: '#f8fafc',
-          border: '1px solid rgba(255, 255, 255, 0.15)',
-          backdropFilter: 'blur(8px)'
-        };
-      case 'emerald':
-        return {
-          background: 'linear-gradient(135deg, #059669 0%, #10b981 100%)',
-          color: '#022315',
-          boxShadow: '0 4px 14px rgba(16, 185, 129, 0.3)',
-          border: '1px solid transparent'
-        };
-      case 'danger':
-        return {
-          background: 'rgba(244, 63, 94, 0.15)',
-          color: '#fb7185',
-          border: '1px solid rgba(244, 63, 94, 0.3)'
+          backgroundColor: '#FFFFFF',
+          color: '#006A4E',
+          border: '1.5px solid #006A4E',
         };
       case 'ghost':
         return {
-          background: 'rgba(255, 255, 255, 0.04)',
-          color: '#94a3b8',
-          border: '1px solid rgba(255, 255, 255, 0.08)'
+          backgroundColor: 'transparent',
+          color: '#5B6B64',
+          border: '1px solid #E3EBE7',
         };
       default:
         return {};
@@ -62,22 +62,22 @@ export function Button({
     switch (size) {
       case 'sm':
         return {
-          padding: '0.35rem 0.75rem',
-          fontSize: '0.78rem',
-          borderRadius: '6px'
+          padding: '0.4rem 0.9rem',
+          fontSize: '0.85rem',
+          borderRadius: '9999px',
         };
       case 'lg':
         return {
-          padding: '0.85rem 1.75rem',
+          padding: '0.9rem 2rem',
           fontSize: '1.05rem',
-          borderRadius: '14px'
+          borderRadius: '9999px',
         };
       case 'md':
       default:
         return {
-          padding: '0.625rem 1.25rem',
+          padding: '0.65rem 1.4rem',
           fontSize: '0.925rem',
-          borderRadius: '10px'
+          borderRadius: '9999px',
         };
     }
   };
@@ -93,11 +93,12 @@ export function Button({
         cursor: 'pointer',
         transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
         fontFamily: 'inherit',
+        textDecoration: 'none',
         ...getVariantStyles(),
         ...getSizeStyles(),
-        ...style
+        ...style,
       }}
-      className={`egp-ui-button ${className}`}
+      className={`egp-btn ${className}`}
       {...props}
     >
       {children}
