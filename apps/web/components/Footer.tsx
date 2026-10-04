@@ -1,100 +1,104 @@
 import React from 'react';
 import Link from 'next/link';
-import { Phone, Mail, MapPin, ExternalLink } from 'lucide-react';
+import { Phone, Mail, MapPin, ShieldCheck, Facebook, ArrowRight } from 'lucide-react';
 
-export function Footer() {
+interface FooterProps {
+  onOpenModal?: () => void;
+}
+
+export function Footer({ onOpenModal }: FooterProps) {
   return (
     <footer className="site-footer">
       <div className="container">
-        {/* Prominent Legal Disclaimer Statement */}
-        <div className="disclaimer-statement-box">
-          <strong>DISCLAIMER:</strong> e-GP Tender BD is an independent private service and consulting provider. It is not a government authority and does not represent the Bangladesh Public Procurement Authority (BPPA) or any procuring entity. Official public tenders and portal submissions occur strictly on the official platform at{' '}
-          <a
-            href="https://www.eprocure.gov.bd"
-            target="_blank"
-            rel="noreferrer"
-            style={{ color: 'var(--gold-accent)', textDecoration: 'underline' }}
-          >
-            eprocure.gov.bd
-          </a>.
-        </div>
-
         <div className="footer-top-grid">
-          {/* Col 1 */}
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', marginBottom: '1rem' }}>
-              <div style={{ width: '34px', height: '34px', borderRadius: '8px', background: 'var(--green-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 800 }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
+          {/* Column 1: Brand & Tagline */}
+          <div className="footer-col-brand">
+            <Link href="/" className="brand-link footer-brand-link">
+              <div className="brand-logo-badge">
+                <ShieldCheck size={20} strokeWidth={2.5} className="brand-logo-icon" />
               </div>
-              <span style={{ fontSize: '1.2rem', fontWeight: 800, color: '#FFFFFF', letterSpacing: '-0.02em' }}>
-                e-GP TENDER BD
-              </span>
-            </div>
-            <p style={{ color: 'rgba(255, 255, 255, 0.75)', fontSize: '0.9rem', lineHeight: 1.6, marginBottom: '1.25rem' }}>
-              Helping contractors and businesses navigate e-GP registration, tender preparation, and online submission with confidence.
+              <div className="brand-text-col">
+                <span className="brand-name" style={{ color: '#FFFFFF' }}>e-GP TENDER BD</span>
+                <span className="brand-sub" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                  Professional Tender & Project Management Solution
+                </span>
+              </div>
+            </Link>
+
+            <p className="footer-brand-desc">
+              Professional e-GP registration, tender preparation, submission and project cost management solution for businesses in Bangladesh.
             </p>
-            <div style={{ fontSize: '0.82rem', color: 'var(--gold-accent)', fontWeight: 600 }}>
-              Register. Prepare. Submit.
+
+            <div className="footer-facebook-wrap">
+              <a
+                href="https://facebook.com/bdegptender"
+                target="_blank"
+                rel="noreferrer"
+                className="footer-facebook-link"
+                aria-label="Facebook: @bdegptender"
+              >
+                <Facebook size={18} />
+                <span>Facebook: @bdegptender</span>
+              </a>
             </div>
           </div>
 
-          {/* Col 2 */}
+          {/* Column 2: Quick Links */}
           <div>
             <h5 className="footer-col-title">Navigation</h5>
             <ul className="footer-nav-list">
               <li><Link href="/">Home</Link></li>
-              <li><Link href="/services">Services</Link></li>
-              <li><Link href="/about">About Us</Link></li>
+              <li><Link href="/#services">Services</Link></li>
+              <li><Link href="/about">About</Link></li>
               <li><Link href="/contact">Contact</Link></li>
             </ul>
           </div>
 
-          {/* Col 3 */}
+          {/* Column 3: Contact & Address */}
           <div>
-            <h5 className="footer-col-title">Services</h5>
-            <ul className="footer-nav-list">
-              <li><Link href="/services">e-GP Registration</Link></li>
-              <li><Link href="/services">Tender Preparation</Link></li>
-              <li><Link href="/services">Tender Submission</Link></li>
-              <li><Link href="/services">e-GP Consultancy</Link></li>
-              <li><Link href="/services">e-GP Training</Link></li>
-            </ul>
-          </div>
-
-          {/* Col 4: Contact Information */}
-          <div>
-            <h5 className="footer-col-title">Contact Information</h5>
-            <ul className="footer-nav-list">
-              <li style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', color: 'rgba(255, 255, 255, 0.8)' }}>
-                <MapPin size={16} style={{ color: 'var(--gold-accent)', flexShrink: 0, marginTop: '3px' }} />
+            <h5 className="footer-col-title">Contact & Office</h5>
+            <ul className="footer-contact-list">
+              <li>
+                <MapPin size={16} className="footer-contact-icon" />
                 <span>House 6, Road 2/B, Baridhara J Block, Dhaka 1212, Bangladesh</span>
               </li>
-              <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <Phone size={16} style={{ color: 'var(--gold-accent)', flexShrink: 0 }} />
-                <a href="tel:+8801886970197" style={{ color: '#FFFFFF', fontWeight: 600 }}>+880 1886-970197</a>
+              <li>
+                <Phone size={16} className="footer-contact-icon" />
+                <a href="tel:+8801886970197">+880 1886-970197</a>
               </li>
-              <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <Mail size={16} style={{ color: 'var(--gold-accent)', flexShrink: 0 }} />
+              <li>
+                <Mail size={16} className="footer-contact-icon" />
                 <a href="mailto:bdegptender@gmail.com">bdegptender@gmail.com</a>
               </li>
-              <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <span style={{ color: 'var(--gold-accent)', fontWeight: 800 }}>f</span>
-                <a href="https://facebook.com/bdegptender" target="_blank" rel="noreferrer">
-                  facebook.com/bdegptender
-                </a>
-              </li>
             </ul>
+
+            {onOpenModal && (
+              <button
+                onClick={onOpenModal}
+                className="btn-footer-message"
+                id="footer-send-message-btn"
+              >
+                <span>Request Consultation</span>
+                <ArrowRight size={14} />
+              </button>
+            )}
           </div>
         </div>
 
+        {/* Footer Legal & Attribution */}
+        <div className="footer-disclaimer-block">
+          <p className="footer-disclaimer-text">
+            e-GP Tender BD is an independent private service and consulting provider and is not a government authority or representative of BPPA or any procuring entity.
+          </p>
+        </div>
+
+        {/* Footer Bottom Bar */}
         <div className="footer-bottom-row">
-          <div>
+          <div className="footer-copyright-text">
             &copy; 2026 e-GP Tender BD. All Rights Reserved.
           </div>
-          <div style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
-            Website: <strong>egptenderbd.com</strong> • Dhaka, Bangladesh
+          <div className="footer-developer-credit">
+            Developed by <a href="https://jolforingbd.com" target="_blank" rel="noopener noreferrer" className="dev-name-highlight">Jolforing</a>
           </div>
         </div>
       </div>

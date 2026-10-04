@@ -61,13 +61,13 @@ export function Modal({
         style={{
           maxWidth,
           width: '100%',
-          maxHeight: '90vh',
+          maxHeight: '92vh',
           overflowY: 'auto',
           background: '#FFFFFF',
-          borderRadius: '16px',
+          borderRadius: '22px',
           boxShadow: '0 25px 60px -15px rgba(0, 0, 0, 0.35)',
-          border: '1px solid rgba(1, 78, 54, 0.15)',
-          padding: '2rem',
+          border: '1px solid rgba(1, 78, 54, 0.12)',
+          padding: 'clamp(1.4rem, 3vw, 2.25rem)',
           position: 'relative',
           boxSizing: 'border-box'
         }}

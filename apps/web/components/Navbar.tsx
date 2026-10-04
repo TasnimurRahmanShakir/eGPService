@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, ArrowRight, Shield } from 'lucide-react';
+import { Menu, X, ArrowRight, ShieldCheck, PhoneCall } from 'lucide-react';
 
 interface NavbarProps {
   onOpenModal: () => void;
@@ -15,7 +15,7 @@ export function Navbar({ onOpenModal }: NavbarProps) {
 
   const navLinks = [
     { label: 'Home', href: '/' },
-    { label: 'Services', href: '/services' },
+    { label: 'Services', href: '/#services' },
     { label: 'About', href: '/about' },
     { label: 'Contact', href: '/contact' }
   ];
@@ -23,13 +23,10 @@ export function Navbar({ onOpenModal }: NavbarProps) {
   return (
     <header className="site-header">
       <div className="container header-row">
-        {/* Brand */}
+        {/* Brand Logo */}
         <Link href="/" className="brand-link">
-          <div className="brand-shield">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="20 6 9 17 4 12" />
-            </svg>
-            <span className="brand-red-pip"></span>
+          <div className="brand-logo-badge">
+            <ShieldCheck size={20} strokeWidth={2.5} className="brand-logo-icon" />
           </div>
           <div className="brand-text-col">
             <span className="brand-name">e-GP TENDER BD</span>
@@ -38,18 +35,21 @@ export function Navbar({ onOpenModal }: NavbarProps) {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav>
+        <nav aria-label="Main Navigation">
           <ul className="nav-links-desktop">
-            {navLinks.map((link) => (
-              <li key={link.href}>
-                <Link
-                  href={link.href}
-                  className={`nav-item-link ${pathname === link.href ? 'active' : ''}`}
-                >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
+            {navLinks.map((link) => {
+              const isActive = pathname === link.href || (link.href === '/' && pathname === '/');
+              return (
+                <li key={link.label}>
+                  <Link
+                    href={link.href}
+                    className={`nav-item-link ${isActive ? 'active' : ''}`}
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </nav>
 
@@ -57,10 +57,18 @@ export function Navbar({ onOpenModal }: NavbarProps) {
         <div className="nav-actions-col">
           <button
             onClick={onOpenModal}
-            className="btn-red nav-cta-desktop"
-            id="nav-cta-btn"
+            className="btn-nav-consultation"
+            id="nav-consultation-btn"
+            aria-label="Get Consultation"
           >
-            Get Tender Support ▸
+            <span className="nav-btn-icon-mobile" aria-hidden="true">
+              <PhoneCall size={16} strokeWidth={2.4} />
+            </span>
+            <span className="nav-btn-text-full">Get Consultation</span>
+            <span className="nav-btn-text-compact">Consult</span>
+            <div className="btn-arrow-circle">
+              <ArrowRight size={13} strokeWidth={2.5} />
+            </div>
           </button>
 
           <button
@@ -68,7 +76,7 @@ export function Navbar({ onOpenModal }: NavbarProps) {
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle menu"
           >
-            {mobileMenuOpen ? <X size={26} /> : <Menu size={26} />}
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
       </div>
@@ -78,7 +86,7 @@ export function Navbar({ onOpenModal }: NavbarProps) {
         <div className="mobile-nav-drawer">
           <ul className="mobile-nav-list">
             {navLinks.map((link) => (
-              <li key={link.href}>
+              <li key={link.label}>
                 <Link
                   href={link.href}
                   onClick={() => setMobileMenuOpen(false)}
@@ -88,13 +96,16 @@ export function Navbar({ onOpenModal }: NavbarProps) {
                 </Link>
               </li>
             ))}
-            <li style={{ paddingTop: '0.5rem' }}>
+            <li style={{ paddingTop: '0.75rem' }}>
               <button
                 onClick={() => { setMobileMenuOpen(false); onOpenModal(); }}
-                className="btn-red"
+                className="btn-nav-consultation"
                 style={{ width: '100%', justifyContent: 'center' }}
               >
-                Get Tender Support ▸
+                <span>Get Consultation</span>
+                <div className="btn-arrow-circle">
+                  <ArrowRight size={13} strokeWidth={2.5} />
+                </div>
               </button>
             </li>
           </ul>
