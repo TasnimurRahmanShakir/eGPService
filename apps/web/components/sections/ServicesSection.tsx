@@ -9,12 +9,15 @@ import {
   GraduationCap,
   ArrowRight
 } from 'lucide-react';
+import { useInView } from '../../hooks/useInView';
 
 interface ServicesSectionProps {
   onOpenModal: (serviceName?: string) => void;
 }
 
 export function ServicesSection({ onOpenModal }: ServicesSectionProps) {
+  const [ref, isInView] = useInView<HTMLDivElement>({ threshold: 0.15 });
+
   const servicesList = [
     {
       title: 'e-GP Registration',
@@ -49,9 +52,14 @@ export function ServicesSection({ onOpenModal }: ServicesSectionProps) {
   ];
 
   return (
-    <section className="services-dark-section" id="services">
+    <section
+      ref={ref}
+      className={`services-dark-section ${isInView ? 'services-in-view' : ''}`}
+      id="services"
+    >
       <div className="container">
-        <div className="services-header-block">
+        {/* Header Reveal */}
+        <div className="services-header-block services-header-reveal">
           <div className="eyebrow-pill eyebrow-on-dark">
             <span>OUR SERVICES</span>
           </div>
@@ -63,19 +71,15 @@ export function ServicesSection({ onOpenModal }: ServicesSectionProps) {
             Practical guidance, documentation and proposal assistance for your public procurement tenders in Bangladesh.
           </p>
 
-          {/* Clickable prompt hint */}
-          <div className="services-click-prompt">
-            <span className="pulse-indicator-dot"></span>
-            <span>Click any service below to get customized assistance & quotation</span>
-          </div>
+
         </div>
 
-        {/* 5 Core Interactive Services Grid */}
+        {/* 5 Core Interactive Services Grid with Staggered Entrance */}
         <div className="services-five-grid">
           {servicesList.map((service) => (
             <div
               key={service.title}
-              className="service-interactive-card"
+              className="service-interactive-card service-interactive-card-stagger"
               onClick={() => onOpenModal(service.title)}
               role="button"
               tabIndex={0}

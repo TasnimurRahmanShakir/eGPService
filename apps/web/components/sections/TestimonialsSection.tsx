@@ -1,8 +1,18 @@
+'use client';
+
 import React from 'react';
+import { useInView } from '../../hooks/useInView';
 
 export function TestimonialsSection() {
+  const [ref, isInView] = useInView<HTMLDivElement>({ threshold: 0.15 });
+
   return (
-    <section className="testimonials-section section-padding">
+    <section
+      ref={ref}
+      className={`testimonials-section section-padding ${
+        isInView ? 'testimonials-in-view' : ''
+      }`}
+    >
       <div className="container text-center">
         <div className="eyebrow-pill margin-center">
           <span>TESTIMONIALS</span>
@@ -19,7 +29,7 @@ export function TestimonialsSection() {
         <div className="testimonials-cards-grid">
           {/* Testimonial 1 */}
           <div className="testimonial-quote-card">
-            <div className="quote-mark-icon">“</div>
+            <div className="quote-mark-icon testimonial-quote-scale">“</div>
             <p className="testimonial-text">
               &ldquo;e-GP Tender BD made our tender submission process so much easier. Their team is professional, responsive and very knowledgeable.&rdquo;
             </p>
@@ -36,7 +46,7 @@ export function TestimonialsSection() {
 
           {/* Testimonial 2 */}
           <div className="testimonial-quote-card">
-            <div className="quote-mark-icon">“</div>
+            <div className="quote-mark-icon testimonial-quote-scale">“</div>
             <p className="testimonial-text">
               &ldquo;Their support is outstanding. We got our tender submitted on time and with zero hassle.&rdquo;
             </p>
@@ -53,7 +63,7 @@ export function TestimonialsSection() {
 
           {/* Testimonial 3 */}
           <div className="testimonial-quote-card">
-            <div className="quote-mark-icon">“</div>
+            <div className="quote-mark-icon testimonial-quote-scale">“</div>
             <p className="testimonial-text">
               &ldquo;Highly recommended for anyone looking for reliable e-GP consultancy and submission support. Very professional team!&rdquo;
             </p>

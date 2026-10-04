@@ -8,12 +8,15 @@ import {
   ShieldCheck,
   ArrowRight
 } from 'lucide-react';
+import { useInView } from '../../hooks/useInView';
 
 interface BusinessComplianceSectionProps {
   onOpenModal: (serviceName?: string) => void;
 }
 
 export function BusinessComplianceSection({ onOpenModal }: BusinessComplianceSectionProps) {
+  const [ref, isInView] = useInView<HTMLDivElement>({ threshold: 0.15 });
+
   const complianceList = [
     {
       title: 'VAT Registration',
@@ -42,7 +45,11 @@ export function BusinessComplianceSection({ onOpenModal }: BusinessComplianceSec
   ];
 
   return (
-    <section className="compliance-section section-padding bg-subtle" id="compliance">
+    <section
+      ref={ref}
+      className={`compliance-section section-padding bg-subtle ${isInView ? 'compliance-in-view' : ''}`}
+      id="compliance"
+    >
       <div className="container">
         <div className="compliance-header-block text-center margin-center">
           <div className="eyebrow-pill margin-center">
@@ -56,11 +63,12 @@ export function BusinessComplianceSection({ onOpenModal }: BusinessComplianceSec
           </p>
         </div>
 
+        {/* Cascade Cards with Alternating Horizontal Offsets */}
         <div className="compliance-cards-grid">
           {complianceList.map((item) => (
             <div
               key={item.title}
-              className="compliance-feature-card"
+              className="compliance-feature-card compliance-cascade-card"
               onClick={() => onOpenModal(item.title)}
               role="button"
               tabIndex={0}

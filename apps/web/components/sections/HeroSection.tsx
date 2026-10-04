@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, Check } from 'lucide-react';
@@ -10,36 +10,58 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({ onOpenModal }: HeroSectionProps) {
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Subtle parallax: building moves downward slightly slower than page scroll
+      if (window.scrollY < 900) {
+        setScrollY(window.scrollY);
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
-    <section className="hero-section">
+    <section className="hero-section" id="hero">
       <div className="container hero-container-grid">
         {/* Left Column: Copy, Value Props & Actions */}
         <div className="hero-left-col">
+          {/* 01. Eyebrow */}
+          <div className="eyebrow-pill hero-eyebrow-reveal">
+            <span>PROFESSIONAL e-GP PARTNER</span>
+          </div>
+
+          {/* 02. Heading with Line-by-Line Reveal Sequence */}
           <h1 className="hero-main-title">
-            From Opportunity<br />
-            to Award.<br />
-            <span className="hero-highlight-green">We Handle the Rest.</span>
+            <span className="hero-line-item hero-line-1">From Opportunity</span>
+            <span className="hero-line-item hero-line-2">to Award.</span>
+            <span className="hero-line-item hero-line-3 hero-highlight-green">
+              We Handle the Rest.
+            </span>
           </h1>
 
-          <p className="hero-description">
+          {/* 03. Paragraph Reveal */}
+          <p className="hero-description hero-desc-reveal">
             Professional e-GP registration, tender preparation, submission and project cost management solution for businesses in Bangladesh.
           </p>
 
-          {/* Value Proposition Checklist */}
+          {/* 04. Trust Bullets Staggered */}
           <div className="hero-checklist-wrap">
-            <div className="hero-checklist-item">
+            <div className="hero-checklist-item hero-check-item-reveal hero-check-item-1">
               <div className="hero-check-badge">
                 <Check size={14} strokeWidth={3} />
               </div>
               <span className="hero-checklist-text">Technical Proposal Responsiveness</span>
             </div>
-            <div className="hero-checklist-item">
+            <div className="hero-checklist-item hero-check-item-reveal hero-check-item-2">
               <div className="hero-check-badge">
                 <Check size={14} strokeWidth={3} />
               </div>
               <span className="hero-checklist-text">Financial Proposal Responsiveness</span>
             </div>
-            <div className="hero-checklist-item">
+            <div className="hero-checklist-item hero-check-item-reveal hero-check-item-3">
               <div className="hero-check-badge">
                 <Check size={14} strokeWidth={3} />
               </div>
@@ -47,7 +69,8 @@ export function HeroSection({ onOpenModal }: HeroSectionProps) {
             </div>
           </div>
 
-          <div className="hero-cta-buttons">
+          {/* 05. Buttons Reveal */}
+          <div className="hero-cta-buttons hero-cta-reveal">
             <button
               onClick={() => onOpenModal()}
               className="btn-dark-pill"
@@ -65,9 +88,15 @@ export function HeroSection({ onOpenModal }: HeroSectionProps) {
           </div>
         </div>
 
-        {/* Right Column: Parliament Asymmetric Visual & Layered Accents */}
+        {/* 06. Right Column: Parliament Asymmetric Visual & Mask + Scale Reveal + Subtle Parallax */}
         <div className="hero-right-col">
-          <div className="hero-visual-wrapper">
+          <div
+            className="hero-visual-wrapper hero-visual-reveal"
+            style={{
+              transform: `translate3d(0, ${scrollY * 0.065}px, 0)`,
+              transition: 'transform 0.1s linear'
+            }}
+          >
             {/* Background Wireframe Ring on Left */}
             <div className="hero-wire-ring"></div>
 

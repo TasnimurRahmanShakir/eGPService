@@ -2,22 +2,33 @@
 
 import React from 'react';
 import { ArrowRight, Phone } from 'lucide-react';
+import { useInView } from '../../hooks/useInView';
 
 interface FinalCTASectionProps {
   onOpenModal: (serviceName?: string) => void;
 }
 
 export function FinalCTASection({ onOpenModal }: FinalCTASectionProps) {
+  const [ref, isInView] = useInView<HTMLDivElement>({ threshold: 0.2 });
+
   return (
-    <section className="final-cta-banner-section">
+    <section
+      ref={ref}
+      id="contact"
+      className={`final-cta-banner-section ${isInView ? 'cta-in-view' : ''}`}
+    >
       <div className="container">
-        <div className="final-cta-inner-card">
+        {/* Signature Animation #4: Card scale-in from 0.96 to 1.0 */}
+        <div className="final-cta-inner-card final-cta-inner-card-scale">
           <div className="final-cta-content-col">
             <span className="cta-eyebrow-text">READY TO GET STARTED?</span>
+
+            {/* Line-by-line reveal for heading */}
             <h2 className="cta-banner-title">
-              Let&apos;s Make Your<br />
-              Next Submission Successful.
+              <span className="cta-line-reveal">Let&apos;s Make Your</span>
+              <span className="cta-line-reveal">Next Submission Successful.</span>
             </h2>
+
             <p className="cta-banner-subtitle">
               Get expert tender support and move your business forward with confidence.
             </p>
@@ -42,10 +53,17 @@ export function FinalCTASection({ onOpenModal }: FinalCTASectionProps) {
           </div>
 
           <div className="final-cta-annotation-col">
-            <div className="handwritten-white-note">
+            {/* Handwritten White Note with Animated Underline Draw */}
+            <div className="handwritten-white-note handwritten-annotation-animated">
               <span className="handwritten-white-text">Professional Support, Real Results</span>
               <svg className="handwritten-underline-svg" width="130" height="20" viewBox="0 0 140 20" fill="none">
-                <path d="M5 12C35 5 95 6 135 14M25 15C55 10 95 11 125 16" stroke="rgba(255,255,255,0.7)" strokeWidth="2" strokeLinecap="round" />
+                <path
+                  className="annotation-draw-arrow-path"
+                  d="M5 12C35 5 95 6 135 14M25 15C55 10 95 11 125 16"
+                  stroke="rgba(255,255,255,0.85)"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                />
               </svg>
             </div>
           </div>

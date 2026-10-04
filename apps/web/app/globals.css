@@ -567,11 +567,12 @@ button {
   background: #FFFFFF;
 }
 
-.metrics-band-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
-  gap: clamp(1rem, 2vw, 1.5rem);
+.metrics-band-row {
+  display: grid !important;
+  grid-template-columns: repeat(5, 1fr) !important;
+  align-items: center;
   text-align: center;
+  width: 100%;
 }
 
 .metric-band-item {
@@ -580,6 +581,7 @@ button {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding: 0 clamp(0.25rem, 1vw, 1rem);
 }
 
 .metric-band-item:not(:last-child)::after {
@@ -590,6 +592,35 @@ button {
   height: 70%;
   width: 1px;
   background: var(--border-card);
+  transform: scaleY(0);
+  transform-origin: center;
+  transition: transform 0.8s var(--ease-expo);
+}
+
+.metrics-in-view .metric-band-item:not(:last-child)::after {
+  transform: scaleY(1);
+}
+
+.metrics-in-view .metric-band-item:nth-child(1)::after { transition-delay: 0.2s; }
+.metrics-in-view .metric-band-item:nth-child(2)::after { transition-delay: 0.35s; }
+.metrics-in-view .metric-band-item:nth-child(3)::after { transition-delay: 0.5s; }
+.metrics-in-view .metric-band-item:nth-child(4)::after { transition-delay: 0.65s; }
+
+@media (max-width: 860px) {
+  .metrics-band-row {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 1.75rem 0.5rem;
+  }
+  .metric-band-item:not(:last-child)::after {
+    display: none;
+  }
+}
+
+@media (max-width: 580px) {
+  .metrics-band-row {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1.5rem 0.5rem;
+  }
 }
 
 .metric-band-number {
@@ -2600,5 +2631,482 @@ button {
     display: none;
   }
 }
+
+/* ==========================================================================
+   MASTER MOTION SEQUENCE & ANIMATIONS (EXECUTIVE & REFINED)
+   ========================================================================== */
+
+:root {
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* 01. Sticky Morph Navbar */
+.site-header {
+  transition: padding 0.35s var(--ease-expo), background-color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease, backdrop-filter 0.35s ease;
+}
+
+.site-header.header-scrolled {
+  background: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 4px 20px -4px rgba(6, 42, 31, 0.06);
+}
+
+.site-header.header-scrolled .header-row {
+  height: 62px;
+}
+
+/* Sliding active link indicator */
+.nav-item-link {
+  position: relative;
+}
+
+.nav-item-link::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 2.5px;
+  background: var(--green-emerald);
+  border-radius: 9999px;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.28s var(--ease-expo), opacity 0.28s ease;
+  opacity: 0;
+}
+
+.nav-item-link.active::after {
+  transform: scaleX(1);
+  opacity: 1;
+}
+
+/* 02. HERO Cinematic Reveal Sequence */
+@keyframes heroLineReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(28px);
+    filter: blur(3px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes heroSoftFadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes heroArchMaskReveal {
+  0% {
+    opacity: 0.2;
+    transform: scale(1.05);
+    clip-path: inset(0 0 35% 0 round 24px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    clip-path: inset(0 0 0 0 round 24px);
+  }
+}
+
+.hero-main-title {
+  overflow: hidden;
+}
+
+.hero-line-item {
+  display: block;
+  opacity: 0;
+  animation: heroLineReveal 0.85s var(--ease-expo) forwards;
+}
+
+.hero-line-1 {
+  animation-delay: 0.12s;
+}
+
+.hero-line-2 {
+  animation-delay: 0.26s;
+}
+
+.hero-line-3 {
+  animation: heroLineReveal 0.95s var(--ease-expo) 0.42s forwards;
+  font-weight: 850;
+}
+
+.hero-desc-reveal {
+  opacity: 0;
+  animation: heroSoftFadeUp 0.8s var(--ease-expo) 0.58s forwards;
+}
+
+.hero-check-item-reveal {
+  opacity: 0;
+  animation: heroSoftFadeUp 0.65s var(--ease-expo) forwards;
+}
+.hero-check-item-1 { animation-delay: 0.72s; }
+.hero-check-item-2 { animation-delay: 0.82s; }
+.hero-check-item-3 { animation-delay: 0.92s; }
+
+.hero-cta-reveal {
+  opacity: 0;
+  animation: heroSoftFadeUp 0.75s var(--ease-expo) 1.04s forwards;
+}
+
+.hero-visual-reveal {
+  opacity: 0;
+  animation: heroArchMaskReveal 1.25s var(--ease-expo) 0.25s forwards;
+  will-change: transform, clip-path, opacity;
+}
+
+/* 03. Trust Stats Band (Count-Up & Line Draws) */
+.metric-band-divider-line {
+  width: 1px;
+  height: 38px;
+  background: rgba(0, 0, 0, 0.08);
+  margin: 0 auto;
+  transform: scaleY(0);
+  transform-origin: center;
+  transition: transform 0.8s var(--ease-expo);
+}
+
+.metrics-in-view .metric-band-divider-line {
+  transform: scaleY(1);
+}
+.metrics-in-view .metric-band-divider-line:nth-of-type(1) { transition-delay: 0.2s; }
+.metrics-in-view .metric-band-divider-line:nth-of-type(2) { transition-delay: 0.35s; }
+.metrics-in-view .metric-band-divider-line:nth-of-type(3) { transition-delay: 0.5s; }
+.metrics-in-view .metric-band-divider-line:nth-of-type(4) { transition-delay: 0.65s; }
+
+.metric-band-label-reveal {
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.6s var(--ease-expo) 0.4s, transform 0.6s var(--ease-expo) 0.4s;
+}
+
+.metrics-in-view .metric-band-label-reveal {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 04. Professional Support (Split Reveal & Horizontal Mask) */
+.why-left-reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s var(--ease-expo), transform 0.8s var(--ease-expo);
+}
+
+.why-in-view .why-left-reveal {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.why-pillar-card-stagger {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.7s var(--ease-expo), transform 0.7s var(--ease-expo);
+}
+
+.why-in-view .why-pillar-card-stagger:nth-child(1) { transition-delay: 0.15s; }
+.why-in-view .why-pillar-card-stagger:nth-child(2) { transition-delay: 0.25s; }
+.why-in-view .why-pillar-card-stagger:nth-child(3) { transition-delay: 0.35s; }
+.why-in-view .why-pillar-card-stagger:nth-child(4) { transition-delay: 0.45s; }
+
+.why-in-view .why-pillar-card-stagger {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Horizontal Mask Reveal for Right Image */
+.why-image-card-mask {
+  clip-path: inset(0 100% 0 0 round 16px);
+  transition: clip-path 1.15s var(--ease-expo) 0.3s, transform 0.8s var(--ease-expo);
+}
+
+.why-in-view .why-image-card-mask {
+  clip-path: inset(0 0 0 0 round 16px);
+}
+
+/* Recurring Handwritten Motif Draw */
+.handwritten-annotation-animated {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.6s var(--ease-expo), transform 0.6s var(--ease-expo);
+}
+
+.why-in-view .handwritten-annotation-animated,
+.who-in-view .handwritten-annotation-animated,
+.cta-in-view .handwritten-annotation-animated {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.annotation-draw-arrow-path {
+  stroke-dasharray: 120;
+  stroke-dashoffset: 120;
+  transition: stroke-dashoffset 0.95s var(--ease-expo) 0.4s;
+}
+
+.why-in-view .annotation-draw-arrow-path,
+.who-in-view .annotation-draw-arrow-path,
+.cta-in-view .annotation-draw-arrow-path {
+  stroke-dashoffset: 0;
+}
+
+/* 05. SERVICES (Signature Animation #1: Stagger + Refined Hover) */
+.services-header-reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s var(--ease-expo), transform 0.8s var(--ease-expo);
+}
+
+.services-in-view .services-header-reveal {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.service-interactive-card-stagger {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.65s var(--ease-expo), transform 0.65s var(--ease-expo), border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.services-in-view .service-interactive-card-stagger:nth-child(1) { transition-delay: 0.10s; }
+.services-in-view .service-interactive-card-stagger:nth-child(2) { transition-delay: 0.18s; }
+.services-in-view .service-interactive-card-stagger:nth-child(3) { transition-delay: 0.26s; }
+.services-in-view .service-interactive-card-stagger:nth-child(4) { transition-delay: 0.34s; }
+.services-in-view .service-interactive-card-stagger:nth-child(5) { transition-delay: 0.42s; }
+
+.services-in-view .service-interactive-card-stagger {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Hover: subtle lift, icon scale, arrow slide, border glow (No giant bounce) */
+.service-interactive-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(5, 150, 105, 0.45);
+  box-shadow: 0 8px 30px rgba(5, 150, 105, 0.14);
+}
+
+.service-interactive-card:hover .service-icon-box {
+  transform: scale(1.08);
+  transition: transform 0.25s var(--ease-expo);
+}
+
+.service-interactive-card:hover .service-cta-arrow-circle {
+  transform: translateX(4px);
+  background: var(--green-emerald);
+  transition: transform 0.25s var(--ease-expo), background 0.25s ease;
+}
+
+/* 06. PROJECT COST SECTION (Signature Animation #2: UI Assembly) */
+.mockup-assembly-sidebar {
+  opacity: 0;
+  transform: translateX(-14px);
+  transition: opacity 0.75s var(--ease-expo) 0.2s, transform 0.75s var(--ease-expo) 0.2s;
+}
+
+.cost-in-view .mockup-assembly-sidebar {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.mockup-assembly-header {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.7s var(--ease-expo) 0.32s, transform 0.7s var(--ease-expo) 0.32s;
+}
+
+.cost-in-view .mockup-assembly-header {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.mockup-assembly-row {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.6s var(--ease-expo), transform 0.6s var(--ease-expo);
+}
+
+.cost-in-view .mockup-assembly-row:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 0.42s; }
+.cost-in-view .mockup-assembly-row:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 0.54s; }
+.cost-in-view .mockup-assembly-row:nth-child(3) { opacity: 1; transform: translateY(0); transition-delay: 0.66s; }
+.cost-in-view .mockup-assembly-row:nth-child(4) { opacity: 1; transform: translateY(0); transition-delay: 0.78s; }
+
+.mockup-assembly-pill {
+  opacity: 0;
+  transform: scale(0.92) translateY(14px);
+  transition: opacity 0.75s var(--ease-expo) 0.92s, transform 0.75s var(--ease-expo) 0.92s;
+}
+
+.cost-in-view .mockup-assembly-pill {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+/* 07. COMPLIANCE SECTION (Cascade Cards with Alternating Horizontal Offsets) */
+.compliance-cascade-card {
+  opacity: 0;
+  transition: opacity 0.75s var(--ease-expo), transform 0.75s var(--ease-expo), border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Odd cards from left, even cards from right */
+.compliance-cascade-card:nth-child(odd) {
+  transform: translateX(-24px);
+}
+
+.compliance-cascade-card:nth-child(even) {
+  transform: translateX(24px);
+}
+
+.compliance-in-view .compliance-cascade-card {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.compliance-in-view .compliance-cascade-card:nth-child(1) { transition-delay: 0.12s; }
+.compliance-in-view .compliance-cascade-card:nth-child(2) { transition-delay: 0.22s; }
+.compliance-in-view .compliance-cascade-card:nth-child(3) { transition-delay: 0.32s; }
+.compliance-in-view .compliance-cascade-card:nth-child(4) { transition-delay: 0.42s; }
+
+/* 08. PROCESS SECTION (Signature Animation #3: Scroll Timeline) */
+.timeline-track-wrapper {
+  position: relative;
+  margin: 3.5rem 0 1.5rem;
+}
+
+.timeline-bg-bar {
+  position: absolute;
+  top: 32px;
+  left: 5%;
+  right: 5%;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 9999px;
+  z-index: 1;
+}
+
+.timeline-progress-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: linear-gradient(90deg, #059669, #10B981);
+  border-radius: 9999px;
+  transition: width 0.15s ease-out;
+}
+
+.process-step-col-interactive {
+  position: relative;
+  z-index: 2;
+  transition: transform 0.3s var(--ease-expo);
+}
+
+.process-step-circle-interactive {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 2px solid #E5E7EB;
+  color: #6B7280;
+  font-size: 1.15rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.25rem;
+  transition: all 0.4s var(--ease-expo);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.process-step-col-interactive.active-step .process-step-circle-interactive {
+  background: var(--green-emerald);
+  border-color: var(--green-emerald);
+  color: #FFFFFF;
+  transform: scale(1.08);
+  box-shadow: 0 0 0 6px rgba(5, 150, 105, 0.18), 0 8px 20px rgba(5, 150, 105, 0.28);
+}
+
+.process-step-col-interactive.active-step .process-step-title {
+  color: var(--green-dark-primary);
+  font-weight: 750;
+}
+
+/* 09. ORGANIZATIONS (Image Parallax + Chips Stagger) */
+.org-chip-pill-stagger {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.5s var(--ease-expo), transform 0.5s var(--ease-expo);
+}
+
+.who-in-view .org-chip-pill-stagger:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 0.15s; }
+.who-in-view .org-chip-pill-stagger:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 0.25s; }
+.who-in-view .org-chip-pill-stagger:nth-child(3) { opacity: 1; transform: translateY(0); transition-delay: 0.35s; }
+.who-in-view .org-chip-pill-stagger:nth-child(4) { opacity: 1; transform: translateY(0); transition-delay: 0.45s; }
+
+/* 10. TESTIMONIALS (Calm, Soft Reveal) */
+.testimonial-quote-scale {
+  display: inline-block;
+  transform: scale(0.85);
+  opacity: 0.6;
+  transition: transform 0.8s var(--ease-expo), opacity 0.8s ease;
+}
+
+.testimonials-in-view .testimonial-quote-scale {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* 11. FINAL CTA (Signature Animation #4: Scale-In & Line Reveal) */
+.final-cta-inner-card-scale {
+  transform: scale(0.96);
+  opacity: 0;
+  transition: transform 0.95s var(--ease-expo), opacity 0.95s var(--ease-expo);
+}
+
+.cta-in-view .final-cta-inner-card-scale {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.cta-line-reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.7s var(--ease-expo), transform 0.7s var(--ease-expo);
+}
+
+.cta-in-view .cta-line-reveal:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 0.2s; }
+.cta-in-view .cta-line-reveal:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 0.35s; }
+
+/* 12. CTA BUTTON HOVER (Clean Slide, No Pulse) */
+.btn-dark-pill,
+.btn-emerald-banner,
+.btn-nav-consultation {
+  transition: background-color 0.25s ease, transform 0.25s var(--ease-expo), box-shadow 0.25s ease !important;
+}
+
+.btn-dark-pill:hover,
+.btn-emerald-banner:hover,
+.btn-nav-consultation:hover {
+  transform: translateY(-1px);
+}
+
+.btn-dark-pill:hover .btn-arrow-circle,
+.btn-emerald-banner:hover .btn-arrow-circle,
+.btn-nav-consultation:hover .btn-arrow-circle {
+  transform: translateX(4px);
+  transition: transform 0.25s var(--ease-expo);
+}
+
 
 

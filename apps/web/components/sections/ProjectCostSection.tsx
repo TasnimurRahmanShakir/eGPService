@@ -1,15 +1,39 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ArrowRight, Check, ChevronRight, CheckCircle2 } from 'lucide-react';
+import { useInView } from '../../hooks/useInView';
 
 interface ProjectCostSectionProps {
   onOpenModal: (serviceName?: string) => void;
 }
 
 export function ProjectCostSection({ onOpenModal }: ProjectCostSectionProps) {
+  const [ref, isInView] = useInView<HTMLDivElement>({ threshold: 0.2 });
+  const [offsetY, setOffsetY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Subtle parallax: dashboard moves slightly slower than text creating optical depth
+      const el = document.getElementById('cost-management');
+      if (el) {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight && rect.bottom > 0) {
+          setOffsetY((rect.top - window.innerHeight / 2) * -0.04);
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
-    <section className="project-cost-section section-padding" id="cost-management">
+    <section
+      ref={ref}
+      className={`project-cost-section section-padding ${isInView ? 'cost-in-view' : ''}`}
+      id="cost-management"
+    >
       <div className="container">
         <div className="project-cost-grid">
           {/* Left Content Column */}
@@ -62,8 +86,14 @@ export function ProjectCostSection({ onOpenModal }: ProjectCostSectionProps) {
             </div>
           </div>
 
-          {/* Right Software Mockup Window */}
-          <div className="project-cost-right">
+          {/* Right Software Mockup Window: Signature UI Assembly Animation */}
+          <div
+            className="project-cost-right"
+            style={{
+              transform: `translate3d(0, ${offsetY}px, 0)`,
+              transition: 'transform 0.15s ease-out'
+            }}
+          >
             <div className="portal-mockup-window">
               <div className="mockup-window-topbar">
                 <div className="window-dots">
@@ -78,7 +108,8 @@ export function ProjectCostSection({ onOpenModal }: ProjectCostSectionProps) {
               </div>
 
               <div className="mockup-window-body">
-                <div className="mockup-sidebar">
+                {/* 1. Sidebar Assemble */}
+                <div className="mockup-sidebar mockup-assembly-sidebar">
                   <div className="mockup-sidebar-logo">
                     <span className="mockup-logo-square">৳</span>
                     <span className="mockup-logo-text">Ledger</span>
@@ -92,13 +123,15 @@ export function ProjectCostSection({ onOpenModal }: ProjectCostSectionProps) {
                 </div>
 
                 <div className="mockup-main-panel">
-                  <div className="mockup-panel-header">
+                  {/* 2. Header Assemble */}
+                  <div className="mockup-panel-header mockup-assembly-header">
                     <h4>Active Project Ledger</h4>
                     <span className="mockup-portal-status">Synchronized</span>
                   </div>
 
+                  {/* 3. Project Stage Rows Assemble Sequentially */}
                   <div className="mockup-stages-list">
-                    <div className="mockup-stage-row">
+                    <div className="mockup-stage-row mockup-assembly-row">
                       <div className="mockup-stage-left">
                         <span className="mockup-stage-num">01</span>
                         <span>Create Projects & Set Budget Targets</span>
@@ -106,7 +139,7 @@ export function ProjectCostSection({ onOpenModal }: ProjectCostSectionProps) {
                       <Check size={14} className="text-emerald" />
                     </div>
 
-                    <div className="mockup-stage-row">
+                    <div className="mockup-stage-row mockup-assembly-row">
                       <div className="mockup-stage-left">
                         <span className="mockup-stage-num">02</span>
                         <span>Record Daily Site Expenses & Material Invoices</span>
@@ -114,7 +147,7 @@ export function ProjectCostSection({ onOpenModal }: ProjectCostSectionProps) {
                       <Check size={14} className="text-emerald" />
                     </div>
 
-                    <div className="mockup-stage-row highlight-stage">
+                    <div className="mockup-stage-row highlight-stage mockup-assembly-row">
                       <div className="mockup-stage-left">
                         <span className="mockup-stage-num highlight-num">03</span>
                         <span>Track Variance & BOQ Consumption Rate</span>
@@ -122,7 +155,7 @@ export function ProjectCostSection({ onOpenModal }: ProjectCostSectionProps) {
                       <ChevronRight size={15} className="mockup-chevron" />
                     </div>
 
-                    <div className="mockup-stage-row">
+                    <div className="mockup-stage-row mockup-assembly-row">
                       <div className="mockup-stage-left">
                         <span className="mockup-stage-num">04</span>
                         <span>Manage Profit Margins & Executive Reports</span>
@@ -134,7 +167,17 @@ export function ProjectCostSection({ onOpenModal }: ProjectCostSectionProps) {
               </div>
             </div>
 
-
+            {/* 4. Floating Live Ledger Status Pill Assemble */}
+            <div className="floating-status-pill mockup-assembly-pill">
+              <div className="status-pill-check">
+                <CheckCircle2 size={24} className="text-emerald-icon" />
+              </div>
+              <div className="status-pill-text">
+                <span className="status-pill-title">Live Cost Tracking</span>
+                <span className="status-pill-state">Budget Synchronized</span>
+                <span className="status-pill-ref">Profit Margin: +18.4%</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>

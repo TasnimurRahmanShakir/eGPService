@@ -1,14 +1,26 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
 import { Phone, Mail, MapPin, ShieldCheck, Facebook, ArrowRight } from 'lucide-react';
+import { useInView } from '../hooks/useInView';
 
 interface FooterProps {
   onOpenModal?: () => void;
 }
 
 export function Footer({ onOpenModal }: FooterProps) {
+  const [ref, isInView] = useInView<HTMLElement>({ threshold: 0.1 });
+
   return (
-    <footer className="site-footer">
+    <footer
+      ref={ref}
+      className={`site-footer ${isInView ? 'footer-in-view' : ''}`}
+      style={{
+        opacity: isInView ? 1 : 0.85,
+        transition: 'opacity 0.6s ease'
+      }}
+    >
       <div className="container">
         <div className="footer-top-grid">
           {/* Column 1: Brand & Tagline */}
@@ -50,7 +62,7 @@ export function Footer({ onOpenModal }: FooterProps) {
               <li><Link href="/">Home</Link></li>
               <li><Link href="/#services">Services</Link></li>
               <li><Link href="/about">About</Link></li>
-              <li><Link href="/contact">Contact</Link></li>
+              <li><Link href="/#process">Process</Link></li>
             </ul>
           </div>
 
@@ -98,7 +110,7 @@ export function Footer({ onOpenModal }: FooterProps) {
             &copy; 2026 e-GP Tender BD. All Rights Reserved.
           </div>
           <div className="footer-developer-credit">
-            Developed by <a href="https://jolforingbd.com" target="_blank" rel="noopener noreferrer" className="dev-name-highlight">Jolforing</a>
+            Developed by <span className="font-semibold text-white">Jolforing</span>
           </div>
         </div>
       </div>

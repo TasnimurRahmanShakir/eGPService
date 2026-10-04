@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Menu, X, ArrowRight, ShieldCheck, PhoneCall } from 'lucide-react';
@@ -11,17 +11,50 @@ interface NavbarProps {
 
 export function Navbar({ onOpenModal }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState('Home');
   const pathname = usePathname();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // 01 Sticky Morph: slightly compact + subtle blur + subtle border
+      setIsScrolled(window.scrollY > 24);
+
+      // Active Section Spy for smooth indicator
+      if (pathname === '/') {
+        const sections = [
+          { id: 'hero', name: 'Home' },
+          { id: 'services', name: 'Services' },
+          { id: 'about', name: 'About' },
+          { id: 'process', name: 'Process' },
+          { id: 'contact', name: 'Contact' }
+        ];
+
+        const scrollPos = window.scrollY + 120;
+        for (let i = sections.length - 1; i >= 0; i--) {
+          const el = document.getElementById(sections[i].id);
+          if (el && el.offsetTop <= scrollPos) {
+            setActiveSection(sections[i].name);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [pathname]);
 
   const navLinks = [
     { label: 'Home', href: '/' },
     { label: 'Services', href: '/#services' },
     { label: 'About', href: '/about' },
-    { label: 'Contact', href: '/contact' }
+    { label: 'Process', href: '/#process' }
   ];
 
   return (
-    <header className="site-header">
+    <header className={`site-header ${isScrolled ? 'header-scrolled' : ''}`}>
       <div className="container header-row">
         {/* Brand Logo */}
         <Link href="/" className="brand-link">
@@ -38,7 +71,11 @@ export function Navbar({ onOpenModal }: NavbarProps) {
         <nav aria-label="Main Navigation">
           <ul className="nav-links-desktop">
             {navLinks.map((link) => {
-              const isActive = pathname === link.href || (link.href === '/' && pathname === '/');
+              const isActive =
+                pathname === '/'
+                  ? activeSection === link.label
+                  : pathname === link.href;
+
               return (
                 <li key={link.label}>
                   <Link
@@ -90,7 +127,9 @@ export function Navbar({ onOpenModal }: NavbarProps) {
                 <Link
                   href={link.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`mobile-nav-link ${pathname === link.href ? 'active' : ''}`}
+                  className={`mobile-nav-link ${
+                    pathname === '/' && activeSection === link.label ? 'active' : ''
+                  }`}
                 >
                   {link.label}
                 </Link>
@@ -98,13 +137,16 @@ export function Navbar({ onOpenModal }: NavbarProps) {
             ))}
             <li style={{ paddingTop: '0.75rem' }}>
               <button
-                onClick={() => { setMobileMenuOpen(false); onOpenModal(); }}
-                className="btn-nav-consultation"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenModal();
+                }}
+                className="btn-dark-pill"
                 style={{ width: '100%', justifyContent: 'center' }}
               >
                 <span>Get Consultation</span>
                 <div className="btn-arrow-circle">
-                  <ArrowRight size={13} strokeWidth={2.5} />
+                  <ArrowRight size={14} strokeWidth={2.5} />
                 </div>
               </button>
             </li>
