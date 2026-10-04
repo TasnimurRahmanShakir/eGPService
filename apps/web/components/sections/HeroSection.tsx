@@ -28,10 +28,7 @@ export function HeroSection({ onOpenModal }: HeroSectionProps) {
       <div className="container hero-container-grid">
         {/* Left Column: Copy, Value Props & Actions */}
         <div className="hero-left-col">
-          {/* 01. Eyebrow */}
-          <div className="eyebrow-pill hero-eyebrow-reveal">
-            <span>PROFESSIONAL e-GP PARTNER</span>
-          </div>
+
 
           {/* 02. Heading with Line-by-Line Reveal Sequence */}
           <h1 className="hero-main-title">

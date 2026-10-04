@@ -15,7 +15,7 @@ export function WhyChooseSection({ onOpenModal }: WhyChooseSectionProps) {
   return (
     <section
       ref={ref}
-      id="about"
+      id="why-choose"
       className={`why-choose-section section-padding ${isInView ? 'why-in-view' : ''}`}
     >
       <div className="container why-choose-grid">

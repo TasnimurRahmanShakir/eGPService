@@ -55,17 +55,29 @@ export function ProjectCostSection({ onOpenModal }: ProjectCostSectionProps) {
                 <span className="flow-num">01</span>
                 <span className="flow-text">Create Projects</span>
               </div>
-              <div className="flow-arrow-separator">➔</div>
+              <div className="flow-arrow-separator">
+                <svg width="11" height="11" viewBox="0 0 16 16" fill="none" className="flow-arrow-svg">
+                  <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="#059669" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
               <div className="cost-flow-step">
                 <span className="flow-num">02</span>
                 <span className="flow-text">Record Costs</span>
               </div>
-              <div className="flow-arrow-separator">➔</div>
+              <div className="flow-arrow-separator">
+                <svg width="11" height="11" viewBox="0 0 16 16" fill="none" className="flow-arrow-svg">
+                  <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="#059669" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
               <div className="cost-flow-step">
                 <span className="flow-num">03</span>
                 <span className="flow-text">Track Expenses</span>
               </div>
-              <div className="flow-arrow-separator">➔</div>
+              <div className="flow-arrow-separator">
+                <svg width="11" height="11" viewBox="0 0 16 16" fill="none" className="flow-arrow-svg">
+                  <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="#059669" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
               <div className="cost-flow-step highlight-flow">
                 <span className="flow-num">04</span>
                 <span className="flow-text">Manage</span>

@@ -22,22 +22,19 @@ export function Navbar({ onOpenModal }: NavbarProps) {
 
       // Active Section Spy for smooth indicator
       if (pathname === '/') {
-        const sections = [
-          { id: 'hero', name: 'Home' },
-          { id: 'services', name: 'Services' },
-          { id: 'about', name: 'About' },
-          { id: 'process', name: 'Process' },
-          { id: 'contact', name: 'Contact' }
-        ];
+        const scrollPos = window.scrollY + 180;
+        const processEl = document.getElementById('process');
+        const servicesEl = document.getElementById('services');
 
-        const scrollPos = window.scrollY + 120;
-        for (let i = sections.length - 1; i >= 0; i--) {
-          const el = document.getElementById(sections[i].id);
-          if (el && el.offsetTop <= scrollPos) {
-            setActiveSection(sections[i].name);
-            break;
-          }
+        if (processEl && processEl.offsetTop <= scrollPos) {
+          setActiveSection('Process');
+        } else if (servicesEl && servicesEl.offsetTop <= scrollPos) {
+          setActiveSection('Services');
+        } else {
+          setActiveSection('Home');
         }
+      } else if (pathname === '/about') {
+        setActiveSection('About');
       }
     };
 
