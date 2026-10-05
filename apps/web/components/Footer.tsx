@@ -60,9 +60,10 @@ export function Footer({ onOpenModal }: FooterProps) {
             <h5 className="footer-col-title">Navigation</h5>
             <ul className="footer-nav-list">
               <li><Link href="/">Home</Link></li>
+              <li><Link href="/winning-tenders">Winning Tenders</Link></li>
               <li><Link href="/#services">Services</Link></li>
               <li><Link href="/about">About</Link></li>
-              <li><Link href="/#process">Process</Link></li>
+              <li><Link href="/contact">Contact Us</Link></li>
             </ul>
           </div>
 
@@ -94,6 +95,32 @@ export function Footer({ onOpenModal }: FooterProps) {
                 <ArrowRight size={14} />
               </button>
             )}
+          </div>
+        </div>
+
+        {/* Useful e-GP Department Links */}
+        <div className="footer-dept-links-block">
+          <span className="footer-dept-label">Useful Links:</span>
+          <div className="footer-dept-items">
+            <a href="https://bppa.gov.bd" target="_blank" rel="noopener noreferrer" className="footer-dept-anchor">BPPA</a>
+            <span className="footer-dept-separator">•</span>
+            <a href="http://www.pwd.gov.bd" target="_blank" rel="noopener noreferrer" className="footer-dept-anchor">PWD</a>
+            <span className="footer-dept-separator">•</span>
+            <a href="http://www.rhd.gov.bd" target="_blank" rel="noopener noreferrer" className="footer-dept-anchor">RHD</a>
+            <span className="footer-dept-separator">•</span>
+            <a href="http://www.lged.gov.bd" target="_blank" rel="noopener noreferrer" className="footer-dept-anchor">LGED</a>
+            <span className="footer-dept-separator">•</span>
+            <a href="http://www.bwdb.gov.bd" target="_blank" rel="noopener noreferrer" className="footer-dept-anchor">BWDB</a>
+            <span className="footer-dept-separator">•</span>
+            <a href="http://eedmoe.gov.bd" target="_blank" rel="noopener noreferrer" className="footer-dept-anchor">EED</a>
+            <span className="footer-dept-separator">•</span>
+            <a href="http://www.hed.gov.bd" target="_blank" rel="noopener noreferrer" className="footer-dept-anchor">HED</a>
+            <span className="footer-dept-separator">•</span>
+            <a href="http://www.dphe.gov.bd" target="_blank" rel="noopener noreferrer" className="footer-dept-anchor">DPHE</a>
+            <span className="footer-dept-separator">•</span>
+            <a href="http://www.rajuk.gov.bd" target="_blank" rel="noopener noreferrer" className="footer-dept-anchor">RAJUK</a>
+            <span className="footer-dept-separator">•</span>
+            <a href="https://eprocure.gov.bd" target="_blank" rel="noopener noreferrer" className="footer-dept-anchor">ALL CITY CORPORATION</a>
           </div>
         </div>
 

@@ -1,7 +1,20 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Phone, Mail, MapPin, Check, Send } from 'lucide-react';
+import Link from 'next/link';
+import { 
+  Phone, 
+  Mail, 
+  MapPin, 
+  Check, 
+  Send, 
+  MessageSquare, 
+  Clock, 
+  ShieldCheck, 
+  AlertCircle,
+  Building,
+  ExternalLink
+} from 'lucide-react';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
 import { StickyMobileBar } from '../../components/StickyMobileBar';
@@ -14,11 +27,12 @@ export default function ContactPage() {
     company: '',
     phone: '',
     tenderRef: '',
-    service: 'Tender Preparation',
+    service: 'Tender Preparation & Technical Proposal',
     message: ''
   });
   const [phoneError, setPhoneError] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,251 +42,346 @@ export default function ContactPage() {
       return;
     }
     setPhoneError('');
-    setSubmitted(true);
+    setIsSubmitting(true);
+
+    // Simulate fast dispatch
+    setTimeout(() => {
+      setIsSubmitting(false);
+      setSubmitted(true);
+    }, 600);
   };
 
   return (
-    <div>
+    <div className="page-wrapper">
       <Navbar onOpenModal={() => setModalOpen(true)} />
 
-      {/* Hero */}
-      <section className="page-hero-header">
-        <div className="container" style={{ textAlign: 'center', maxWidth: '760px' }}>
-          <span className="pill-badge pill-green" style={{ marginBottom: '1rem' }}>
-            GET IN TOUCH
+      {/* Hero Header */}
+      <section className="contact-page-hero">
+        <div className="container" style={{ textAlign: 'center', maxWidth: '780px' }}>
+          <span className="pill-badge pill-green" style={{ marginBottom: '1.25rem' }}>
+            <MessageSquare size={13} style={{ marginRight: '6px' }} />
+            DIRECT TENDER LIAISON
           </span>
           <h1 className="page-hero-title">
-            Let&apos;s Talk About Your Tender.
+            Let&apos;s Discuss Your Upcoming Tender
           </h1>
           <p className="page-hero-sub">
-            Have a tender coming up or need help with the e-GP process? Send us the details and we&apos;ll help you identify the next step.
+            Have a tender coming up or need urgent assistance with e-GP documentation, BOQ pricing, or portal upload? Reach our senior engineering consultants directly.
           </p>
         </div>
       </section>
 
-      {/* Main Form & Info Grid */}
-      <section className="section-padding">
+      {/* Quick Action Contact Cards */}
+      <section className="contact-quick-cards-section">
         <div className="container">
-          <div className="contact-layout-grid">
-            {/* Contact Information */}
-            <div className="contact-info-card">
-              <span className="pill-badge pill-gold" style={{ marginBottom: '1.25rem' }}>
-                DIRECT OFFICE LIAISON
-              </span>
-              <h2 style={{ fontSize: '1.85rem', color: 'var(--green-deep)', marginBottom: '1.5rem' }}>
-                Contact Information
-              </h2>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem', marginBottom: '2.5rem' }}>
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
-                  <div style={{ width: '42px', height: '42px', borderRadius: '8px', background: 'var(--green-soft)', color: 'var(--green-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <MapPin size={20} />
-                  </div>
-                  <div>
-                    <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Office Location</div>
-                    <div style={{ fontSize: '1.05rem', fontWeight: 600, color: 'var(--text-headline)', marginTop: '2px' }}>
-                      e-GP Tender BD
-                    </div>
-                    <div style={{ color: 'var(--text-muted)', fontSize: '0.95rem', marginTop: '2px' }}>
-                      House 6, Road 2/B<br />
-                      Baridhara J Block<br />
-                      Dhaka 1212, Bangladesh
-                    </div>
-                  </div>
-                </div>
-
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
-                  <div style={{ width: '42px', height: '42px', borderRadius: '8px', background: 'var(--green-soft)', color: 'var(--green-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <Phone size={20} />
-                  </div>
-                  <div>
-                    <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Direct Telephone</div>
-                    <a href="tel:+8801886970197" style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--green-primary)', textDecoration: 'none', display: 'block', marginTop: '2px' }}>
-                      +880 1886-970197
-                    </a>
-                    <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Direct line &amp; WhatsApp messaging</span>
-                  </div>
-                </div>
-
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
-                  <div style={{ width: '42px', height: '42px', borderRadius: '8px', background: 'var(--green-soft)', color: 'var(--green-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <Mail size={20} />
-                  </div>
-                  <div>
-                    <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Email Inquiries</div>
-                    <a href="mailto:bdegptender@gmail.com" style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-headline)', textDecoration: 'none', display: 'block', marginTop: '2px' }}>
-                      bdegptender@gmail.com
-                    </a>
-                  </div>
-                </div>
-
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
-                  <div style={{ width: '42px', height: '42px', borderRadius: '8px', background: 'var(--green-soft)', color: 'var(--green-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontWeight: 800, fontSize: '1.2rem' }}>
-                    f
-                  </div>
-                  <div>
-                    <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Facebook Page</div>
-                    <a href="https://facebook.com/bdegptender" target="_blank" rel="noreferrer" style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--green-primary)', textDecoration: 'none', display: 'block', marginTop: '2px' }}>
-                      facebook.com/bdegptender
-                    </a>
-                  </div>
-                </div>
+          <div className="contact-cards-grid">
+            {/* Phone Card */}
+            <a href="tel:+8801886970197" className="contact-quick-card">
+              <div className="contact-card-icon-wrap">
+                <Phone size={22} />
               </div>
-
-              {/* Notice */}
-              <div style={{ background: 'var(--bg-canvas)', border: '1px solid var(--border-card)', borderRadius: 'var(--radius-md)', padding: '1.25rem', fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
-                🕒 <strong>Office Hours:</strong> Saturday to Thursday, 9:00 AM – 7:00 PM. Emergency portal upload assistance available 24/7 for active contract clients.
+              <div className="contact-card-content">
+                <span className="contact-card-subtitle">Direct Telephone</span>
+                <span className="contact-card-title">+880 1886-970197</span>
+                <span className="contact-card-desc">Sat - Thu: 9 AM - 7 PM</span>
               </div>
-            </div>
+            </a>
 
-            {/* Form */}
-            <div className="form-card-container">
-              {submitted ? (
-                <div style={{ textAlign: 'center', padding: '3rem 1.5rem' }}>
-                  <div style={{ width: '68px', height: '68px', borderRadius: '50%', background: 'var(--green-soft)', color: 'var(--green-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem' }}>
-                    <Check size={40} strokeWidth={3} />
-                  </div>
-                  <h3 style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--green-deep)', marginBottom: '0.75rem' }}>
-                    ধন্যবাদ! আপনার অনুরোধ গ্রহণ করা হয়েছে।
-                  </h3>
-                  <p style={{ color: 'var(--text-headline)', fontWeight: 600, fontSize: '1.1rem', marginBottom: '0.5rem' }}>
-                    আমরা শীঘ্রই আপনার সাথে যোগাযোগ করব।
-                  </p>
-                  <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', marginBottom: '2rem' }}>
-                    Our senior tender consultant will call you at <strong>+880 {formData.phone}</strong> to review your specifications.
-                  </p>
-                  <button
-                    onClick={() => setSubmitted(false)}
-                    className="btn-outline-green"
-                  >
-                    Submit Another Inquiry
-                  </button>
-                </div>
-              ) : (
-                <div>
-                  <h2 style={{ fontSize: '1.85rem', color: 'var(--green-deep)', marginBottom: '0.5rem' }}>
-                    Tell Us About Your Tender.
-                  </h2>
-                  <p style={{ fontSize: '0.95rem', color: 'var(--text-muted)', marginBottom: '1.75rem' }}>
-                    Send us your project details or tender ID to schedule immediate bid preparation assistance.
-                  </p>
+            {/* WhatsApp Card */}
+            <a 
+              href="https://wa.me/8801886970197?text=Hello%20e-GP%20Tender%20BD,%20I%20need%20assistance%20with%20a%20tender" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="contact-quick-card highlight-whatsapp"
+            >
+              <div className="contact-card-icon-wrap whatsapp-icon">
+                <MessageSquare size={22} />
+              </div>
+              <div className="contact-card-content">
+                <span className="contact-card-subtitle">Instant Messaging</span>
+                <span className="contact-card-title">WhatsApp Chat</span>
+                <span className="contact-card-desc">Rapid Response within 15 mins</span>
+              </div>
+            </a>
 
-                  <form onSubmit={handleSubmit}>
-                    <div className="field-group">
-                      <label className="field-label">Full Name *</label>
-                      <input
-                        type="text"
-                        required
-                        placeholder="e.g. Md. Rafiqul Islam"
-                        className="field-input"
-                        value={formData.fullName}
-                        onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                      />
-                    </div>
+            {/* Email Card */}
+            <a href="mailto:bdegptender@gmail.com" className="contact-quick-card">
+              <div className="contact-card-icon-wrap">
+                <Mail size={22} />
+              </div>
+              <div className="contact-card-content">
+                <span className="contact-card-subtitle">Official Inquiries</span>
+                <span className="contact-card-title">bdegptender@gmail.com</span>
+                <span className="contact-card-desc">Send specifications &amp; BOQ</span>
+              </div>
+            </a>
 
-                    <div className="field-group">
-                      <label className="field-label">Company Name</label>
-                      <input
-                        type="text"
-                        placeholder="e.g. Islam Construction &amp; Engineering"
-                        className="field-input"
-                        value={formData.company}
-                        onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                      />
-                    </div>
-
-                    <div className="field-group">
-                      <label className="field-label">Phone Number *</label>
-                      <div style={{ display: 'flex' }}>
-                        <span style={{
-                          background: 'var(--bg-canvas)',
-                          border: '1.5px solid var(--border-card)',
-                          borderRight: 'none',
-                          borderTopLeftRadius: '6px',
-                          borderBottomLeftRadius: '6px',
-                          padding: '0.75rem 0.9rem',
-                          fontWeight: 700,
-                          color: 'var(--green-primary)',
-                          fontSize: '0.95rem',
-                          display: 'flex',
-                          alignItems: 'center'
-                        }}>
-                          +880
-                        </span>
-                        <input
-                          type="tel"
-                          required
-                          placeholder="1886-970197"
-                          className="field-input"
-                          style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
-                          value={formData.phone}
-                          onChange={(e) => {
-                            setFormData({ ...formData, phone: e.target.value });
-                            if (phoneError) setPhoneError('');
-                          }}
-                        />
-                      </div>
-                      {phoneError && (
-                        <p style={{ color: 'var(--red-action)', fontSize: '0.8rem', marginTop: '4px', fontWeight: 600 }}>
-                          {phoneError}
-                        </p>
-                      )}
-                    </div>
-
-                    <div className="field-group">
-                      <label className="field-label">Tender / Reference No.</label>
-                      <input
-                        type="text"
-                        placeholder="e.g. Tender ID: 948201 or Memo Ref"
-                        className="field-input"
-                        value={formData.tenderRef}
-                        onChange={(e) => setFormData({ ...formData, tenderRef: e.target.value })}
-                      />
-                    </div>
-
-                    <div className="field-group">
-                      <label className="field-label">Service Required *</label>
-                      <select
-                        className="field-select"
-                        value={formData.service}
-                        onChange={(e) => setFormData({ ...formData, service: e.target.value })}
-                      >
-                        <option value="e-GP Registration">01 — e-GP Registration &amp; Setup</option>
-                        <option value="Tender Preparation">02 — Tender Preparation &amp; BOQ</option>
-                        <option value="Tender Submission">03 — Tender Submission &amp; Upload</option>
-                        <option value="e-GP Consultancy">04 — e-GP Consultancy</option>
-                        <option value="e-GP Training">05 — e-GP Corporate Training</option>
-                      </select>
-                    </div>
-
-                    <div className="field-group">
-                      <label className="field-label">Message</label>
-                      <textarea
-                        rows={4}
-                        placeholder="Describe your tender deadline or specific assistance needed..."
-                        className="field-textarea"
-                        value={formData.message}
-                        onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                      />
-                    </div>
-
-                    <button
-                      type="submit"
-                      className="btn-red"
-                      style={{ width: '100%', padding: '0.85rem' }}
-                      id="contact-form-submit-btn"
-                    >
-                      Send Request
-                    </button>
-                  </form>
-                </div>
-              )}
+            {/* Office Location Card */}
+            <div className="contact-quick-card">
+              <div className="contact-card-icon-wrap">
+                <MapPin size={22} />
+              </div>
+              <div className="contact-card-content">
+                <span className="contact-card-subtitle">Dhaka Office</span>
+                <span className="contact-card-title">Baridhara J Block</span>
+                <span className="contact-card-desc">House 6, Road 2/B, Dhaka 1212</span>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <Footer />
+      {/* Main 2-Column Section */}
+      <section className="section-padding bg-subtle">
+        <div className="container">
+          <div className="contact-main-grid">
+            {/* Left Column: Office Details, Map & Guarantees */}
+            <div className="contact-details-col">
+              <div className="contact-details-box">
+                <span className="pill-badge pill-gold" style={{ marginBottom: '1rem', display: 'inline-flex' }}>
+                  HEADQUARTERS &amp; OPERATIONS
+                </span>
+                <h2 className="contact-box-title">
+                  Visit Our Dhaka Office
+                </h2>
+                <p className="contact-box-desc">
+                  Our engineering and procurement analysts work directly with contractors and bidders to review tender security guarantees, pre-qualification criteria, and e-GP portal compliance.
+                </p>
+
+                <div className="contact-info-list">
+                  <div className="contact-info-row">
+                    <div className="info-icon-badge">
+                      <MapPin size={18} />
+                    </div>
+                    <div>
+                      <div className="info-row-title">Office Address</div>
+                      <div className="info-row-val">
+                        House 6, Road 2/B, Baridhara J Block<br />
+                        Dhaka 1212, Bangladesh
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="contact-info-row">
+                    <div className="info-icon-badge">
+                      <Clock size={18} />
+                    </div>
+                    <div>
+                      <div className="info-row-title">Working Hours</div>
+                      <div className="info-row-val">
+                        Saturday — Thursday: 9:00 AM – 7:00 PM<br />
+                        <span className="text-emerald font-medium">24/7 Emergency e-GP Upload Desk</span> for active tender submissions.
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="contact-info-row">
+                    <div className="info-icon-badge">
+                      <Building size={18} />
+                    </div>
+                    <div>
+                      <div className="info-row-title">Official Facebook</div>
+                      <div className="info-row-val">
+                        <a 
+                          href="https://facebook.com/bdegptender" 
+                          target="_blank" 
+                          rel="noreferrer"
+                          className="contact-fb-anchor"
+                        >
+                          facebook.com/bdegptender
+                          <ExternalLink size={12} style={{ marginLeft: '4px', display: 'inline' }} />
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Map Box */}
+                <div className="contact-map-wrapper">
+                  <iframe
+                    title="e-GP Tender BD Office Location"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3650.6482121759654!2d90.4219195!3d23.7955219!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755c7a0f7574b21%3A0xe54d6d671bfca2c2!2sBaridhara%2C%20Dhaka!5e0!3m2!1sen!2sbd!4v1700000000000!5m2!1sen!2sbd"
+                    width="100%"
+                    height="220"
+                    style={{ border: 0, borderRadius: '12px' }}
+                    allowFullScreen={false}
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  ></iframe>
+                </div>
+
+                {/* Trust Badges */}
+                <div className="contact-trust-badges">
+                  <div className="trust-badge-item">
+                    <ShieldCheck size={18} className="text-emerald" />
+                    <span>Strict Bidder Data NDA</span>
+                  </div>
+                  <div className="trust-badge-item">
+                    <Check size={18} className="text-emerald" />
+                    <span>PPA 2006 &amp; PPR 2008 Compliant</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column: Inquiry Form */}
+            <div className="contact-form-col">
+              <div className="contact-form-box">
+                {submitted ? (
+                  <div className="contact-success-state">
+                    <div className="success-icon-wrap">
+                      <Check size={36} strokeWidth={3} />
+                    </div>
+                    <h3 className="success-title">
+                      ধন্যবাদ! আপনার অনুরোধ গ্রহণ করা হয়েছে।
+                    </h3>
+                    <p className="success-subtitle">
+                      আমরা দ্রুত আপনার সাথে যোগাযোগ করব।
+                    </p>
+                    <p className="success-desc">
+                      Our senior tender consultant will call you at <strong>+880 {formData.phone}</strong> to review your tender specifications and deadline.
+                    </p>
+                    <button
+                      onClick={() => setSubmitted(false)}
+                      className="btn-dark-pill"
+                      style={{ marginTop: '1.5rem' }}
+                    >
+                      Submit Another Inquiry
+                    </button>
+                  </div>
+                ) : (
+                  <div>
+                    <div className="form-box-header">
+                      <span className="pill-badge pill-green" style={{ marginBottom: '0.75rem' }}>
+                        FAST RESPONSE FORM
+                      </span>
+                      <h3 className="form-box-title">
+                        Tell Us About Your Tender Requirements
+                      </h3>
+                      <p className="form-box-subtitle">
+                        Fill in your details below and our tender consultants will connect with you within 30 minutes.
+                      </p>
+                    </div>
+
+                    <form onSubmit={handleSubmit} className="contact-form-body">
+                      {/* Name & Company */}
+                      <div className="form-two-col-grid">
+                        <div className="field-group">
+                          <label className="field-label">Full Name *</label>
+                          <input
+                            type="text"
+                            required
+                            placeholder="e.g. Md. Rafiqul Islam"
+                            className="field-input"
+                            value={formData.fullName}
+                            onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                          />
+                        </div>
+
+                        <div className="field-group">
+                          <label className="field-label">Company / Contractor Name</label>
+                          <input
+                            type="text"
+                            placeholder="e.g. Islam Engineering &amp; Co."
+                            className="field-input"
+                            value={formData.company}
+                            onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                          />
+                        </div>
+                      </div>
+
+                      {/* Phone & Tender ID */}
+                      <div className="form-two-col-grid">
+                        <div className="field-group">
+                          <label className="field-label">Mobile Number *</label>
+                          <div className="phone-input-wrap">
+                            <span className="phone-prefix">+880</span>
+                            <input
+                              type="tel"
+                              required
+                              placeholder="1886-970197"
+                              className="field-input field-input-phone"
+                              value={formData.phone}
+                              onChange={(e) => {
+                                setFormData({ ...formData, phone: e.target.value });
+                                if (phoneError) setPhoneError('');
+                              }}
+                            />
+                          </div>
+                          {phoneError && (
+                            <p className="field-error-msg">{phoneError}</p>
+                          )}
+                        </div>
+
+                        <div className="field-group">
+                          <label className="field-label">Tender ID / Ref No.</label>
+                          <input
+                            type="text"
+                            placeholder="e.g. 948201 or RHD/2025"
+                            className="field-input"
+                            value={formData.tenderRef}
+                            onChange={(e) => setFormData({ ...formData, tenderRef: e.target.value })}
+                          />
+                        </div>
+                      </div>
+
+                      {/* Service Selection */}
+                      <div className="field-group">
+                        <label className="field-label">Required Assistance Service *</label>
+                        <select
+                          className="field-select"
+                          value={formData.service}
+                          onChange={(e) => setFormData({ ...formData, service: e.target.value })}
+                        >
+                          <option value="Tender Preparation & Technical Proposal">01 — Full Tender Preparation &amp; Technical Proposal</option>
+                          <option value="BOQ Analysis & Financial Rate Pricing">02 — BOQ Analysis &amp; Financial Rate Optimization</option>
+                          <option value="e-GP Portal Registration & Setup">03 — New e-GP Registration &amp; Certificate Setup</option>
+                          <option value="Final Tender Upload & Submission">04 — Emergency e-GP Upload &amp; Submission</option>
+                          <option value="Post-Tender Audit & Evaluation Defense">05 — Evaluation &amp; Contract Award Consultancy</option>
+                        </select>
+                      </div>
+
+                      {/* Message */}
+                      <div className="field-group">
+                        <label className="field-label">Message / Project Deadline</label>
+                        <textarea
+                          rows={4}
+                          placeholder="Briefly describe your tender deadline, procuring entity, or specific challenges..."
+                          className="field-textarea"
+                          value={formData.message}
+                          onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                        />
+                      </div>
+
+                      {/* Submit */}
+                      <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="btn-dark-pill"
+                        style={{ width: '100%', justifyContent: 'center', padding: '0.85rem' }}
+                        id="contact-form-submit-btn"
+                      >
+                        {isSubmitting ? (
+                          <span>Processing...</span>
+                        ) : (
+                          <>
+                            <span>Send Consultation Request</span>
+                            <div className="btn-arrow-circle">
+                              <Send size={14} />
+                            </div>
+                          </>
+                        )}
+                      </button>
+                    </form>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <Footer onOpenModal={() => setModalOpen(true)} />
       <StickyMobileBar />
       <LeadModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
     </div>

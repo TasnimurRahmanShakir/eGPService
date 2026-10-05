@@ -6,12 +6,13 @@ import { Footer } from '../components/Footer';
 import { LeadModal } from '../components/LeadModal';
 import {
   HeroSection,
+  ClientsSection,
   MetricsSection,
+  WinningTendersSection,
   WhyChooseSection,
   ServicesSection,
   ProjectCostSection,
   BusinessComplianceSection,
-  ProcessSection,
   WhoWeServeSection,
   TestimonialsSection,
   FinalCTASection
@@ -33,11 +34,12 @@ export default function HomePage() {
       <main>
         <HeroSection onOpenModal={openModalWithService} />
         <MetricsSection />
+        <ClientsSection />
+        <WinningTendersSection onOpenModal={openModalWithService} />
         <WhyChooseSection onOpenModal={openModalWithService} />
         <ServicesSection onOpenModal={openModalWithService} />
         <ProjectCostSection onOpenModal={openModalWithService} />
         <BusinessComplianceSection onOpenModal={openModalWithService} />
-        <ProcessSection />
         <WhoWeServeSection />
         {/* <TestimonialsSection /> */}
         <FinalCTASection onOpenModal={openModalWithService} />

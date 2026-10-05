@@ -23,18 +23,19 @@ export function Navbar({ onOpenModal }: NavbarProps) {
       // Active Section Spy for smooth indicator
       if (pathname === '/') {
         const scrollPos = window.scrollY + 180;
-        const processEl = document.getElementById('process');
         const servicesEl = document.getElementById('services');
 
-        if (processEl && processEl.offsetTop <= scrollPos) {
-          setActiveSection('Process');
-        } else if (servicesEl && servicesEl.offsetTop <= scrollPos) {
+        if (servicesEl && servicesEl.offsetTop <= scrollPos) {
           setActiveSection('Services');
         } else {
           setActiveSection('Home');
         }
       } else if (pathname === '/about') {
         setActiveSection('About');
+      } else if (pathname === '/winning-tenders') {
+        setActiveSection('Winning Tenders');
+      } else if (pathname === '/contact') {
+        setActiveSection('Contact');
       }
     };
 
@@ -45,9 +46,10 @@ export function Navbar({ onOpenModal }: NavbarProps) {
 
   const navLinks = [
     { label: 'Home', href: '/' },
+    { label: 'Winning Tenders', href: '/winning-tenders' },
     { label: 'Services', href: '/#services' },
     { label: 'About', href: '/about' },
-    { label: 'Process', href: '/#process' }
+    { label: 'Contact', href: '/contact' }
   ];
 
   return (
@@ -146,6 +148,32 @@ export function Navbar({ onOpenModal }: NavbarProps) {
                   <ArrowRight size={14} strokeWidth={2.5} />
                 </div>
               </button>
+            </li>
+
+            {/* Useful e-GP Links in mobile menu */}
+            <li className="mobile-drawer-dept-section">
+              <span className="mobile-drawer-dept-title">Useful Department Links</span>
+              <div className="mobile-drawer-dept-grid">
+                <a href="https://bppa.gov.bd" target="_blank" rel="noopener noreferrer">BPPA</a>
+                <span>•</span>
+                <a href="http://www.pwd.gov.bd" target="_blank" rel="noopener noreferrer">PWD</a>
+                <span>•</span>
+                <a href="http://www.rhd.gov.bd" target="_blank" rel="noopener noreferrer">RHD</a>
+                <span>•</span>
+                <a href="http://www.lged.gov.bd" target="_blank" rel="noopener noreferrer">LGED</a>
+                <span>•</span>
+                <a href="http://www.bwdb.gov.bd" target="_blank" rel="noopener noreferrer">BWDB</a>
+                <span>•</span>
+                <a href="http://eedmoe.gov.bd" target="_blank" rel="noopener noreferrer">EED</a>
+                <span>•</span>
+                <a href="http://www.hed.gov.bd" target="_blank" rel="noopener noreferrer">HED</a>
+                <span>•</span>
+                <a href="http://www.dphe.gov.bd" target="_blank" rel="noopener noreferrer">DPHE</a>
+                <span>•</span>
+                <a href="http://www.rajuk.gov.bd" target="_blank" rel="noopener noreferrer">RAJUK</a>
+                <span>•</span>
+                <a href="https://eprocure.gov.bd" target="_blank" rel="noopener noreferrer">CITY CORP</a>
+              </div>
             </li>
           </ul>
         </div>
