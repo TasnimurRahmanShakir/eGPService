@@ -7,8 +7,8 @@ export function ClientsSection() {
   const [ref, isInView] = useInView<HTMLElement>({ threshold: 0.1 });
 
   return (
-    <section 
-      ref={ref} 
+    <section
+      ref={ref}
       className={`clients-carousel-section ${isInView ? 'clients-in-view' : ''}`}
       id="clients"
     >
