@@ -346,14 +346,12 @@ button {
 }
 
 /* ==========================================================================
-   3. HERO SECTION (Full-Screen Dark Forest Green with Shutter Reveal)
+   3. HERO SECTION (Dark Forest Green Theme)
    ========================================================================== */
 .hero-section {
-  min-height: calc(100vh - 74px);
-  min-height: calc(100dvh - 74px);
   display: flex;
   align-items: center;
-  padding: clamp(2.5rem, 4vw, 4.5rem) 0;
+  padding: clamp(3rem, 5vw, 4.5rem) 0;
   background: radial-gradient(circle at 75% 42%, #07382B 0%, #04241B 52%, #021610 100%);
   position: relative;
   overflow: hidden;
@@ -372,38 +370,8 @@ button {
   pointer-events: none;
 }
 
-/* Scroll-Driven Upward Closing Shutter */
-.hero-scroll-shutter {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 45;
-  overflow: hidden;
-  will-change: transform, opacity;
-  transition: opacity 0.2s ease-out;
-}
-
-.hero-scroll-shutter-blade {
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(180deg, #02140E 0%, #010D09 100%);
-  position: relative;
-  box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.85);
-}
-
-.hero-scroll-shutter-laser {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, transparent 0%, #10B981 15%, #34D399 50%, #10B981 85%, transparent 100%);
-  box-shadow: 0 0 16px #34D399, 0 0 32px #10B981;
-}
-
 .hero-content-direct {
-  opacity: 1;
-  transform: none;
+  width: 100%;
 }
 
 .hero-container-grid {
