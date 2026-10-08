@@ -3,8 +3,9 @@
 import React from 'react';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'red' | 'primary' | 'green' | 'secondary' | 'outline-white' | 'ghost' | 'danger';
+  variant?: 'primary' | 'secondary' | 'danger' | 'ghost' | 'emerald' | 'outline';
   size?: 'sm' | 'md' | 'lg';
+  isLoading?: boolean;
   icon?: React.ReactNode;
   children?: React.ReactNode;
 }
@@ -12,50 +13,56 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 export function Button({
   variant = 'primary',
   size = 'md',
+  isLoading = false,
   icon,
   children,
   className = '',
+  disabled,
   style,
   ...props
 }: ButtonProps) {
   const getVariantStyles = (): React.CSSProperties => {
     switch (variant) {
-      case 'red':
       case 'primary':
+        return {
+          backgroundColor: '#38bdf8',
+          color: '#070b16',
+          border: '1px solid transparent',
+          boxShadow: '0 0 15px rgba(56, 189, 248, 0.25)',
+        };
+      case 'emerald':
+        return {
+          backgroundColor: '#10b981',
+          color: '#FFFFFF',
+          border: '1px solid transparent',
+          boxShadow: '0 0 15px rgba(16, 185, 129, 0.25)',
+        };
       case 'danger':
         return {
-          backgroundColor: '#D81E36',
+          backgroundColor: '#f43f5e',
           color: '#FFFFFF',
           border: '1px solid transparent',
-          boxShadow: '0 4px 14px rgba(216, 30, 54, 0.25)',
-        };
-      case 'green':
-        return {
-          backgroundColor: '#006A4E',
-          color: '#FFFFFF',
-          border: '1px solid transparent',
-          boxShadow: '0 4px 14px rgba(0, 106, 78, 0.2)',
-        };
-      case 'outline-white':
-        return {
-          backgroundColor: 'transparent',
-          color: '#FFFFFF',
-          border: '1.5px solid rgba(255, 255, 255, 0.85)',
+          boxShadow: '0 0 15px rgba(244, 63, 94, 0.25)',
         };
       case 'secondary':
         return {
-          backgroundColor: '#FFFFFF',
-          color: '#006A4E',
-          border: '1.5px solid #006A4E',
+          backgroundColor: 'rgba(30, 41, 59, 0.8)',
+          color: '#f8fafc',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
         };
-      case 'ghost':
+      case 'outline':
         return {
           backgroundColor: 'transparent',
-          color: '#5B6B64',
-          border: '1px solid #E3EBE7',
+          color: '#38bdf8',
+          border: '1px solid rgba(56, 189, 248, 0.4)',
         };
+      case 'ghost':
       default:
-        return {};
+        return {
+          backgroundColor: 'transparent',
+          color: '#94a3b8',
+          border: '1px solid transparent',
+        };
     }
   };
 
@@ -63,36 +70,38 @@ export function Button({
     switch (size) {
       case 'sm':
         return {
-          padding: '0.4rem 0.9rem',
-          fontSize: '0.85rem',
-          borderRadius: '9999px',
+          padding: '0.35rem 0.75rem',
+          fontSize: '0.815rem',
+          borderRadius: '6px',
         };
       case 'lg':
         return {
-          padding: '0.9rem 2rem',
-          fontSize: '1.05rem',
-          borderRadius: '9999px',
+          padding: '0.75rem 1.75rem',
+          fontSize: '1rem',
+          borderRadius: '10px',
         };
       case 'md':
       default:
         return {
-          padding: '0.65rem 1.4rem',
-          fontSize: '0.925rem',
-          borderRadius: '9999px',
+          padding: '0.5rem 1.1rem',
+          fontSize: '0.875rem',
+          borderRadius: '8px',
         };
     }
   };
 
   return (
     <button
+      disabled={disabled || isLoading}
       style={{
         display: 'inline-flex',
         alignItems: 'center',
         justifyContent: 'center',
         gap: '0.5rem',
         fontWeight: 600,
-        cursor: 'pointer',
-        transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
+        cursor: disabled || isLoading ? 'not-allowed' : 'pointer',
+        opacity: disabled || isLoading ? 0.65 : 1,
+        transition: 'all 0.15s ease',
         fontFamily: 'inherit',
         textDecoration: 'none',
         ...getVariantStyles(),
@@ -102,8 +111,22 @@ export function Button({
       className={`egp-btn ${className}`}
       {...props}
     >
+      {isLoading ? (
+        <span
+          style={{
+            display: 'inline-block',
+            width: '14px',
+            height: '14px',
+            border: '2px solid currentColor',
+            borderRightColor: 'transparent',
+            borderRadius: '50%',
+            animation: 'spin 0.6s linear infinite',
+          }}
+        />
+      ) : icon ? (
+        <span style={{ display: 'inline-flex', alignItems: 'center' }}>{icon}</span>
+      ) : null}
       {children}
-      {icon && <span style={{ display: 'inline-flex', alignItems: 'center' }}>{icon}</span>}
     </button>
   );
 }

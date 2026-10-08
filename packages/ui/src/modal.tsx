@@ -6,6 +6,7 @@ export interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   title?: string;
+  subtitle?: string;
   children: React.ReactNode;
   maxWidth?: string;
   className?: string;
@@ -15,6 +16,7 @@ export function Modal({
   isOpen,
   onClose,
   title,
+  subtitle,
   children,
   maxWidth = '540px',
   className = ''
@@ -44,9 +46,9 @@ export function Modal({
         left: 0,
         width: '100vw',
         height: '100vh',
-        background: 'rgba(1, 30, 20, 0.72)',
-        backdropFilter: 'blur(6px)',
-        WebkitBackdropFilter: 'blur(6px)',
+        background: 'rgba(7, 11, 22, 0.8)',
+        backdropFilter: 'blur(8px)',
+        WebkitBackdropFilter: 'blur(8px)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -63,13 +65,14 @@ export function Modal({
           width: '100%',
           maxHeight: '92vh',
           overflowY: 'auto',
-          background: '#FFFFFF',
-          borderRadius: '22px',
-          boxShadow: '0 25px 60px -15px rgba(0, 0, 0, 0.35)',
-          border: '1px solid rgba(1, 78, 54, 0.12)',
-          padding: 'clamp(1.4rem, 3vw, 2.25rem)',
+          background: '#0b1120',
+          borderRadius: '16px',
+          boxShadow: '0 25px 60px -15px rgba(0, 0, 0, 0.7)',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          padding: '1.75rem',
           position: 'relative',
-          boxSizing: 'border-box'
+          boxSizing: 'border-box',
+          color: '#f8fafc',
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -79,21 +82,21 @@ export function Modal({
             position: 'absolute',
             top: '1.25rem',
             right: '1.25rem',
-            width: '36px',
-            height: '36px',
-            borderRadius: '50%',
-            background: 'var(--green-soft, #EEF5F2)',
-            border: 'none',
-            color: 'var(--green-deep, #013A28)',
+            width: '32px',
+            height: '32px',
+            borderRadius: '8px',
+            background: 'rgba(255, 255, 255, 0.05)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            color: '#94a3b8',
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: '1.25rem',
-            fontWeight: 700,
+            fontSize: '1rem',
+            fontWeight: 600,
             lineHeight: 1,
             zIndex: 10,
-            transition: 'background 0.2s'
+            transition: 'all 0.15s ease'
           }}
           aria-label="Close modal"
         >
@@ -101,11 +104,17 @@ export function Modal({
         </button>
 
         {title && (
-          <div style={{ marginBottom: '1.25rem', paddingRight: '2rem' }}>
-            <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--green-deep, #013A28)' }}>{title}</h3>
+          <div style={{ marginBottom: '1.25rem', paddingRight: '2.5rem' }}>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#f8fafc' }}>{title}</h3>
+            {subtitle && (
+              <p style={{ fontSize: '0.825rem', color: '#94a3b8', marginTop: '0.2rem' }}>
+                {subtitle}
+              </p>
+            )}
           </div>
         )}
-        {children}
+
+        <div>{children}</div>
       </div>
     </div>
   );
