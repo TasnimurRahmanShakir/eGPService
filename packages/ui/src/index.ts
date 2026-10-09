@@ -8,3 +8,4 @@ export * from './input';
 export * from './select';
 export * from './money-display';
 export * from './data-table';
+export * from './combobox';

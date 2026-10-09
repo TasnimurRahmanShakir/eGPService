@@ -1,29 +1,20 @@
 import React, { Suspense } from 'react';
-import { apiClient, type TenderDto, type ClientDto, type TendererDto } from '@egp/api-client';
+import { apiClient, type TenderDto } from '@egp/api-client';
 import { TendersClientView } from './TendersClientView';
 
 export const dynamic = 'force-dynamic';
 
-async function getTendersData(): Promise<{
-  tenders: TenderDto[];
-  clients: ClientDto[];
-  tenderers: TendererDto[];
-}> {
+async function getTenders(): Promise<TenderDto[]> {
   try {
-    const [tenders, clients, tenderers] = await Promise.all([
-      apiClient.tenders.getAll(undefined, { next: { tags: ['tenders'] } }).catch(() => []),
-      apiClient.clients.getAll({ next: { tags: ['clients'] } }).catch(() => []),
-      apiClient.tenderers.getAll({ next: { tags: ['tenderers'] } }).catch(() => []),
-    ]);
-    return { tenders, clients, tenderers };
+    return await apiClient.tenders.getAll(undefined, { next: { tags: ['tenders'] } });
   } catch (err) {
-    console.warn('[TendersPage] Backend API is currently unreachable. Showing empty tenders list.');
-    return { tenders: [], clients: [], tenderers: [] };
+    console.warn('[TendersPage] Backend API is unreachable. Showing empty tenders list.');
+    return [];
   }
 }
 
 export default async function TendersPage() {
-  const { tenders, clients, tenderers } = await getTendersData();
+  const tenders = await getTenders();
 
   return (
     <div style={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -37,7 +28,7 @@ export default async function TendersPage() {
       </div>
 
       <Suspense fallback={<div style={{ color: '#94a3b8', padding: '2rem' }}>Loading tender matrix...</div>}>
-        <TendersClientView initialTenders={tenders} clients={clients} tenderers={tenderers} />
+        <TendersClientView initialTenders={tenders} />
       </Suspense>
     </div>
   );

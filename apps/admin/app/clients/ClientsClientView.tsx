@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Plus, Sparkles, CheckCircle2, XCircle } from 'lucide-react';
+import { Plus, Sparkles, CheckCircle2, XCircle, AlertCircle, ShieldCheck } from 'lucide-react';
 import { Button, Badge, DataTable, MoneyDisplay, type Column } from '@egp/ui';
 import type { ClientDto } from '@egp/api-client';
 import { CreateClientModal, AddSubscriptionModal } from '../../components/clients/ClientModals';
@@ -19,7 +19,8 @@ export function ClientsClientView({ initialClients }: { initialClients: ClientDt
 
   const totalClients = initialClients.length;
   const purchasedCount = initialClients.filter((c) => c.hasPurchasedSolution).length;
-  const totalDueCount = initialClients.filter((c) => c.openingBalanceType === 1 && c.openingBalance > 0).length;
+  const totalDueSum = initialClients.reduce((sum, c) => sum + (c.currentDue || 0), 0);
+  const totalAdvanceSum = initialClients.reduce((sum, c) => sum + (c.currentAdvance || 0), 0);
 
   const columns: Column<ClientDto>[] = [
     {
@@ -59,6 +60,28 @@ export function ClientsClientView({ initialClients }: { initialClients: ClientDt
           </div>
         );
       },
+    },
+    {
+      header: 'Current Advance',
+      align: 'right',
+      cell: (c) => (
+        c.currentAdvance > 0 ? (
+          <MoneyDisplay amount={c.currentAdvance} type="advance" size="sm" />
+        ) : (
+          <span style={{ color: '#64748b' }}>—</span>
+        )
+      ),
+    },
+    {
+      header: 'Current Due',
+      align: 'right',
+      cell: (c) => (
+        c.currentDue > 0 ? (
+          <MoneyDisplay amount={c.currentDue} type="due" size="sm" />
+        ) : (
+          <Badge variant="emerald" size="sm">Clear</Badge>
+        )
+      ),
     },
     {
       header: 'Solution Purchased?',
@@ -110,18 +133,29 @@ export function ClientsClientView({ initialClients }: { initialClients: ClientDt
         <div style={{ padding: '1.25rem', backgroundColor: 'rgba(15, 23, 42, 0.7)', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
           <span style={{ fontSize: '0.8rem', color: '#94a3b8', fontWeight: 500 }}>Total Registered Clients</span>
           <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#f8fafc', marginTop: '0.25rem' }}>{totalClients}</div>
-        </div>
-
-        <div style={{ padding: '1.25rem', backgroundColor: 'rgba(15, 23, 42, 0.7)', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-          <span style={{ fontSize: '0.8rem', color: '#94a3b8', fontWeight: 500 }}>Solution Purchased</span>
-          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#34d399', marginTop: '0.25rem' }}>
-            {purchasedCount} <span style={{ fontSize: '0.9rem', color: '#64748b' }}>/ {totalClients}</span>
+          <div style={{ fontSize: '0.75rem', color: '#34d399', marginTop: '0.25rem' }}>
+            {purchasedCount} active solution subscriptions
           </div>
         </div>
 
         <div style={{ padding: '1.25rem', backgroundColor: 'rgba(15, 23, 42, 0.7)', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-          <span style={{ fontSize: '0.8rem', color: '#94a3b8', fontWeight: 500 }}>Clients With Due Balance</span>
-          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#fb7185', marginTop: '0.25rem' }}>{totalDueCount}</div>
+          <span style={{ fontSize: '0.8rem', color: '#94a3b8', fontWeight: 500 }}>Total Available Advance (Ledger)</span>
+          <div style={{ marginTop: '0.25rem' }}>
+            <MoneyDisplay amount={totalAdvanceSum} type="advance" size="lg" />
+          </div>
+          <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.25rem' }}>
+            Available balance for upcoming tender charges
+          </div>
+        </div>
+
+        <div style={{ padding: '1.25rem', backgroundColor: 'rgba(15, 23, 42, 0.7)', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+          <span style={{ fontSize: '0.8rem', color: '#94a3b8', fontWeight: 500 }}>Total Outstanding Due (Ledger)</span>
+          <div style={{ marginTop: '0.25rem' }}>
+            <MoneyDisplay amount={totalDueSum} type="due" size="lg" />
+          </div>
+          <div style={{ fontSize: '0.75rem', color: '#fb7185', marginTop: '0.25rem' }}>
+            Accumulated due across all tenders & subscriptions
+          </div>
         </div>
       </div>
 

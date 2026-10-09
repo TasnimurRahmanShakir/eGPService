@@ -64,3 +64,17 @@ export async function addSubscriptionAction(formData: unknown): Promise<ActionRe
     };
   }
 }
+
+export async function fetchClientOptionsAction() {
+  try {
+    const clients = await apiClient.clients.getAll();
+    return clients.map((c) => ({
+      value: c.id,
+      label: c.name,
+      subLabel: `Phone: ${c.phone || 'N/A'} | Adv: ৳${(c.currentAdvance || 0).toLocaleString()} | Due: ৳${(c.currentDue || 0).toLocaleString()}`,
+    }));
+  } catch (error) {
+    console.error('Failed to fetch clients:', error);
+    return [];
+  }
+}

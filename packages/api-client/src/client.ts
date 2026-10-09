@@ -161,10 +161,24 @@ export function createApiClient(customBaseUrl?: string) {
           body: JSON.stringify(data)
         });
       },
-      mapTenderers: (id: number, data: TendererAssignInput) =>
+      mapTenderers: (id: number, data: any) =>
         request<{ message: string }>(`/tenders/${id}/tenderers`, {
           method: 'POST',
           body: JSON.stringify(data)
+        }),
+      addTenderer: (id: number, data: any) =>
+        request<{ mappingId: number; message: string; ok: boolean }>(`/tenders/${id}/tenderers`, {
+          method: 'POST',
+          body: JSON.stringify(data)
+        }),
+      updateTenderer: (id: number, tendererId: number, data: any) =>
+        request<{ message: string; ok: boolean }>(`/tenders/${id}/tenderers/${tendererId}`, {
+          method: 'PUT',
+          body: JSON.stringify(data)
+        }),
+      removeTenderer: (id: number, tendererId: number) =>
+        request<{ message: string; ok: boolean }>(`/tenders/${id}/tenderers/${tendererId}`, {
+          method: 'DELETE'
         })
     },
 
