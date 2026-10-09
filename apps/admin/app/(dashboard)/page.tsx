@@ -9,7 +9,7 @@ import {
   AlertCircle,
   CreditCard,
 } from 'lucide-react';
-import { RecentTendersTable } from '../components/dashboard/RecentTendersTable';
+import { RecentTendersTable } from '@/components/dashboard/RecentTendersTable';
 
 export const dynamic = 'force-dynamic';
 

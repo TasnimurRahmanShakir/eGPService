@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Plus, Sparkles, CheckCircle2, XCircle, AlertCircle, ShieldCheck } from 'lucide-react';
 import { Button, Badge, DataTable, MoneyDisplay, type Column } from '@egp/ui';
 import type { ClientDto } from '@egp/api-client';
-import { CreateClientModal, AddSubscriptionModal } from '../../components/clients/ClientModals';
+import { CreateClientModal, AddSubscriptionModal } from '@/components/clients/ClientModals';
 
 export function ClientsClientView({ initialClients }: { initialClients: ClientDto[] }) {
   const [search, setSearch] = useState('');

@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Plus, KeyRound, ShieldCheck } from 'lucide-react';
 import { Button, Badge, DataTable, type Column } from '@egp/ui';
 import type { TendererDto } from '@egp/api-client';
-import { CreateTendererModal } from '../../components/tenderers/TendererModals';
+import { CreateTendererModal } from '@/components/tenderers/TendererModals';
 
 export function TenderersClientView({ initialTenderers }: { initialTenderers: TendererDto[] }) {
   const [search, setSearch] = useState('');

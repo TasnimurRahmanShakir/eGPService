@@ -1,8 +1,6 @@
 import type { Metadata, Viewport } from 'next';
-import { cookies } from 'next/headers';
 import './globals.css';
 import { Toaster } from 'sonner';
-import { AdminLayoutWrapper } from '../components/layout/sidebar';
 
 export const metadata: Metadata = {
   title: 'eGP Admin Command Portal',
@@ -12,17 +10,14 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#059669'
+  themeColor: '#059669',
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const cookieStore = await cookies();
-  const isCollapsed = cookieStore.get('egp-sidebar-collapsed')?.value === 'true';
-
   return (
     <html lang="en">
       <head>
@@ -34,9 +29,7 @@ export default async function RootLayout({
         />
       </head>
       <body>
-        <AdminLayoutWrapper initialCollapsed={isCollapsed}>
-          {children}
-        </AdminLayoutWrapper>
+        {children}
         <Toaster richColors position="top-right" theme="light" />
       </body>
     </html>

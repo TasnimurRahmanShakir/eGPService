@@ -2,7 +2,7 @@
 
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { ADMIN_COOKIE_NAME, createSessionToken } from '../../lib/auth-crypto';
+import { ADMIN_COOKIE_NAME, createSessionToken } from '@/lib/auth-crypto';
 
 export async function loginAction(formData: FormData): Promise<{ success: boolean; error?: string }> {
   const username = formData.get('username')?.toString().trim();

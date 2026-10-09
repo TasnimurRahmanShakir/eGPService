@@ -11,9 +11,9 @@ import {
   AddTendererModal,
   EditTendererModal,
   RecordPaymentModal,
-} from '../../components/tenders/TenderModals';
-import { TenderExcelMatrix } from '../../components/tenders/TenderExcelMatrix';
-import { removeTendererAction } from '../actions/tenderActions';
+} from '@/components/tenders/TenderModals';
+import { TenderExcelMatrix } from '@/components/tenders/TenderExcelMatrix';
+import { removeTendererAction } from '@/app/actions/tenderActions';
 
 export function TendersClientView({
   initialTenders,
