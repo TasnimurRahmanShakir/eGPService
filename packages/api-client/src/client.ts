@@ -34,9 +34,19 @@ export interface RequestOptions extends RequestInit {
   params?: Record<string, string | number | boolean | undefined | null>;
 }
 
-export function createApiClient(baseUrl: string = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api') {
+export const getBaseUrl = (): string => {
+  if (typeof window === 'undefined') {
+    return process.env.INTERNAL_API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5276/api';
+  }
+  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5276/api';
+};
+
+export function createApiClient(customBaseUrl?: string) {
+  const resolveBaseUrl = () => customBaseUrl || getBaseUrl();
+
   async function request<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
     const { params, headers, ...rest } = options;
+    const baseUrl = resolveBaseUrl();
 
     let url = `${baseUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
     if (params) {
@@ -87,10 +97,14 @@ export function createApiClient(baseUrl: string = process.env.NEXT_PUBLIC_API_UR
     }
 
     if (res.status === 204) {
-      return {} as T;
+      return { ok: true } as unknown as T;
     }
 
-    return (await res.json()) as T;
+    const data = await res.json();
+    if (typeof data === 'object' && data !== null && !('ok' in data)) {
+      (data as any).ok = true;
+    }
+    return data as T;
   }
 
   return {
@@ -108,7 +122,7 @@ export function createApiClient(baseUrl: string = process.env.NEXT_PUBLIC_API_UR
           body: JSON.stringify(data)
         }),
       addSubscription: (id: number, data: Omit<ClientSubscriptionCreateInput, 'clientId'>) =>
-        request<{ subscriptionId: number; message: string }>(`/clients/${id}/subscriptions`, {
+        request<{ subscriptionId: number; message: string; ok: boolean }>(`/clients/${id}/subscriptions`, {
           method: 'POST',
           body: JSON.stringify(data)
         })
@@ -131,11 +145,22 @@ export function createApiClient(baseUrl: string = process.env.NEXT_PUBLIC_API_UR
           method: 'PUT',
           body: JSON.stringify(data)
         }),
-      addPayment: (id: number, data: Omit<TenderPaymentCreateInput, 'tenderId'>) =>
-        request<{ paymentId: number; message: string }>(`/tenders/${id}/payments`, {
+      addPayment: (
+        idOrData: number | TenderPaymentCreateInput,
+        maybeData?: Omit<TenderPaymentCreateInput, 'tenderId'>
+      ) => {
+        if (typeof idOrData === 'number') {
+          return request<{ paymentId: number; message: string; ok: boolean }>(`/tenders/${idOrData}/payments`, {
+            method: 'POST',
+            body: JSON.stringify(maybeData)
+          });
+        }
+        const { tenderId, ...data } = idOrData;
+        return request<{ paymentId: number; message: string; ok: boolean }>(`/tenders/${tenderId}/payments`, {
           method: 'POST',
           body: JSON.stringify(data)
-        }),
+        });
+      },
       mapTenderers: (id: number, data: TendererAssignInput) =>
         request<{ message: string }>(`/tenders/${id}/tenderers`, {
           method: 'POST',

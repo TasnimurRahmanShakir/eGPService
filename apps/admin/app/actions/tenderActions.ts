@@ -5,9 +5,12 @@ import { apiClient } from '@egp/api-client';
 import {
   TenderCreateSchema,
   TenderPaymentCreateSchema,
-  TendererAssignSchema
+  TendererAssignSchema,
+  type TenderPaymentCreateInput
 } from '@egp/schema';
 import type { ActionResult } from './clientActions';
+
+export type PaymentSchemaType = TenderPaymentCreateInput;
 
 export async function createTenderAction(formData: unknown): Promise<ActionResult> {
   const result = TenderCreateSchema.safeParse(formData);
@@ -30,13 +33,13 @@ export async function createTenderAction(formData: unknown): Promise<ActionResul
   } catch (error: any) {
     return {
       success: false,
-      message: error.message || 'Failed to create tender',
+      message: error.problemDetails?.detail || error.problemDetails?.title || error.message || 'Failed to create tender',
       errors: error.problemDetails?.errors
     };
   }
 }
 
-export async function recordPaymentAction(formData: unknown): Promise<ActionResult> {
+export async function recordPaymentAction(formData: PaymentSchemaType | unknown): Promise<ActionResult> {
   const result = TenderPaymentCreateSchema.safeParse(formData);
   if (!result.success) {
     const errors: Record<string, string[]> = {};
@@ -49,16 +52,27 @@ export async function recordPaymentAction(formData: unknown): Promise<ActionResu
   }
 
   try {
-    const { tenderId, ...rest } = result.data;
-    const res = await apiClient.tenders.addPayment(tenderId, rest);
-    revalidateTag('tenders');
-    revalidatePath('/tenders');
-    revalidatePath('/');
-    return { success: true, message: res.message || 'Payment recorded successfully', data: res };
+    const response = await apiClient.tenders.addPayment(result.data);
+
+    if (response?.ok || (response && 'paymentId' in response)) {
+      revalidateTag('tenders');
+      revalidatePath('/tenders');
+      revalidatePath('/');
+      return {
+        success: true,
+        message: response.message || 'Payment recorded securely.',
+        data: response
+      };
+    }
+
+    return {
+      success: false,
+      message: (response as any)?.problemDetails?.title || 'Payment transaction failed'
+    };
   } catch (error: any) {
     return {
       success: false,
-      message: error.message || 'Failed to record payment',
+      message: error.problemDetails?.detail || error.problemDetails?.title || error.message || 'Network error occurred.',
       errors: error.problemDetails?.errors
     };
   }

@@ -1,31 +1,28 @@
 import React from 'react';
 import Link from 'next/link';
 import { apiClient } from '@egp/api-client';
-import { Button, Badge, DataTable, MoneyDisplay, type Column } from '@egp/ui';
+import { Badge, MoneyDisplay } from '@egp/ui';
 import {
   Users,
   FileSpreadsheet,
-  History,
   ArrowUpRight,
-  TrendingUp,
   AlertCircle,
   CreditCard,
-  ShieldCheck,
 } from 'lucide-react';
-import type { TenderDto } from '@egp/api-client';
+import { RecentTendersTable } from '../components/dashboard/RecentTendersTable';
 
 export const dynamic = 'force-dynamic';
 
 async function getDashboardData() {
   try {
     const [clients, tenders, auditLogs] = await Promise.all([
-      apiClient.clients.getAll({ next: { tags: ['clients'], revalidate: 0 } }),
-      apiClient.tenders.getAll(undefined, { next: { tags: ['tenders'], revalidate: 0 } }),
-      apiClient.auditLogs.getLogs({ pageSize: 5 }, { next: { revalidate: 0 } }),
+      apiClient.clients.getAll({ next: { tags: ['clients'], revalidate: 0 } }).catch(() => []),
+      apiClient.tenders.getAll(undefined, { next: { tags: ['tenders'], revalidate: 0 } }).catch(() => []),
+      apiClient.auditLogs.getLogs({ pageSize: 5 }, { next: { revalidate: 0 } }).catch(() => []),
     ]);
-    return { clients, tenders, auditLogs, isConnected: true };
-  } catch (error) {
-    console.error('Failed to connect to .NET backend:', error);
+    const isConnected = clients.length > 0 || tenders.length > 0 || auditLogs.length > 0;
+    return { clients, tenders, auditLogs, isConnected };
+  } catch {
     return { clients: [], tenders: [], auditLogs: [], isConnected: false };
   }
 }
@@ -40,47 +37,6 @@ export default async function AdminDashboardOverview() {
   const totalDue = tenders.reduce((sum, t) => sum + t.dueAmount, 0);
 
   const recentTenders = tenders.slice(0, 5);
-
-  const columns: Column<TenderDto>[] = [
-    {
-      header: 'Tender ID',
-      accessorKey: 'tenderId',
-      cell: (t) => <span style={{ fontFamily: 'monospace', fontWeight: 700, color: '#f8fafc' }}>{t.tenderId}</span>,
-    },
-    {
-      header: 'Client',
-      accessorKey: 'clientName',
-      cell: (t) => <span style={{ color: '#38bdf8', fontWeight: 600 }}>{t.clientName}</span>,
-    },
-    {
-      header: 'Department',
-      accessorKey: 'department',
-    },
-    {
-      header: 'Charge',
-      align: 'right',
-      cell: (t) => <MoneyDisplay amount={t.chargeAmount} size="sm" />,
-    },
-    {
-      header: 'Due',
-      align: 'right',
-      cell: (t) => <MoneyDisplay amount={t.dueAmount} type={t.dueAmount > 0 ? 'due' : 'neutral'} size="sm" />,
-    },
-    {
-      header: 'Status',
-      align: 'center',
-      cell: (t) =>
-        t.dueAmount > 0 ? (
-          <Badge variant="rose" size="sm">
-            Due ৳
-          </Badge>
-        ) : (
-          <Badge variant="emerald" size="sm">
-            Cleared
-          </Badge>
-        ),
-    },
-  ];
 
   return (
     <div style={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
@@ -168,12 +124,7 @@ export default async function AdminDashboardOverview() {
             </Link>
           </div>
 
-          <DataTable
-            data={recentTenders}
-            columns={columns}
-            emptyTitle="No recent tenders"
-            emptySubtitle="Create a tender in the Excel Matrix view to start tracking submissions."
-          />
+          <RecentTendersTable tenders={recentTenders} />
         </div>
 
         {/* Audit Stream Preview */}

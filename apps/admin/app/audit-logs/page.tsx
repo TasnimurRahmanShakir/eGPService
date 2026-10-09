@@ -8,7 +8,7 @@ async function fetchAuditLogs(): Promise<AuditLogDto[]> {
   try {
     return await apiClient.auditLogs.getLogs({ pageNumber: 1, pageSize: 100 }, { next: { revalidate: 0 } });
   } catch (err) {
-    console.error('Failed to fetch audit logs from .NET API:', err);
+    console.warn('[AuditLogsPage] Backend API is currently unreachable. Showing empty audit trail.');
     return [];
   }
 }

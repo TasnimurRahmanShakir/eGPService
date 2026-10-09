@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
+import { Toaster } from 'sonner';
 import { AdminSidebar } from '../components/layout/sidebar';
 
 export const metadata: Metadata = {
@@ -31,6 +32,7 @@ export default function RootLayout({
             {children}
           </main>
         </div>
+        <Toaster richColors position="top-right" theme="dark" />
       </body>
     </html>
   );

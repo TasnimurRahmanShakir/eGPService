@@ -3,6 +3,7 @@
 import React, { useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'sonner';
 import { Button, Modal, Input, Select, MoneyDisplay } from '@egp/ui';
 import {
   TenderCreateSchema,
@@ -70,10 +71,12 @@ export function CreateTenderModal({ isOpen, onClose, clients, tenderers }: Creat
       };
       const res = await createTenderAction(payload);
       if (res.success) {
+        toast.success(res.message || 'Tender created successfully.');
         reset();
         setSelectedTendererIds([]);
         onClose();
       } else {
+        toast.error(res.message || 'Failed to create tender.');
         setServerError(res.message);
       }
     });
@@ -284,18 +287,20 @@ export function RecordPaymentModal({
   const onSubmit = (data: TenderPaymentCreateInput) => {
     setServerError(null);
 
-    // Instant Optimistic Update
-    if (onOptimisticPayment) {
-      onOptimisticPayment(tenderId, data.amountPaid);
-    }
-
     startTransition(async () => {
+      if (onOptimisticPayment) {
+        onOptimisticPayment(tenderId, data.amountPaid);
+      }
+
       const res = await recordPaymentAction({ ...data, tenderId });
-      if (res.success) {
+
+      if (!res.success) {
+        toast.error(res.message || 'Payment failed. Reverted to previous balance.');
+        setServerError(res.message);
+      } else {
+        toast.success(res.message || 'Payment recorded securely.');
         reset();
         onClose();
-      } else {
-        setServerError(res.message);
       }
     });
   };
@@ -366,3 +371,5 @@ export function RecordPaymentModal({
     </Modal>
   );
 }
+
+export { RecordPaymentModal as TenderPaymentModal };

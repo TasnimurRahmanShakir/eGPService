@@ -8,7 +8,7 @@ async function fetchClients(): Promise<ClientDto[]> {
   try {
     return await apiClient.clients.getAll({ next: { tags: ['clients'] } });
   } catch (err) {
-    console.error('Failed to fetch clients from .NET API:', err);
+    console.warn('[ClientsPage] Backend API is currently unreachable. Showing empty clients list.');
     return [];
   }
 }

@@ -8,7 +8,7 @@ async function fetchTenderers(): Promise<TendererDto[]> {
   try {
     return await apiClient.tenderers.getAll({ next: { tags: ['tenderers'] } });
   } catch (err) {
-    console.error('Failed to fetch tenderers from .NET API:', err);
+    console.warn('[TenderersPage] Backend API is currently unreachable. Showing empty tenderers list.');
     return [];
   }
 }

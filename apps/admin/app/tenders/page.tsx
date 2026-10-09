@@ -11,13 +11,13 @@ async function getTendersData(): Promise<{
 }> {
   try {
     const [tenders, clients, tenderers] = await Promise.all([
-      apiClient.tenders.getAll(undefined, { next: { tags: ['tenders'] } }),
-      apiClient.clients.getAll({ next: { tags: ['clients'] } }),
-      apiClient.tenderers.getAll({ next: { tags: ['tenderers'] } }),
+      apiClient.tenders.getAll(undefined, { next: { tags: ['tenders'] } }).catch(() => []),
+      apiClient.clients.getAll({ next: { tags: ['clients'] } }).catch(() => []),
+      apiClient.tenderers.getAll({ next: { tags: ['tenderers'] } }).catch(() => []),
     ]);
     return { tenders, clients, tenderers };
   } catch (err) {
-    console.error('Failed to fetch tenders data from .NET API:', err);
+    console.warn('[TendersPage] Backend API is currently unreachable. Showing empty tenders list.');
     return { tenders: [], clients: [], tenderers: [] };
   }
 }
