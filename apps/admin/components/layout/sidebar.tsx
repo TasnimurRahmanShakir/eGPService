@@ -14,8 +14,10 @@ import {
   ChevronRight,
   Menu,
   X,
+  LogOut,
 } from 'lucide-react';
 import { setSidebarCookie } from '../../app/actions/sidebarActions';
+import { logoutAction } from '../../app/actions/authActions';
 
 const NAV_ITEMS = [
   { label: 'Overview', href: '/', icon: LayoutDashboard },
@@ -103,15 +105,27 @@ export function AdminSidebar({
         })}
       </nav>
 
-      {/* Footer Info */}
+      {/* Footer Info & Sign Out */}
       <div className="sidebar-footer">
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', color: 'var(--success, #047857)', fontWeight: 600, fontSize: '0.75rem', justifyContent: isCollapsed ? 'center' : 'flex-start' }}>
           <span style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: 'var(--success, #047857)', boxShadow: '0 0 6px rgba(4, 120, 87, 0.4)', flexShrink: 0 }} />
           <span className="sidebar-text-hide">API Connected</span>
         </div>
         <div className="sidebar-text-hide" style={{ marginTop: '0.25rem', fontSize: '0.7rem', color: 'var(--muted-foreground, #64748B)' }}>
-          Identity: admin-guid-123
+          Identity: Administrator
         </div>
+
+        {/* Sign Out Button */}
+        <button
+          type="button"
+          onClick={() => logoutAction()}
+          className="sidebar-signout-btn"
+          title={isCollapsed ? 'Sign Out' : undefined}
+          aria-label="Sign Out"
+        >
+          <LogOut size={16} />
+          <span className="sidebar-text-hide">Sign Out</span>
+        </button>
       </div>
     </aside>
   );
@@ -153,6 +167,11 @@ export function AdminLayoutWrapper({
       document.cookie = `egp-sidebar-collapsed=${next}; path=/; max-age=31536000; SameSite=Lax`;
     }
   };
+
+  // If on /login page, render clean login view without admin shell (after all hooks run)
+  if (pathname === '/login') {
+    return <div className="admin-login-layout">{children}</div>;
+  }
 
   return (
     <div className="admin-shell-layout">
