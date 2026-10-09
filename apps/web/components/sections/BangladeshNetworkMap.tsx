@@ -3,15 +3,36 @@
 import React, { useState } from 'react';
 import { REAL_BANGLADESH_DIVISIONS, RealDivisionData } from './BangladeshMapData';
 
+import { useLanguage } from '../../context/LanguageContext';
+
 export function BangladeshNetworkMap() {
+  const { lang, t } = useLanguage();
   const [hoveredHub, setHoveredHub] = useState<RealDivisionData | null>(null);
 
   const dhakaHub = REAL_BANGLADESH_DIVISIONS[0]; // Center HQ
   const outerHubs = REAL_BANGLADESH_DIVISIONS.slice(1);
 
+  const getHubName = (hub: RealDivisionData) => {
+    if (lang !== 'bn') {
+      return hub.isCenter ? `${hub.name} (HQ)` : hub.name;
+    }
+    switch (hub.id) {
+      case 'dhaka': return t.mapHubs.dhakaHq;
+      case 'chattogram': return t.mapHubs.chattogram;
+      case 'sylhet': return t.mapHubs.sylhet;
+      case 'rajshahi': return t.mapHubs.rajshahi;
+      case 'khulna': return t.mapHubs.khulna;
+      case 'barishal': return t.mapHubs.barishal;
+      case 'rangpur': return t.mapHubs.rangpur;
+      case 'mymensingh': return t.mapHubs.mymensingh;
+      default: return hub.name;
+    }
+  };
+
+  const currentDisplayName = hoveredHub ? getHubName(hoveredHub) : '';
   // Dynamic pill sizing for hover tooltip
   const tooltipWidth = hoveredHub
-    ? (hoveredHub.isCenter ? 126 : Math.max(90, hoveredHub.name.length * 9 + 42))
+    ? Math.max(90, currentDisplayName.length * 11 + 42)
     : 100;
   const tooltipX = -tooltipWidth / 2;
 
@@ -227,7 +248,7 @@ export function BangladeshNetworkMap() {
                 fontFamily="var(--font-sans)"
                 letterSpacing="0.02em"
               >
-                {hoveredHub.isCenter ? `${hoveredHub.name} (HQ)` : hoveredHub.name}
+                {currentDisplayName}
               </text>
             </g>
           )}

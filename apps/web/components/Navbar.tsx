@@ -3,13 +3,15 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, ArrowRight, ShieldCheck, PhoneCall } from 'lucide-react';
+import { Menu, X, ArrowRight, ShieldCheck, PhoneCall, Globe } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 interface NavbarProps {
   onOpenModal: () => void;
 }
 
 export function Navbar({ onOpenModal }: NavbarProps) {
+  const { lang, setLang, t } = useLanguage();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('Home');
@@ -45,11 +47,11 @@ export function Navbar({ onOpenModal }: NavbarProps) {
   }, [pathname]);
 
   const navLinks = [
-    { label: 'Home', href: '/' },
-    { label: 'Winning Tenders', href: '/winning-tenders' },
-    { label: 'Services', href: '/#services' },
-    { label: 'About', href: '/about' },
-    { label: 'Contact', href: '/contact' }
+    { key: 'Home', label: t.nav.links.home, href: '/' },
+    { key: 'Winning Tenders', label: t.nav.links.winningTenders, href: '/winning-tenders' },
+    { key: 'Services', label: t.nav.links.services, href: '/#services' },
+    { key: 'About', label: t.nav.links.about, href: '/about' },
+    { key: 'Contact', label: t.nav.links.contact, href: '/contact' }
   ];
 
   return (
@@ -61,8 +63,8 @@ export function Navbar({ onOpenModal }: NavbarProps) {
             <ShieldCheck size={20} strokeWidth={2.5} className="brand-logo-icon" />
           </div>
           <div className="brand-text-col">
-            <span className="brand-name">e-GP TENDER BD</span>
-            <span className="brand-sub">Professional Tender Consulting</span>
+            <span className="brand-name">{t.nav.brandName}</span>
+            <span className="brand-sub">{t.nav.brandSub}</span>
           </div>
         </Link>
 
@@ -72,11 +74,11 @@ export function Navbar({ onOpenModal }: NavbarProps) {
             {navLinks.map((link) => {
               const isActive =
                 pathname === '/'
-                  ? activeSection === link.label
+                  ? activeSection === link.key
                   : pathname === link.href;
 
               return (
-                <li key={link.label}>
+                <li key={link.key}>
                   <Link
                     href={link.href}
                     className={`nav-item-link ${isActive ? 'active' : ''}`}
@@ -89,19 +91,39 @@ export function Navbar({ onOpenModal }: NavbarProps) {
           </ul>
         </nav>
 
-        {/* Desktop CTA & Mobile Toggle */}
+        {/* Desktop CTA, Language Toggle & Mobile Toggle */}
         <div className="nav-actions-col">
+          {/* Language Switcher Pill */}
+          <div className="lang-switch-wrap" role="group" aria-label="Language selection">
+            <button
+              type="button"
+              className={`btn-lang-pill ${lang === 'bn' ? 'is-active' : ''}`}
+              onClick={() => setLang('bn')}
+              aria-label="বাংলা নির্বাচন করুন"
+            >
+              বাং
+            </button>
+            <button
+              type="button"
+              className={`btn-lang-pill ${lang === 'en' ? 'is-active' : ''}`}
+              onClick={() => setLang('en')}
+              aria-label="Select English"
+            >
+              EN
+            </button>
+          </div>
+
           <button
             onClick={onOpenModal}
             className="btn-nav-consultation"
             id="nav-consultation-btn"
-            aria-label="Get Consultation"
+            aria-label={t.nav.consultationBtn}
           >
             <span className="nav-btn-icon-mobile" aria-hidden="true">
               <PhoneCall size={16} strokeWidth={2.4} />
             </span>
-            <span className="nav-btn-text-full">Get Consultation</span>
-            <span className="nav-btn-text-compact">Consult</span>
+            <span className="nav-btn-text-full">{t.nav.consultationBtn}</span>
+            <span className="nav-btn-text-compact">{t.nav.consultationCompact}</span>
             <div className="btn-arrow-circle">
               <ArrowRight size={13} strokeWidth={2.5} />
             </div>
@@ -110,7 +132,7 @@ export function Navbar({ onOpenModal }: NavbarProps) {
           <button
             className="mobile-menu-toggle"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle menu"
+            aria-label={mobileMenuOpen ? t.nav.menuClose : t.nav.menuOpen}
           >
             {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -121,13 +143,34 @@ export function Navbar({ onOpenModal }: NavbarProps) {
       {mobileMenuOpen && (
         <div className="mobile-nav-drawer">
           <ul className="mobile-nav-list">
+            {/* Mobile Language Switcher */}
+            <li style={{ paddingBottom: '0.75rem', borderBottom: '1px solid var(--border-light)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>ভাষা / Language:</span>
+              <div className="lang-switch-wrap">
+                <button
+                  type="button"
+                  className={`btn-lang-pill ${lang === 'bn' ? 'is-active' : ''}`}
+                  onClick={() => setLang('bn')}
+                >
+                  বাংলা
+                </button>
+                <button
+                  type="button"
+                  className={`btn-lang-pill ${lang === 'en' ? 'is-active' : ''}`}
+                  onClick={() => setLang('en')}
+                >
+                  English
+                </button>
+              </div>
+            </li>
+
             {navLinks.map((link) => (
-              <li key={link.label}>
+              <li key={link.key}>
                 <Link
                   href={link.href}
                   onClick={() => setMobileMenuOpen(false)}
                   className={`mobile-nav-link ${
-                    pathname === '/' && activeSection === link.label ? 'active' : ''
+                    pathname === '/' && activeSection === link.key ? 'active' : ''
                   }`}
                 >
                   {link.label}
@@ -143,7 +186,7 @@ export function Navbar({ onOpenModal }: NavbarProps) {
                 className="btn-dark-pill"
                 style={{ width: '100%', justifyContent: 'center' }}
               >
-                <span>Get Consultation</span>
+                <span>{t.nav.consultationBtn}</span>
                 <div className="btn-arrow-circle">
                   <ArrowRight size={14} strokeWidth={2.5} />
                 </div>

@@ -65,15 +65,18 @@ function AnimatedStat({
   );
 }
 
+import { useLanguage } from '../../context/LanguageContext';
+
 export function MetricsSection() {
+  const { t } = useLanguage();
   const [ref, isInView] = useInView<HTMLDivElement>({ threshold: 0.25 });
 
   const stats = [
-    { end: 9, suffix: '+', label: 'Years of Experience', duration: 1100 },
-    { end: 150, suffix: '+', label: 'Clients', duration: 1300 },
-    { end: 32000, suffix: '+', label: 'Tender Submissions', isFormatted: true, duration: 1600 },
-    { end: 96, suffix: '%', label: 'Client Satisfaction', duration: 1400 },
-    { end: 55, suffix: '%', label: 'Win Rate*', duration: 1200 }
+    { end: 9, suffix: '+', label: t.metrics.yearsExp, duration: 1100 },
+    { end: 150, suffix: '+', label: t.metrics.clientsCount, duration: 1300 },
+    { end: 32000, suffix: '+', label: t.metrics.tendersCount, isFormatted: true, duration: 1600 },
+    { end: 96, suffix: '%', label: t.metrics.satisfaction, duration: 1400 },
+    { end: 55, suffix: '%', label: t.metrics.winRate, duration: 1200 }
   ];
 
   return (
@@ -83,9 +86,9 @@ export function MetricsSection() {
     >
       <div className="container">
         <div className="metrics-band-row">
-          {stats.map((stat) => (
+          {stats.map((stat, idx) => (
             <AnimatedStat
-              key={stat.label}
+              key={idx}
               end={stat.end}
               suffix={stat.suffix}
               label={stat.label}

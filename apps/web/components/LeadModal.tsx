@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Check, ArrowRight, ShieldCheck, ChevronDown } from 'lucide-react';
 import { Modal } from '@egp/ui';
+import { useLanguage } from '../context/LanguageContext';
 
 interface LeadModalProps {
   isOpen: boolean;
@@ -11,6 +12,7 @@ interface LeadModalProps {
 }
 
 export function LeadModal({ isOpen, onClose, defaultService = 'e-GP Registration' }: LeadModalProps) {
+  const { lang, t } = useLanguage();
   const [formData, setFormData] = useState({
     fullName: '',
     company: '',
@@ -24,7 +26,18 @@ export function LeadModal({ isOpen, onClose, defaultService = 'e-GP Registration
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const servicesList = [
+  const servicesList = lang === 'bn' ? [
+    'ই-জিপি রেজিস্ট্রেশন',
+    'টেন্ডার প্রস্তুতি ও সাবমিশন',
+    'লিকুইড অ্যাসেট / লাইন অফ ক্রেডিট',
+    'ই-জিপি কনসালটেন্সি',
+    'ই-জিপি ট্রেনিং',
+    'প্রজেক্ট কস্ট ম্যানেজমেন্ট',
+    'ভ্যাট রেজিস্ট্রেশন',
+    'ভ্যাট রিটার্ন দাখিল',
+    'ট্যাক্স / ই-টিন রেজিস্ট্রেশন',
+    'আয়কর রিটার্ন দাখিল'
+  ] : [
     'e-GP Registration',
     'Tender Preparation & Submission',
     'Liquid Asset / Line of Credit Preparation',
@@ -59,7 +72,7 @@ export function LeadModal({ isOpen, onClose, defaultService = 'e-GP Registration
     e.preventDefault();
     const cleanDigits = formData.phone.replace(/\D/g, '');
     if (cleanDigits.length < 10 || cleanDigits.length > 11) {
-      setPhoneError('Please enter a valid 10-11 digit mobile number (e.g. 01886-970197)');
+      setPhoneError(t.leadModal.phoneError);
       return;
     }
     setPhoneError('');
@@ -80,40 +93,40 @@ export function LeadModal({ isOpen, onClose, defaultService = 'e-GP Registration
             <Check size={36} strokeWidth={3} />
           </div>
           <h3 className="modal-success-title">
-            ধন্যবাদ! আপনার অনুরোধ গ্রহণ করা হয়েছে।
+            {t.leadModal.success.title}
           </h3>
           <p className="modal-success-subtitle">
-            আমরা শীঘ্রই আপনার সাথে যোগাযোগ করব।
+            {t.leadModal.success.subtitle}
           </p>
           <p className="modal-success-phone-note">
-            Our tender consulting team will call you shortly at <strong>+880 {formData.phone}</strong> regarding <strong>{formData.service}</strong>.
+            {t.leadModal.success.callNote} <strong>+880 {formData.phone}</strong>
           </p>
           <button onClick={handleReset} className="btn-modal-submit" style={{ width: '100%', justifyContent: 'center' }}>
-            Close Window
+            {t.leadModal.success.closeBtn}
           </button>
         </div>
       ) : (
         <div className="modal-form-container">
           <div className="modal-header-block">
             <div className="eyebrow-pill" style={{ marginBottom: '0.65rem' }}>
-              <span>DIRECT CONSULTING INQUIRY</span>
+              <span>{t.leadModal.eyebrow}</span>
             </div>
             <h3 className="modal-heading">
-              Tell Us About Your Tender.
+              {t.leadModal.heading}
             </h3>
             <p className="modal-subheading">
-              Have a tender coming up or need help with the e-GP process? Send us the details and our specialists will assist you immediately.
+              {t.leadModal.subheading}
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="modal-form">
             <div className="modal-form-grid">
               <div className="field-group">
-                <label className="field-label">Full Name *</label>
+                <label className="field-label">{t.leadModal.fields.fullName}</label>
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Md. Rafiqul Islam"
+                  placeholder={t.leadModal.fields.fullNamePlaceholder}
                   className="field-input"
                   value={formData.fullName}
                   onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
@@ -121,10 +134,10 @@ export function LeadModal({ isOpen, onClose, defaultService = 'e-GP Registration
               </div>
 
               <div className="field-group">
-                <label className="field-label">Company Name</label>
+                <label className="field-label">{t.leadModal.fields.company}</label>
                 <input
                   type="text"
-                  placeholder="e.g. Islam Construction & Engineering Ltd."
+                  placeholder={t.leadModal.fields.companyPlaceholder}
                   className="field-input"
                   value={formData.company}
                   onChange={(e) => setFormData({ ...formData, company: e.target.value })}
@@ -132,13 +145,13 @@ export function LeadModal({ isOpen, onClose, defaultService = 'e-GP Registration
               </div>
 
               <div className="field-group">
-                <label className="field-label">Phone Number *</label>
+                <label className="field-label">{t.leadModal.fields.phone}</label>
                 <div className="phone-input-wrap">
                   <span className="phone-prefix-badge">+880</span>
                   <input
                     type="tel"
                     required
-                    placeholder="1886-970197"
+                    placeholder={t.leadModal.fields.phonePlaceholder}
                     className="field-input phone-input-field"
                     value={formData.phone}
                     onChange={(e) => {
@@ -155,10 +168,10 @@ export function LeadModal({ isOpen, onClose, defaultService = 'e-GP Registration
               </div>
 
               <div className="field-group">
-                <label className="field-label">Tender / Memo Reference (Optional)</label>
+                <label className="field-label">{t.leadModal.fields.tenderRef}</label>
                 <input
                   type="text"
-                  placeholder="e.g. Tender ID: 948201 or Memo Ref"
+                  placeholder={t.leadModal.fields.tenderRefPlaceholder}
                   className="field-input"
                   value={formData.tenderRef}
                   onChange={(e) => setFormData({ ...formData, tenderRef: e.target.value })}
@@ -168,7 +181,7 @@ export function LeadModal({ isOpen, onClose, defaultService = 'e-GP Registration
 
             {/* Custom Interactive Dropdown */}
             <div className="field-group">
-              <label className="field-label">Service Required *</label>
+              <label className="field-label">{t.leadModal.fields.serviceRequired}</label>
               <div className="custom-dropdown-wrap" ref={dropdownRef}>
                 <button
                   type="button"
@@ -177,7 +190,7 @@ export function LeadModal({ isOpen, onClose, defaultService = 'e-GP Registration
                   aria-haspopup="listbox"
                   aria-expanded={dropdownOpen}
                 >
-                  <span className="dropdown-selected-label">{formData.service || 'Select a Service'}</span>
+                  <span className="dropdown-selected-label">{formData.service || t.leadModal.fields.selectService}</span>
                   <ChevronDown size={18} className={`dropdown-chevron ${dropdownOpen ? 'is-rotated' : ''}`} />
                 </button>
 
@@ -207,10 +220,10 @@ export function LeadModal({ isOpen, onClose, defaultService = 'e-GP Registration
             </div>
 
             <div className="field-group">
-              <label className="field-label">Specific Request or Message</label>
+              <label className="field-label">{t.leadModal.fields.message}</label>
               <textarea
                 rows={2}
-                placeholder="Briefly describe your tender deadline, procurement questions or challenges..."
+                placeholder={t.leadModal.fields.messagePlaceholder}
                 className="field-textarea"
                 value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
@@ -223,7 +236,7 @@ export function LeadModal({ isOpen, onClose, defaultService = 'e-GP Registration
                 className="btn-modal-submit"
                 id="modal-send-request-btn"
               >
-                <span>Send Request</span>
+                <span>{t.leadModal.sendBtn}</span>
                 <ArrowRight size={15} strokeWidth={2.5} />
               </button>
               <button
@@ -231,7 +244,7 @@ export function LeadModal({ isOpen, onClose, defaultService = 'e-GP Registration
                 onClick={onClose}
                 className="btn-modal-cancel"
               >
-                Cancel
+                {t.leadModal.cancelBtn}
               </button>
             </div>
           </form>

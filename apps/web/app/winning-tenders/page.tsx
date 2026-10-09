@@ -15,6 +15,7 @@ import { Footer } from '../../components/Footer';
 import { StickyMobileBar } from '../../components/StickyMobileBar';
 import { LeadModal } from '../../components/LeadModal';
 import { winningTendersData, WinningTender } from '../../data/winningTenders';
+import { useLanguage } from '../../context/LanguageContext';
 
 const departmentsList = [
   'All',
@@ -27,6 +28,7 @@ const departmentsList = [
 ];
 
 export default function WinningTendersPage() {
+  const { lang, t } = useLanguage();
   const [modalOpen, setModalOpen] = useState(false);
   const [modalSubject, setModalSubject] = useState<string | undefined>();
   const [selectedDept, setSelectedDept] = useState('All');
@@ -45,6 +47,7 @@ export default function WinningTendersPage() {
       const matchQuery = 
         !query ||
         tender.projectName.toLowerCase().includes(query) ||
+        (tender.projectNameBn && tender.projectNameBn.toLowerCase().includes(query)) ||
         tender.tenderId.toLowerCase().includes(query) ||
         tender.department.toLowerCase().includes(query) ||
         tender.winningClient.toLowerCase().includes(query) ||
@@ -62,16 +65,16 @@ export default function WinningTendersPage() {
       <section className="winning-page-hero">
         <div className="container" style={{ maxWidth: '860px', textAlign: 'center' }}>
           <div className="hero-breadcrumb">
-            <Link href="/" className="breadcrumb-link">Home</Link>
+            <Link href="/" className="breadcrumb-link">{t.nav.links.home}</Link>
             <span className="breadcrumb-sep">/</span>
-            <span className="breadcrumb-current">Winning Tenders</span>
+            <span className="breadcrumb-current">{t.nav.links.winningTenders}</span>
           </div>
 
           <h1 className="page-hero-title">
-            Winning Tenders &amp; Projects
+            {t.winningTenders.pageTitle}
           </h1>
           <p className="page-hero-sub">
-            A comprehensive record of successfully awarded public works tenders and procurement bids managed through our e-GP consultation, technical bid engineering, and submission support across Bangladesh.
+            {t.winningTenders.pageSubtitle}
           </p>
         </div>
       </section>
@@ -89,7 +92,7 @@ export default function WinningTendersPage() {
                   onClick={() => setSelectedDept(dept)}
                   className={`dept-tab-btn ${selectedDept === dept ? 'active' : ''}`}
                 >
-                  {dept === 'All' ? 'All Departments' : dept}
+                  {dept === 'All' ? t.winningTenders.allDepts : dept}
                 </button>
               ))}
             </div>
@@ -99,7 +102,7 @@ export default function WinningTendersPage() {
               <Search size={16} className="tender-search-icon" />
               <input
                 type="text"
-                placeholder="Search by Tender ID, client, or keyword..."
+                placeholder={t.winningTenders.searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="tender-search-input"
@@ -109,7 +112,7 @@ export default function WinningTendersPage() {
                   onClick={() => setSearchQuery('')}
                   className="clear-search-btn"
                 >
-                  Clear
+                  {lang === 'bn' ? 'মুছুন' : 'Clear'}
                 </button>
               )}
             </div>
@@ -117,10 +120,15 @@ export default function WinningTendersPage() {
 
           {/* Results Summary */}
           <div className="results-summary-row">
-            <span>Showing <strong>{filteredTenders.length}</strong> verified winning tenders</span>
+            <span>
+              {lang === 'bn' 
+                ? <>মোট <strong>{filteredTenders.length}</strong> টি সফল টেন্ডার প্রদর্শিত হচ্ছে</>
+                : <>Showing <strong>{filteredTenders.length}</strong> verified winning tenders</>
+              }
+            </span>
             {selectedDept !== 'All' && (
               <span className="active-filter-badge">
-                Department: {selectedDept}
+                {t.winningTenders.filterByDept} {selectedDept}
                 <button onClick={() => setSelectedDept('All')}>×</button>
               </span>
             )}
@@ -130,20 +138,25 @@ export default function WinningTendersPage() {
           {filteredTenders.length === 0 ? (
             <div className="no-tenders-found">
               <Building2 size={48} className="text-muted" style={{ opacity: 0.4, margin: '0 auto 1rem' }} />
-              <h3>No winning tenders found</h3>
-              <p>Try clearing your search filters or selecting another department.</p>
+              <h3>{t.winningTenders.noResultsTitle}</h3>
+              <p>{t.winningTenders.noResultsSub}</p>
               <button 
                 onClick={() => { setSelectedDept('All'); setSearchQuery(''); }}
                 className="btn-outline-pill"
                 style={{ marginTop: '1rem' }}
               >
-                Reset Filters
+                {lang === 'bn' ? 'ফিল্টার রিসেট করুন' : 'Reset Filters'}
               </button>
             </div>
           ) : (
             <div className="winning-tiles-grid">
               {filteredTenders.map((tender) => {
                 const isToggled = activeTileId === tender.id;
+                const projectName = (lang === 'bn' && tender.projectNameBn) ? tender.projectNameBn : tender.projectName;
+                const department = (lang === 'bn' && tender.departmentBn) ? tender.departmentBn : tender.department;
+                const location = (lang === 'bn' && tender.locationBn) ? tender.locationBn : tender.location;
+                const projectValue = (lang === 'bn' && tender.projectValueBn) ? tender.projectValueBn : tender.projectValue;
+                const winningClient = (lang === 'bn' && tender.winningClientBn) ? tender.winningClientBn : tender.winningClient;
 
                 return (
                   <div
@@ -154,7 +167,7 @@ export default function WinningTendersPage() {
                     {/* Background Photo */}
                     <Image
                       src={tender.image}
-                      alt={tender.projectName}
+                      alt={projectName}
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       className="tender-tile-bg-image"
@@ -172,51 +185,51 @@ export default function WinningTendersPage() {
                     {/* Floating Emerald Price Tag */}
                     <div className="tender-tile-price-floating">
                       <span className="price-pulse-dot"></span>
-                      <span className="price-text">{tender.projectValue}</span>
+                      <span className="price-text">{projectValue}</span>
                     </div>
 
                     {/* Default Bottom Information */}
                     <div className="tender-tile-default-info">
                       <div className="tender-tile-id-chip">
-                        <span>Tender ID: #{tender.tenderId}</span>
+                        <span>{t.winningTenders.tenderIdPrefix}{tender.tenderId}</span>
                       </div>
                       <h4 className="tender-tile-title">
-                        {tender.projectName}
+                        {projectName}
                       </h4>
                     </div>
 
                     {/* Enhanced Hover Overlay (No Button, Full Text View) */}
                     <div className="tender-tile-hover-panel">
                       <div className="hover-panel-top">
-                        <span className="hover-dept-full">{tender.department}</span>
-                        <h4 className="hover-project-name">{tender.projectName}</h4>
+                        <span className="hover-dept-full">{department}</span>
+                        <h4 className="hover-project-name">{projectName}</h4>
                       </div>
 
                       <div className="hover-specs-list">
                         <div className="hover-spec-row">
-                          <span className="hover-spec-label">Tender ID:</span>
+                          <span className="hover-spec-label">{t.winningTenders.tenderIdPrefix}</span>
                           <span className="hover-spec-val">#{tender.tenderId}</span>
                         </div>
 
                         <div className="hover-spec-row">
-                          <span className="hover-spec-label">Location:</span>
+                          <span className="hover-spec-label">{lang === 'bn' ? 'স্থান:' : 'Location:'}</span>
                           <span className="hover-spec-val">
                             <MapPin size={12} className="hover-icon text-emerald" style={{ flexShrink: 0, marginTop: '2px' }} />
-                            <span>{tender.location}</span>
+                            <span>{location}</span>
                           </span>
                         </div>
 
                         <div className="hover-spec-row">
-                          <span className="hover-spec-label">Winning Client:</span>
+                          <span className="hover-spec-label">{lang === 'bn' ? 'জয়ী ক্লায়েন্ট:' : 'Winning Client:'}</span>
                           <span className="hover-spec-val hover-client-name">
                             <Building2 size={12} className="hover-icon text-emerald" style={{ flexShrink: 0, marginTop: '2px' }} />
-                            <span>{tender.winningClient}</span>
+                            <span>{winningClient}</span>
                           </span>
                         </div>
 
                         <div className="hover-spec-row hover-value-row">
-                          <span className="hover-spec-label">Awarded Value:</span>
-                          <span className="hover-value-highlight">{tender.projectValue}</span>
+                          <span className="hover-spec-label">{lang === 'bn' ? 'চুক্তিমূল্য:' : 'Awarded Value:'}</span>
+                          <span className="hover-value-highlight">{projectValue}</span>
                         </div>
                       </div>
                     </div>
@@ -230,25 +243,25 @@ export default function WinningTendersPage() {
           <div className="winning-conversion-banner">
             <div className="conversion-banner-content">
               <span className="pill-badge pill-gold" style={{ marginBottom: '1rem', display: 'inline-flex' }}>
-                BE OUR NEXT SUCCESS STORY
+                {t.winningTenders.eyebrow}
               </span>
-              <h2>Ready to Win Your Next Major Government Tender?</h2>
+              <h2>{t.winningTenders.ctaBannerTitle}</h2>
               <p>
-                From tender security banking coordination to rigorous technical document validation and winning financial proposal pricing — we protect your bid from non-responsiveness.
+                {t.winningTenders.ctaBannerSub}
               </p>
               <div className="conversion-actions-row">
                 <button
-                  onClick={() => openModal('General Winning Tender Consultation')}
+                  onClick={() => openModal(lang === 'bn' ? 'সফল টেন্ডার পরামর্শ' : 'Winning Tender Consultation')}
                   className="btn-dark-pill"
                 >
-                  <span>Request Tender Consultation</span>
+                  <span>{t.winningTenders.ctaBannerBtn}</span>
                   <div className="btn-arrow-circle">
                     <ArrowRight size={14} />
                   </div>
                 </button>
                 <a href="tel:+8801886970197" className="btn-phone-banner">
                   <PhoneCall size={16} />
-                  <span>Call +880 1886-970197</span>
+                  <span>{t.finalCta.callNumber}</span>
                 </a>
               </div>
             </div>

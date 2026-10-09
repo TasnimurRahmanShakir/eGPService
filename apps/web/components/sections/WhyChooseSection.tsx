@@ -5,11 +5,14 @@ import Image from 'next/image';
 import { ArrowRight, Check } from 'lucide-react';
 import { useInView } from '../../hooks/useInView';
 
+import { useLanguage } from '../../context/LanguageContext';
+
 interface WhyChooseSectionProps {
   onOpenModal: (serviceName?: string) => void;
 }
 
 export function WhyChooseSection({ onOpenModal }: WhyChooseSectionProps) {
+  const { t } = useLanguage();
   const [ref, isInView] = useInView<HTMLDivElement>({ threshold: 0.2 });
 
   return (
@@ -22,12 +25,12 @@ export function WhyChooseSection({ onOpenModal }: WhyChooseSectionProps) {
         {/* Left Column: Why Choose Copy & Staggered Cards */}
         <div className="why-choose-left why-left-reveal">
           <div className="eyebrow-pill">
-            <span>WHY CHOOSE US</span>
+            <span>{t.whyChoose.eyebrow}</span>
           </div>
 
           <h2 className="section-title-large">
-            Professional Support.<br />
-            <span className="hero-highlight-green">Practical Solutions.</span>
+            {t.whyChoose.title1}<br />
+            <span className="hero-highlight-green">{t.whyChoose.title2}</span>
           </h2>
 
           <div className="why-pillars-list">
@@ -36,9 +39,9 @@ export function WhyChooseSection({ onOpenModal }: WhyChooseSectionProps) {
                 <div className="check-bullet-circle">
                   <Check size={14} strokeWidth={3} />
                 </div>
-                <h3 className="pillar-title">Tender-Focused</h3>
+                <h3 className="pillar-title">{t.whyChoose.pillars.p1Title}</h3>
               </div>
-              <p className="pillar-desc">Focused on real tender requirements.</p>
+              <p className="pillar-desc">{t.whyChoose.pillars.p1Desc}</p>
             </div>
 
             <div className="why-pillar-card why-pillar-card-stagger">
@@ -46,9 +49,9 @@ export function WhyChooseSection({ onOpenModal }: WhyChooseSectionProps) {
                 <div className="check-bullet-circle">
                   <Check size={14} strokeWidth={3} />
                 </div>
-                <h3 className="pillar-title">Responsive</h3>
+                <h3 className="pillar-title">{t.whyChoose.pillars.p2Title}</h3>
               </div>
-              <p className="pillar-desc">Technical and financial proposal support.</p>
+              <p className="pillar-desc">{t.whyChoose.pillars.p2Desc}</p>
             </div>
 
             <div className="why-pillar-card why-pillar-card-stagger">
@@ -56,9 +59,9 @@ export function WhyChooseSection({ onOpenModal }: WhyChooseSectionProps) {
                 <div className="check-bullet-circle">
                   <Check size={14} strokeWidth={3} />
                 </div>
-                <h3 className="pillar-title">Deadline-Conscious</h3>
+                <h3 className="pillar-title">{t.whyChoose.pillars.p3Title}</h3>
               </div>
-              <p className="pillar-desc">Structured around timely submission.</p>
+              <p className="pillar-desc">{t.whyChoose.pillars.p3Desc}</p>
             </div>
 
             <div className="why-pillar-card why-pillar-card-stagger">
@@ -66,15 +69,15 @@ export function WhyChooseSection({ onOpenModal }: WhyChooseSectionProps) {
                 <div className="check-bullet-circle">
                   <Check size={14} strokeWidth={3} />
                 </div>
-                <h3 className="pillar-title">Technology-Enabled</h3>
+                <h3 className="pillar-title">{t.whyChoose.pillars.p4Title}</h3>
               </div>
-              <p className="pillar-desc">Digital project cost management solution.</p>
+              <p className="pillar-desc">{t.whyChoose.pillars.p4Desc}</p>
             </div>
           </div>
 
           <div className="why-action-row">
             <button onClick={() => onOpenModal()} className="btn-dark-pill">
-              <span>Get Free Consultation</span>
+              <span>{t.whyChoose.cta}</span>
               <div className="btn-arrow-circle">
                 <ArrowRight size={14} strokeWidth={2.5} />
               </div>
@@ -87,7 +90,7 @@ export function WhyChooseSection({ onOpenModal }: WhyChooseSectionProps) {
           <div className="why-visual-container">
             {/* Handwritten Note Annotation: Text appears -> Arrow draws -> image settles */}
             <div className="handwritten-annotation note-why-choose handwritten-annotation-animated">
-              <span className="handwritten-text">Practical Solutions, Real Results</span>
+              <span className="handwritten-text">{t.whyChoose.handwriting}</span>
               <svg className="handwritten-arrow-svg" width="46" height="38" viewBox="0 0 50 40" fill="none">
                 <path
                   className="annotation-draw-arrow-path"

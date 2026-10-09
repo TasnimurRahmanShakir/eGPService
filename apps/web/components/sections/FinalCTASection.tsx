@@ -4,11 +4,14 @@ import React from 'react';
 import { ArrowRight, Phone } from 'lucide-react';
 import { useInView } from '../../hooks/useInView';
 
+import { useLanguage } from '../../context/LanguageContext';
+
 interface FinalCTASectionProps {
   onOpenModal: (serviceName?: string) => void;
 }
 
 export function FinalCTASection({ onOpenModal }: FinalCTASectionProps) {
+  const { t } = useLanguage();
   const [ref, isInView] = useInView<HTMLDivElement>({ threshold: 0.2 });
 
   return (
@@ -21,16 +24,16 @@ export function FinalCTASection({ onOpenModal }: FinalCTASectionProps) {
         {/* Signature Animation #4: Card scale-in from 0.96 to 1.0 */}
         <div className="final-cta-inner-card final-cta-inner-card-scale">
           <div className="final-cta-content-col">
-            <span className="cta-eyebrow-text">READY TO GET STARTED?</span>
+            <span className="cta-eyebrow-text">{t.finalCta.eyebrow}</span>
 
             {/* Line-by-line reveal for heading */}
             <h2 className="cta-banner-title">
-              <span className="cta-line-reveal">Let&apos;s Make Your</span>
-              <span className="cta-line-reveal">Next Submission Successful.</span>
+              <span className="cta-line-reveal">{t.finalCta.title1}</span>
+              <span className="cta-line-reveal">{t.finalCta.title2}</span>
             </h2>
 
             <p className="cta-banner-subtitle">
-              Get expert tender support and move your business forward with confidence.
+              {t.finalCta.subtitle}
             </p>
 
             <div className="cta-banner-buttons">
@@ -39,7 +42,7 @@ export function FinalCTASection({ onOpenModal }: FinalCTASectionProps) {
                 className="btn-emerald-banner"
                 id="cta-banner-get-consultation"
               >
-                <span>Get Consultation</span>
+                <span>{t.finalCta.consultBtn}</span>
                 <div className="btn-arrow-circle">
                   <ArrowRight size={14} strokeWidth={2.5} />
                 </div>
@@ -47,7 +50,7 @@ export function FinalCTASection({ onOpenModal }: FinalCTASectionProps) {
 
               <a href="tel:+8801886970197" className="btn-glass-banner">
                 <Phone size={15} strokeWidth={2.2} />
-                <span>+880 1886-970197</span>
+                <span>{t.finalCta.callNumber}</span>
               </a>
             </div>
           </div>
@@ -55,7 +58,7 @@ export function FinalCTASection({ onOpenModal }: FinalCTASectionProps) {
           <div className="final-cta-annotation-col">
             {/* Handwritten White Note with Animated Underline Draw */}
             <div className="handwritten-white-note handwritten-annotation-animated">
-              <span className="handwritten-white-text">Professional Support, Real Results</span>
+              <span className="handwritten-white-text">{t.finalCta.handwriting}</span>
               <svg className="handwritten-underline-svg" width="130" height="20" viewBox="0 0 140 20" fill="none">
                 <path
                   className="annotation-draw-arrow-path"

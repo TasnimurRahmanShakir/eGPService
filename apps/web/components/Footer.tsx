@@ -4,12 +4,14 @@ import React from 'react';
 import Link from 'next/link';
 import { Phone, Mail, MapPin, ShieldCheck, Facebook, ArrowRight } from 'lucide-react';
 import { useInView } from '../hooks/useInView';
+import { useLanguage } from '../context/LanguageContext';
 
 interface FooterProps {
   onOpenModal?: () => void;
 }
 
 export function Footer({ onOpenModal }: FooterProps) {
+  const { t } = useLanguage();
   const [ref, isInView] = useInView<HTMLElement>({ threshold: 0.1 });
 
   return (
@@ -30,15 +32,15 @@ export function Footer({ onOpenModal }: FooterProps) {
                 <ShieldCheck size={20} strokeWidth={2.5} className="brand-logo-icon" />
               </div>
               <div className="brand-text-col">
-                <span className="brand-name" style={{ color: '#FFFFFF' }}>e-GP TENDER BD</span>
+                <span className="brand-name" style={{ color: '#FFFFFF' }}>{t.nav.brandName}</span>
                 <span className="brand-sub" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
-                  Professional Tender & Project Management Solution
+                  {t.nav.brandSub}
                 </span>
               </div>
             </Link>
 
             <p className="footer-brand-desc">
-              Professional e-GP registration, tender preparation, submission and project cost management solution for businesses in Bangladesh.
+              {t.footer.brandDesc}
             </p>
 
             <div className="footer-facebook-wrap">
@@ -47,33 +49,33 @@ export function Footer({ onOpenModal }: FooterProps) {
                 target="_blank"
                 rel="noreferrer"
                 className="footer-facebook-link"
-                aria-label="Facebook: @bdegptender"
+                aria-label={t.footer.facebookLabel}
               >
                 <Facebook size={18} />
-                <span>Facebook: @bdegptender</span>
+                <span>{t.footer.facebookLabel}</span>
               </a>
             </div>
           </div>
 
           {/* Column 2: Quick Links */}
           <div>
-            <h5 className="footer-col-title">Navigation</h5>
+            <h5 className="footer-col-title">{t.footer.navHeading}</h5>
             <ul className="footer-nav-list">
-              <li><Link href="/">Home</Link></li>
-              <li><Link href="/winning-tenders">Winning Tenders</Link></li>
-              <li><Link href="/#services">Services</Link></li>
-              <li><Link href="/about">About</Link></li>
-              <li><Link href="/contact">Contact Us</Link></li>
+              <li><Link href="/">{t.nav.links.home}</Link></li>
+              <li><Link href="/winning-tenders">{t.nav.links.winningTenders}</Link></li>
+              <li><Link href="/#services">{t.nav.links.services}</Link></li>
+              <li><Link href="/about">{t.nav.links.about}</Link></li>
+              <li><Link href="/contact">{t.nav.links.contact}</Link></li>
             </ul>
           </div>
 
           {/* Column 3: Contact & Address */}
           <div>
-            <h5 className="footer-col-title">Contact & Office</h5>
+            <h5 className="footer-col-title">{t.footer.contactHeading}</h5>
             <ul className="footer-contact-list">
               <li>
                 <MapPin size={16} className="footer-contact-icon" />
-                <span>House 6, Road 2/B, Baridhara J Block, Dhaka 1212, Bangladesh</span>
+                <span>{t.footer.address}</span>
               </li>
               <li>
                 <Phone size={16} className="footer-contact-icon" />
@@ -91,7 +93,7 @@ export function Footer({ onOpenModal }: FooterProps) {
                 className="btn-footer-message"
                 id="footer-send-message-btn"
               >
-                <span>Request Consultation</span>
+                <span>{t.footer.requestConsult}</span>
                 <ArrowRight size={14} />
               </button>
             )}
@@ -134,7 +136,7 @@ export function Footer({ onOpenModal }: FooterProps) {
         {/* Footer Bottom Bar */}
         <div className="footer-bottom-row">
           <div className="footer-copyright-text">
-            &copy; 2026 e-GP Tender BD. All Rights Reserved.
+            &copy; 2026 e-GP Tender BD. {t.footer.rightsReserved}
           </div>
           <div className="footer-developer-credit">
             Developed by <span className="font-semibold text-white">Jolforing</span>

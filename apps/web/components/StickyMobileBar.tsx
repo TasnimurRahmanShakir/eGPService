@@ -1,7 +1,12 @@
+'use client';
+
 import React from 'react';
 import { Phone, MessageCircle } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 export function StickyMobileBar() {
+  const { t } = useLanguage();
+
   return (
     <div className="sticky-mobile-bar">
       <div className="mobile-bar-actions">
@@ -23,7 +28,7 @@ export function StickyMobileBar() {
           }}
         >
           <Phone size={16} />
-          Call Support
+          {t.stickyBar.callSupport}
         </a>
         <a
           href="https://wa.me/8801886970197"
@@ -45,9 +50,10 @@ export function StickyMobileBar() {
           }}
         >
           <MessageCircle size={16} />
-          WhatsApp
+          {t.stickyBar.whatsApp}
         </a>
       </div>
     </div>
   );
 }
+

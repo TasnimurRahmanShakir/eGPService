@@ -10,35 +10,38 @@ import {
 } from 'lucide-react';
 import { useInView } from '../../hooks/useInView';
 
+import { useLanguage } from '../../context/LanguageContext';
+
 interface BusinessComplianceSectionProps {
   onOpenModal: (serviceName?: string) => void;
 }
 
 export function BusinessComplianceSection({ onOpenModal }: BusinessComplianceSectionProps) {
+  const { t } = useLanguage();
   const [ref, isInView] = useInView<HTMLDivElement>({ threshold: 0.15 });
 
   const complianceList = [
     {
-      title: 'VAT Registration',
-      desc: 'Online business VAT registration and BIN acquisition assistance.',
+      title: t.compliance.items.vatRegTitle,
+      desc: t.compliance.items.vatRegDesc,
       icon: <Receipt size={20} strokeWidth={2.2} />,
       colorClass: 'icon-teal'
     },
     {
-      title: 'VAT Return Submission',
-      desc: 'Monthly VAT return filing, challan processing and compliance reporting.',
+      title: t.compliance.items.vatReturnTitle,
+      desc: t.compliance.items.vatReturnDesc,
       icon: <FileSpreadsheet size={20} strokeWidth={2.2} />,
       colorClass: 'icon-rose'
     },
     {
-      title: 'Tax Registration',
-      desc: 'e-TIN corporate and individual tax registration and certificate setup.',
+      title: t.compliance.items.taxRegTitle,
+      desc: t.compliance.items.taxRegDesc,
       icon: <Calculator size={20} strokeWidth={2.2} />,
       colorClass: 'icon-purple'
     },
     {
-      title: 'Tax Return Submission',
-      desc: 'Annual income tax return preparation, assessment and tax clearance filing.',
+      title: t.compliance.items.taxReturnTitle,
+      desc: t.compliance.items.taxReturnDesc,
       icon: <ShieldCheck size={20} strokeWidth={2.2} />,
       colorClass: 'icon-green'
     }
@@ -53,13 +56,13 @@ export function BusinessComplianceSection({ onOpenModal }: BusinessComplianceSec
       <div className="container">
         <div className="compliance-header-block text-center margin-center">
           <div className="eyebrow-pill margin-center">
-            <span>BUSINESS COMPLIANCE</span>
+            <span>{t.compliance.eyebrow}</span>
           </div>
           <h2 className="section-title-large">
-            Essential Compliance Support.
+            {t.compliance.title}
           </h2>
           <p className="section-subtext-regular margin-center" style={{ maxWidth: '580px' }}>
-            Professional support for essential business registration and filing requirements.
+            {t.compliance.subtext}
           </p>
         </div>
 
@@ -86,7 +89,7 @@ export function BusinessComplianceSection({ onOpenModal }: BusinessComplianceSec
               <h3 className="compliance-card-title">{item.title}</h3>
               <p className="compliance-card-desc">{item.desc}</p>
               <div className="compliance-card-action">
-                <span>Inquire Now</span>
+                <span>{t.compliance.inquireBtn}</span>
                 <ArrowRight size={14} />
               </div>
             </div>

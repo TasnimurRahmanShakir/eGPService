@@ -3,7 +3,10 @@
 import React from 'react';
 import { useInView } from '../../hooks/useInView';
 
+import { useLanguage } from '../../context/LanguageContext';
+
 export function ClientsSection() {
+  const { t } = useLanguage();
   const [ref, isInView] = useInView<HTMLElement>({ threshold: 0.1 });
 
   return (
@@ -14,9 +17,9 @@ export function ClientsSection() {
     >
       <div className="container">
         <div className="clients-carousel-header">
-          <p className="clients-carousel-eyebrow">TRUSTED BY INDUSTRY LEADERS</p>
+          <p className="clients-carousel-eyebrow">{t.clients.eyebrow}</p>
           <h3 className="clients-carousel-title">
-            Empowering Top Construction &amp; Engineering Contractors in Bangladesh
+            {t.clients.title}
           </h3>
         </div>
       </div>

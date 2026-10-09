@@ -4,12 +4,15 @@ import React from 'react';
 import Link from 'next/link';
 import { ArrowRight, Check } from 'lucide-react';
 import { BangladeshNetworkMap } from './BangladeshNetworkMap';
+import { useLanguage } from '../../context/LanguageContext';
 
 interface HeroSectionProps {
   onOpenModal: (serviceName?: string) => void;
 }
 
 export function HeroSection({ onOpenModal }: HeroSectionProps) {
+  const { t } = useLanguage();
+
   return (
     <section className="hero-section" id="hero">
       <div className="container hero-container-grid hero-content-direct">
@@ -17,15 +20,15 @@ export function HeroSection({ onOpenModal }: HeroSectionProps) {
         <div className="hero-left-col">
           {/* Main Title */}
           <h1 className="hero-main-title">
-            <span className="hero-line-item hero-line-1">Country&apos;s First</span>
+            <span className="hero-line-item hero-line-1">{t.hero.line1}</span>
             <span className="hero-line-item hero-line-2 hero-highlight-green">
-              Tender &amp; Project Management Solution
+              {t.hero.line2}
             </span>
           </h1>
 
           {/* Concise 1-Line Description */}
           <p className="hero-description">
-            End-to-end e-GP bid preparation, technical proposal engineering &amp; compliance management across Bangladesh.
+            {t.hero.description}
           </p>
 
           {/* Compact Trust Bullets */}
@@ -34,13 +37,13 @@ export function HeroSection({ onOpenModal }: HeroSectionProps) {
               <div className="hero-check-badge">
                 <Check size={13} strokeWidth={3} />
               </div>
-              <span className="hero-checklist-text">Technical &amp; Financial Bid Responsiveness</span>
+              <span className="hero-checklist-text">{t.hero.bullet1}</span>
             </div>
             <div className="hero-checklist-item">
               <div className="hero-check-badge">
                 <Check size={13} strokeWidth={3} />
               </div>
-              <span className="hero-checklist-text">Timely e-GP Submission &amp; Banking Coordination</span>
+              <span className="hero-checklist-text">{t.hero.bullet2}</span>
             </div>
           </div>
 
@@ -51,14 +54,14 @@ export function HeroSection({ onOpenModal }: HeroSectionProps) {
               className="btn-dark-pill"
               id="hero-primary-cta"
             >
-              <span>Get Free Consultation</span>
+              <span>{t.hero.primaryCta}</span>
               <div className="btn-arrow-circle">
                 <ArrowRight size={14} strokeWidth={2.5} />
               </div>
             </button>
 
             <Link href="#services" className="btn-outline-pill">
-              Explore Services
+              {t.hero.secondaryCta}
             </Link>
           </div>
         </div>

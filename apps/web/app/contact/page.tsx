@@ -15,15 +15,17 @@ import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
 import { StickyMobileBar } from '../../components/StickyMobileBar';
 import { LeadModal } from '../../components/LeadModal';
+import { useLanguage } from '../../context/LanguageContext';
 
 export default function ContactPage() {
+  const { t, lang } = useLanguage();
   const [modalOpen, setModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     fullName: '',
     company: '',
     phone: '',
     tenderRef: '',
-    service: 'Tender Preparation & Submission',
+    service: '',
     message: ''
   });
   const [phoneError, setPhoneError] = useState('');
@@ -31,18 +33,14 @@ export default function ContactPage() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const servicesList = [
-    'e-GP Registration',
-    'Tender Preparation & Submission',
-    'Liquid Asset / Line of Credit Preparation',
-    'e-GP Consultancy',
-    'e-GP Training',
-    'Project Cost Management',
-    'VAT Registration',
-    'VAT Return Submission',
-    'Tax Registration',
-    'Tax Return Submission'
-  ];
+  const servicesList = t.contactPage.servicesList;
+
+  // Set default service when servicesList is loaded or empty
+  useEffect(() => {
+    if (!formData.service && servicesList.length > 1) {
+      setFormData((prev) => ({ ...prev, service: servicesList[1] }));
+    }
+  }, [servicesList, formData.service]);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -59,7 +57,7 @@ export default function ContactPage() {
     e.preventDefault();
     const cleanDigits = formData.phone.replace(/\D/g, '');
     if (cleanDigits.length < 10 || cleanDigits.length > 11) {
-      setPhoneError('Please enter a valid 10-11 digit mobile number (e.g. 01886-970197)');
+      setPhoneError(t.leadModal.phoneError);
       return;
     }
     setPhoneError('');
@@ -73,9 +71,9 @@ export default function ContactPage() {
       {/* Clean Simple Header */}
       <section className="contact-simple-hero">
         <div className="container" style={{ textAlign: 'center', maxWidth: '640px' }}>
-          <h1 className="contact-simple-title">Contact Us</h1>
+          <h1 className="contact-simple-title">{t.contactPage.heroTitle}</h1>
           <p className="contact-simple-subtitle">
-            Have questions about an upcoming e-GP tender or need consultation? Reach out to our team directly.
+            {t.contactPage.heroSubtitle}
           </p>
         </div>
       </section>
@@ -86,9 +84,9 @@ export default function ContactPage() {
           <div className="contact-simple-grid">
             {/* Left: Contact Info & Office Map */}
             <div className="contact-simple-info-col">
-              <h2 className="contact-info-heading">Get in Touch</h2>
+              <h2 className="contact-info-heading">{t.contactPage.getInTouch}</h2>
               <p className="contact-info-text">
-                Feel free to call, email, or message us on WhatsApp. You can also visit our Dhaka office during working hours.
+                {t.contactPage.getInTouchDesc}
               </p>
 
               <div className="contact-info-cards-list">
@@ -98,7 +96,7 @@ export default function ContactPage() {
                     <Phone size={18} />
                   </div>
                   <div>
-                    <span className="simple-contact-label">Phone</span>
+                    <span className="simple-contact-label">{t.contactPage.labelPhone}</span>
                     <span className="simple-contact-val">+880 1886-970197</span>
                   </div>
                 </a>
@@ -114,8 +112,8 @@ export default function ContactPage() {
                     <MessageSquare size={18} />
                   </div>
                   <div>
-                    <span className="simple-contact-label">WhatsApp</span>
-                    <span className="simple-contact-val">Chat on WhatsApp</span>
+                    <span className="simple-contact-label">{t.contactPage.labelWhatsApp}</span>
+                    <span className="simple-contact-val">{t.contactPage.whatsAppChat}</span>
                   </div>
                 </a>
 
@@ -125,7 +123,7 @@ export default function ContactPage() {
                     <Mail size={18} />
                   </div>
                   <div>
-                    <span className="simple-contact-label">Email</span>
+                    <span className="simple-contact-label">{t.contactPage.labelEmail}</span>
                     <span className="simple-contact-val">bdegptender@gmail.com</span>
                   </div>
                 </a>
@@ -136,8 +134,8 @@ export default function ContactPage() {
                     <MapPin size={18} />
                   </div>
                   <div>
-                    <span className="simple-contact-label">Office Location</span>
-                    <span className="simple-contact-val">House 6, Road 2/B, Baridhara J Block, Dhaka 1212</span>
+                    <span className="simple-contact-label">{t.contactPage.labelOffice}</span>
+                    <span className="simple-contact-val">{t.contactPage.officeAddress}</span>
                   </div>
                 </div>
 
@@ -147,8 +145,8 @@ export default function ContactPage() {
                     <Clock size={18} />
                   </div>
                   <div>
-                    <span className="simple-contact-label">Working Hours</span>
-                    <span className="simple-contact-val">Saturday — Thursday: 9:00 AM – 7:00 PM</span>
+                    <span className="simple-contact-label">{t.contactPage.labelHours}</span>
+                    <span className="simple-contact-val">{t.contactPage.hoursTime}</span>
                   </div>
                 </div>
               </div>
@@ -177,44 +175,44 @@ export default function ContactPage() {
                       <Check size={36} strokeWidth={3} />
                     </div>
                     <h3 className="modal-success-title">
-                      ধন্যবাদ! আপনার অনুরোধ গ্রহণ করা হয়েছে।
+                      {t.leadModal.success.title}
                     </h3>
                     <p className="modal-success-subtitle">
-                      আমরা শীঘ্রই আপনার সাথে যোগাযোগ করব।
+                      {t.leadModal.success.subtitle}
                     </p>
                     <p className="modal-success-phone-note">
-                      Our tender consulting team will call you shortly at <strong>+880 {formData.phone}</strong> regarding <strong>{formData.service}</strong>.
+                      {t.contactPage.phoneNoteBefore} <strong>+880 {formData.phone}</strong> {t.contactPage.phoneNoteRegarding} <strong>{formData.service}</strong>.
                     </p>
                     <button 
                       onClick={() => setSubmitted(false)} 
                       className="btn-modal-submit" 
                       style={{ width: '100%', justifyContent: 'center', marginTop: '1.25rem' }}
                     >
-                      Submit Another Request
+                      {t.contactPage.submitAnother}
                     </button>
                   </div>
                 ) : (
                   <div className="modal-form-container">
                     <div className="modal-header-block">
                       <div className="eyebrow-pill" style={{ marginBottom: '0.65rem' }}>
-                        <span>DIRECT CONSULTING INQUIRY</span>
+                        <span>{t.contactPage.inquiryEyebrow}</span>
                       </div>
                       <h3 className="modal-heading">
-                        Tell Us About Your Tender.
+                        {t.contactPage.inquiryHeading}
                       </h3>
                       <p className="modal-subheading">
-                        Have a tender coming up or need help with the e-GP process? Send us the details and our specialists will assist you immediately.
+                        {t.contactPage.inquirySubheading}
                       </p>
                     </div>
 
                     <form onSubmit={handleSubmit} className="modal-form">
                       <div className="modal-form-grid">
                         <div className="field-group">
-                          <label className="field-label">Full Name *</label>
+                          <label className="field-label">{t.leadModal.fields.fullName}</label>
                           <input
                             type="text"
                             required
-                            placeholder="e.g. Md. Rafiqul Islam"
+                            placeholder={t.leadModal.fields.fullNamePlaceholder}
                             className="field-input"
                             value={formData.fullName}
                             onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
@@ -222,10 +220,10 @@ export default function ContactPage() {
                         </div>
 
                         <div className="field-group">
-                          <label className="field-label">Company Name</label>
+                          <label className="field-label">{t.leadModal.fields.company}</label>
                           <input
                             type="text"
-                            placeholder="e.g. Islam Construction &amp; Engineering Ltd."
+                            placeholder={t.leadModal.fields.companyPlaceholder}
                             className="field-input"
                             value={formData.company}
                             onChange={(e) => setFormData({ ...formData, company: e.target.value })}
@@ -233,13 +231,13 @@ export default function ContactPage() {
                         </div>
 
                         <div className="field-group">
-                          <label className="field-label">Phone Number *</label>
+                          <label className="field-label">{t.leadModal.fields.phone}</label>
                           <div className="phone-input-wrap">
                             <span className="phone-prefix-badge">+880</span>
                             <input
                               type="tel"
                               required
-                              placeholder="1886-970197"
+                              placeholder={t.leadModal.fields.phonePlaceholder}
                               className="field-input phone-input-field"
                               value={formData.phone}
                               onChange={(e) => {
@@ -256,10 +254,10 @@ export default function ContactPage() {
                         </div>
 
                         <div className="field-group">
-                          <label className="field-label">Tender / Memo Reference (Optional)</label>
+                          <label className="field-label">{t.leadModal.fields.tenderRef}</label>
                           <input
                             type="text"
-                            placeholder="e.g. Tender ID: 948201 or Memo Ref"
+                            placeholder={t.leadModal.fields.tenderRefPlaceholder}
                             className="field-input"
                             value={formData.tenderRef}
                             onChange={(e) => setFormData({ ...formData, tenderRef: e.target.value })}
@@ -269,7 +267,7 @@ export default function ContactPage() {
 
                       {/* Custom Interactive Dropdown */}
                       <div className="field-group">
-                        <label className="field-label">Service Required *</label>
+                        <label className="field-label">{t.leadModal.fields.serviceRequired}</label>
                         <div className="custom-dropdown-wrap" ref={dropdownRef}>
                           <button
                             type="button"
@@ -278,7 +276,7 @@ export default function ContactPage() {
                             aria-haspopup="listbox"
                             aria-expanded={dropdownOpen}
                           >
-                            <span className="dropdown-selected-label">{formData.service || 'Select a Service'}</span>
+                            <span className="dropdown-selected-label">{formData.service || t.leadModal.fields.selectService}</span>
                             <ChevronDown size={18} className={`dropdown-chevron ${dropdownOpen ? 'is-rotated' : ''}`} />
                           </button>
 
@@ -308,10 +306,10 @@ export default function ContactPage() {
                       </div>
 
                       <div className="field-group">
-                        <label className="field-label">Specific Request or Message</label>
+                        <label className="field-label">{t.leadModal.fields.message}</label>
                         <textarea
                           rows={3}
-                          placeholder="Briefly describe your tender deadline, procurement questions or challenges..."
+                          placeholder={t.leadModal.fields.messagePlaceholder}
                           className="field-textarea"
                           value={formData.message}
                           onChange={(e) => setFormData({ ...formData, message: e.target.value })}
@@ -325,7 +323,7 @@ export default function ContactPage() {
                           id="contact-send-request-btn"
                           style={{ width: '100%', justifyContent: 'center' }}
                         >
-                          <span>Send Request</span>
+                          <span>{t.leadModal.sendBtn}</span>
                           <ArrowRight size={15} strokeWidth={2.5} />
                         </button>
                       </div>

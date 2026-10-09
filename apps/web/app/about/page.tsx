@@ -7,7 +7,10 @@ import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
 import { LeadModal } from '../../components/LeadModal';
 
+import { useLanguage } from '../../context/LanguageContext';
+
 export default function AboutPage() {
+  const { lang, t } = useLanguage();
   const [modalOpen, setModalOpen] = useState(false);
   const [modalService, setModalService] = useState<string | undefined>();
 
@@ -19,23 +22,23 @@ export default function AboutPage() {
   const corePillars = [
     {
       num: '01',
-      title: 'Tender-Focused',
-      desc: 'Groundwork rooted in real tender requirements, evaluation criteria and procurement guidelines.'
+      title: t.whyChoose.pillars.p1Title,
+      desc: t.whyChoose.pillars.p1Desc
     },
     {
       num: '02',
-      title: 'Responsive',
-      desc: 'Thorough technical and financial proposal assistance with full document responsiveness.'
+      title: t.whyChoose.pillars.p2Title,
+      desc: t.whyChoose.pillars.p2Desc
     },
     {
       num: '03',
-      title: 'Deadline-Conscious',
-      desc: 'Structured timelines for upload, verification and submission well before closing.'
+      title: t.whyChoose.pillars.p3Title,
+      desc: t.whyChoose.pillars.p3Desc
     },
     {
       num: '04',
-      title: 'Technology-Enabled',
-      desc: 'Digital tracking and software-based project cost management for post-award financial control.'
+      title: t.whyChoose.pillars.p4Title,
+      desc: t.whyChoose.pillars.p4Desc
     }
   ];
 
@@ -51,15 +54,13 @@ export default function AboutPage() {
           <div className="about-wrap-container">
             <div className="about-hero-grid">
               <div>
-
-
                 <h1 className="about-hero-title">
-                  Empowering Contractors &amp; Businesses{' '}
-                  <span style={{ color: '#12A672' }}>Across Bangladesh.</span>
+                  {t.aboutPage.title1}{' '}
+                  <span style={{ color: '#12A672' }}>{t.aboutPage.title2}</span>
                 </h1>
 
                 <p className="about-hero-sub">
-                  Tender advisory, documentation, submission support and digital project cost management, so organizations can compete and win with confidence.
+                  {t.aboutPage.subtitle}
                 </p>
 
                 <div className="about-hero-buttons">
@@ -68,11 +69,11 @@ export default function AboutPage() {
                     className="about-btn"
                     id="about-hero-consult-btn"
                   >
-                    Speak with Our Consultants
+                    {t.nav.consultationBtn}
                   </button>
 
                   <Link href="/#services" className="about-btn alt">
-                    Explore Services
+                    {t.hero.secondaryCta}
                   </Link>
                 </div>
               </div>

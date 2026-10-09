@@ -4,7 +4,10 @@ import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useInView } from '../../hooks/useInView';
 
+import { useLanguage } from '../../context/LanguageContext';
+
 export function WhoWeServeSection() {
+  const { t } = useLanguage();
   const [ref, isInView] = useInView<HTMLDivElement>({ threshold: 0.2 });
   const [offsetY, setOffsetY] = useState(0);
 
@@ -36,7 +39,7 @@ export function WhoWeServeSection() {
           <div className="who-visual-container">
             {/* Handwritten Note with Animated SVG Arrow Draw */}
             <div className="handwritten-annotation note-who-serve handwritten-annotation-animated">
-              <span className="handwritten-text">Supporting Businesses, Building Bangladesh</span>
+              <span className="handwritten-text">{t.whoWeServe.handwriting}</span>
               <svg className="handwritten-arrow-svg" width="46" height="38" viewBox="0 0 50 40" fill="none">
                 <path
                   className="annotation-draw-arrow-path"
@@ -70,23 +73,23 @@ export function WhoWeServeSection() {
         {/* Right Column: Copy & Staggered Organization Pills */}
         <div className="who-we-serve-right">
           <div className="eyebrow-pill">
-            <span>WHO WE SERVE</span>
+            <span>{t.whoWeServe.eyebrow}</span>
           </div>
 
           <h2 className="section-title-large">
-            We Work With<br />
-            Various Organizations
+            {t.whoWeServe.title1}<br />
+            {t.whoWeServe.title2}
           </h2>
 
           <p className="section-subtext-regular">
-            From small businesses to large enterprises, we support organizations across different sectors in Bangladesh.
+            {t.whoWeServe.subtext}
           </p>
 
           <div className="org-chips-wrap">
-            <div className="org-chip-pill org-chip-pill-stagger">Government & Semi-Government</div>
-            <div className="org-chip-pill org-chip-pill-stagger">Private Companies</div>
-            <div className="org-chip-pill org-chip-pill-stagger">NGOs & Development Partners</div>
-            <div className="org-chip-pill org-chip-pill-stagger">Individual Entrepreneurs</div>
+            <div className="org-chip-pill org-chip-pill-stagger">{t.whoWeServe.chips.govt}</div>
+            <div className="org-chip-pill org-chip-pill-stagger">{t.whoWeServe.chips.privateCo}</div>
+            <div className="org-chip-pill org-chip-pill-stagger">{t.whoWeServe.chips.ngos}</div>
+            <div className="org-chip-pill org-chip-pill-stagger">{t.whoWeServe.chips.entrepreneurs}</div>
           </div>
         </div>
       </div>
