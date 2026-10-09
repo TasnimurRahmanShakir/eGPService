@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -9,51 +9,81 @@ import {
   FileSpreadsheet,
   KeyRound,
   History,
-  ShieldCheck
+  ShieldCheck,
+  ChevronLeft,
+  ChevronRight,
+  Menu,
+  X,
 } from 'lucide-react';
+import { setSidebarCookie } from '../../app/actions/sidebarActions';
 
 const NAV_ITEMS = [
   { label: 'Overview', href: '/', icon: LayoutDashboard },
   { label: 'Clients', href: '/clients', icon: Users },
   { label: 'Tenders (Excel)', href: '/tenders', icon: FileSpreadsheet },
-  { label: 'e-GP Tenderers', href: '/tenderers', icon: KeyRound },
+  { label: 'e-GP Licenses', href: '/tenderers', icon: KeyRound },
   { label: 'Audit Trail', href: '/audit-logs', icon: History },
 ];
 
-export function AdminSidebar() {
+export interface AdminSidebarProps {
+  isCollapsed?: boolean;
+  onToggleCollapse?: () => void;
+  isMobileOpen?: boolean;
+  onCloseMobile?: () => void;
+}
+
+export function AdminSidebar({
+  isCollapsed = false,
+  onToggleCollapse,
+  isMobileOpen = false,
+  onCloseMobile,
+}: AdminSidebarProps) {
   const pathname = usePathname();
 
   return (
-    <aside className="admin-sidebar" style={{ borderRight: '1px solid rgba(255, 255, 255, 0.08)' }}>
+    <aside className={`admin-sidebar ${isCollapsed ? 'collapsed' : ''} ${isMobileOpen ? 'mobile-open' : ''}`}>
       {/* Brand Header */}
-      <div style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
-        <div
-          style={{
-            width: '36px',
-            height: '36px',
-            borderRadius: '10px',
-            background: 'linear-gradient(135deg, #38bdf8 0%, #0284c7 100%)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#070b16',
-            boxShadow: '0 0 15px rgba(56, 189, 248, 0.4)',
-          }}
-        >
-          <ShieldCheck size={20} />
+      <div className="sidebar-brand-header">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', overflow: 'hidden' }}>
+          <div className="brand-logo-badge" title="eGP Command Enterprise Portal">
+            <ShieldCheck size={20} strokeWidth={2.5} />
+          </div>
+          <div className="sidebar-text-hide" style={{ minWidth: 0 }}>
+            <h2 className="brand-title">eGP Command</h2>
+            <span className="brand-subtitle">Enterprise Portal</span>
+          </div>
         </div>
-        <div>
-          <h2 style={{ fontSize: '1rem', fontWeight: 700, color: '#f8fafc', letterSpacing: '-0.02em', lineHeight: 1.2 }}>
-            eGP Command
-          </h2>
-          <span style={{ fontSize: '0.725rem', color: '#94a3b8', fontWeight: 500 }}>
-            Enterprise Portal
-          </span>
-        </div>
+
+        {/* Mobile close button */}
+        {onCloseMobile && (
+          <button
+            type="button"
+            onClick={onCloseMobile}
+            className="sidebar-toggle-btn md:hidden"
+            style={{ display: isMobileOpen ? 'flex' : 'none' }}
+            aria-label="Close sidebar"
+          >
+            <X size={16} />
+          </button>
+        )}
+
+        {/* Desktop Collapse/Expand Toggle button */}
+        {onToggleCollapse && (
+          <button
+            type="button"
+            onClick={onToggleCollapse}
+            className="sidebar-toggle-btn"
+            title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          >
+            {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+          </button>
+        )}
       </div>
 
       {/* Navigation Links */}
-      <nav style={{ padding: '1.25rem 0.75rem', display: 'flex', flexDirection: 'column', gap: '0.25rem', flex: 1 }}>
+      <nav className="sidebar-nav-container">
+        <div className="sidebar-nav-label sidebar-text-hide">Main Menu</div>
         {NAV_ITEMS.map((item) => {
           const isActive = pathname === item.href;
           const Icon = item.icon;
@@ -62,36 +92,120 @@ export function AdminSidebar() {
             <Link
               key={item.href}
               href={item.href}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.75rem',
-                padding: '0.65rem 0.85rem',
-                borderRadius: '8px',
-                color: isActive ? '#38bdf8' : '#94a3b8',
-                backgroundColor: isActive ? 'rgba(56, 189, 248, 0.1)' : 'transparent',
-                fontWeight: isActive ? 600 : 500,
-                fontSize: '0.875rem',
-                textDecoration: 'none',
-                transition: 'all 0.15s ease',
-                border: isActive ? '1px solid rgba(56, 189, 248, 0.25)' : '1px solid transparent',
-              }}
+              onClick={onCloseMobile}
+              title={isCollapsed ? item.label : undefined}
+              className={`sidebar-nav-link ${isActive ? 'active' : ''}`}
             >
-              <Icon size={18} style={{ color: isActive ? '#38bdf8' : '#64748b' }} />
-              <span>{item.label}</span>
+              <Icon size={19} className="sidebar-nav-icon" />
+              <span className="sidebar-text-hide">{item.label}</span>
             </Link>
           );
         })}
       </nav>
 
       {/* Footer Info */}
-      <div style={{ padding: '1rem 1.25rem', borderTop: '1px solid rgba(255, 255, 255, 0.08)', fontSize: '0.75rem', color: '#64748b' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#34d399', fontWeight: 600 }}>
-          <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#10b981' }} />
-          .NET 10 API Connected
+      <div className="sidebar-footer">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', color: 'var(--success, #047857)', fontWeight: 600, fontSize: '0.75rem', justifyContent: isCollapsed ? 'center' : 'flex-start' }}>
+          <span style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: 'var(--success, #047857)', boxShadow: '0 0 6px rgba(4, 120, 87, 0.4)', flexShrink: 0 }} />
+          <span className="sidebar-text-hide">API Connected</span>
         </div>
-        <span style={{ marginTop: '0.2rem', display: 'block' }}>Identity: admin-guid-123</span>
+        <div className="sidebar-text-hide" style={{ marginTop: '0.25rem', fontSize: '0.7rem', color: 'var(--muted-foreground, #64748B)' }}>
+          Identity: admin-guid-123
+        </div>
       </div>
     </aside>
+  );
+}
+
+export function AdminLayoutWrapper({
+  initialCollapsed = false,
+  children,
+}: {
+  initialCollapsed?: boolean;
+  children: React.ReactNode;
+}) {
+  const [isCollapsed, setIsCollapsed] = useState(initialCollapsed);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const pathname = usePathname();
+
+  // Close mobile drawer on route navigation
+  useEffect(() => {
+    setIsMobileOpen(false);
+  }, [pathname]);
+
+  // Handle escape key to close mobile drawer
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsMobileOpen(false);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  const handleToggleCollapse = async () => {
+    const next = !isCollapsed;
+    setIsCollapsed(next);
+    // Persist in server cookie
+    try {
+      await setSidebarCookie(next);
+    } catch {
+      // Fallback: document.cookie if server action fails
+      document.cookie = `egp-sidebar-collapsed=${next}; path=/; max-age=31536000; SameSite=Lax`;
+    }
+  };
+
+  return (
+    <div className="admin-shell-layout">
+      {/* Mobile Drawer Backdrop */}
+      {isMobileOpen && (
+        <div
+          className="mobile-backdrop"
+          onClick={() => setIsMobileOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Responsive Collapsible Sidebar */}
+      <AdminSidebar
+        isCollapsed={isCollapsed}
+        onToggleCollapse={handleToggleCollapse}
+        isMobileOpen={isMobileOpen}
+        onCloseMobile={() => setIsMobileOpen(false)}
+      />
+
+      {/* Main Content Column */}
+      <div className="admin-main-column">
+        {/* Mobile Top Navbar (screens < 1024px) */}
+        <header className="mobile-top-bar">
+          <button
+            type="button"
+            onClick={() => setIsMobileOpen(true)}
+            className="mobile-hamburger-btn"
+            aria-label="Open navigation menu"
+          >
+            <Menu size={20} />
+          </button>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+            <div className="brand-logo-badge" style={{ width: '28px', height: '28px' }}>
+              <ShieldCheck size={16} />
+            </div>
+            <span style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-headline)' }}>
+              eGP Command
+            </span>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.7rem', color: 'var(--success, #047857)', backgroundColor: 'var(--success-bg, #ECFDF5)', padding: '3px 8px', borderRadius: '12px', border: '1px solid var(--success-border, #A7F3D0)' }}>
+            <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: 'var(--success, #047857)' }} />
+            <span>Online</span>
+          </div>
+        </header>
+
+        {/* Scrollable Main Content */}
+        <main className="admin-main-scroll-content">
+          {children}
+        </main>
+      </div>
+    </div>
   );
 }

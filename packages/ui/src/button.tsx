@@ -25,43 +25,51 @@ export function Button({
     switch (variant) {
       case 'primary':
         return {
-          backgroundColor: '#38bdf8',
-          color: '#070b16',
+          backgroundColor: 'var(--primary, #0F766E)',
+          color: '#FFFFFF',
           border: '1px solid transparent',
-          boxShadow: '0 0 15px rgba(56, 189, 248, 0.25)',
+          boxShadow: '0 1px 2px rgba(15, 118, 110, 0.2)',
+          borderRadius: 'var(--radius-control, 8px)',
         };
       case 'emerald':
         return {
-          backgroundColor: '#10b981',
+          backgroundColor: 'var(--success, #047857)',
           color: '#FFFFFF',
           border: '1px solid transparent',
-          boxShadow: '0 0 15px rgba(16, 185, 129, 0.25)',
+          boxShadow: '0 1px 2px rgba(4, 120, 87, 0.2)',
+          borderRadius: 'var(--radius-control, 8px)',
         };
       case 'danger':
         return {
-          backgroundColor: '#f43f5e',
+          backgroundColor: 'var(--danger, #BE123C)',
           color: '#FFFFFF',
           border: '1px solid transparent',
-          boxShadow: '0 0 15px rgba(244, 63, 94, 0.25)',
+          boxShadow: '0 1px 2px rgba(190, 18, 60, 0.2)',
+          borderRadius: 'var(--radius-control, 8px)',
         };
       case 'secondary':
         return {
-          backgroundColor: 'rgba(30, 41, 59, 0.8)',
-          color: '#f8fafc',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
+          backgroundColor: 'var(--surface, #FFFFFF)',
+          color: 'var(--foreground, #1F2937)',
+          border: '1px solid var(--border-strong, #CBD5E1)',
+          boxShadow: 'var(--shadow-sm, 0 1px 2px rgba(15, 23, 42, 0.05))',
+          borderRadius: 'var(--radius-control, 8px)',
         };
       case 'outline':
         return {
-          backgroundColor: 'transparent',
-          color: '#38bdf8',
-          border: '1px solid rgba(56, 189, 248, 0.4)',
+          backgroundColor: 'var(--surface, #FFFFFF)',
+          color: 'var(--primary, #0F766E)',
+          border: '1px solid var(--primary-border, #99F6E4)',
+          boxShadow: 'var(--shadow-sm, 0 1px 2px rgba(15, 23, 42, 0.05))',
+          borderRadius: 'var(--radius-control, 8px)',
         };
       case 'ghost':
       default:
         return {
           backgroundColor: 'transparent',
-          color: '#94a3b8',
+          color: 'var(--muted-foreground, #64748B)',
           border: '1px solid transparent',
+          borderRadius: 'var(--radius-control, 8px)',
         };
     }
   };

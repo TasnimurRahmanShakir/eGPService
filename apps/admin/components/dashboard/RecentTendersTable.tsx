@@ -9,12 +9,12 @@ export function RecentTendersTable({ tenders }: { tenders: TenderDto[] }) {
     {
       header: 'Tender ID',
       accessorKey: 'tenderId',
-      cell: (t) => <span style={{ fontFamily: 'monospace', fontWeight: 700, color: '#f8fafc' }}>{t.tenderId}</span>,
+      cell: (t) => <span style={{ fontFamily: 'monospace', fontWeight: 700, color: '#1F2937' }}>{t.tenderId}</span>,
     },
     {
       header: 'Client',
       accessorKey: 'clientName',
-      cell: (t) => <span style={{ color: '#38bdf8', fontWeight: 600 }}>{t.clientName}</span>,
+      cell: (t) => <span style={{ color: '#0F766E', fontWeight: 600 }}>{t.clientName}</span>,
     },
     {
       header: 'Department',

@@ -21,7 +21,7 @@ export function TenderersClientView({ initialTenderers }: { initialTenderers: Te
       header: 'ID',
       accessorKey: 'id',
       width: '80px',
-      cell: (t) => <span style={{ fontFamily: 'monospace', color: '#38bdf8' }}>#{t.id}</span>,
+      cell: (t) => <span style={{ fontFamily: 'monospace', color: '#0F766E', fontWeight: 600 }}>#{t.id}</span>,
     },
     {
       header: 'Tenderer Name (Bidder)',
@@ -33,8 +33,9 @@ export function TenderersClientView({ initialTenderers }: { initialTenderers: Te
               width: '28px',
               height: '28px',
               borderRadius: '6px',
-              backgroundColor: 'rgba(56, 189, 248, 0.15)',
-              color: '#38bdf8',
+              backgroundColor: '#F0FDFA',
+              color: '#0F766E',
+              border: '1px solid #99F6E4',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -44,14 +45,14 @@ export function TenderersClientView({ initialTenderers }: { initialTenderers: Te
           >
             {t.name.slice(0, 2).toUpperCase()}
           </div>
-          <span style={{ fontWeight: 600, color: '#f8fafc' }}>{t.name}</span>
+          <span style={{ fontWeight: 600, color: '#1F2937' }}>{t.name}</span>
         </div>
       ),
     },
     {
       header: 'Username',
       accessorKey: 'username',
-      cell: (t) => <span style={{ fontFamily: 'monospace', color: '#94a3b8' }}>{t.username}</span>,
+      cell: (t) => <span style={{ fontFamily: 'monospace', color: '#64748B' }}>{t.username}</span>,
     },
     {
       header: 'Password Storage',

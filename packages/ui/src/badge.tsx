@@ -24,43 +24,43 @@ export function Badge({
       case 'emerald':
       case 'green':
         return {
-          bg: 'rgba(16, 185, 129, 0.15)',
-          color: '#34d399',
-          border: '1px solid rgba(16, 185, 129, 0.3)',
-          dotColor: '#10b981'
+          bg: 'var(--success-bg, #ECFDF5)',
+          color: 'var(--success, #047857)',
+          border: '1px solid var(--success-border, #A7F3D0)',
+          dotColor: 'var(--success, #047857)'
         };
       case 'rose':
       case 'red':
         return {
-          bg: 'rgba(244, 63, 94, 0.15)',
-          color: '#fb7185',
-          border: '1px solid rgba(244, 63, 94, 0.3)',
-          dotColor: '#f43f5e'
+          bg: 'var(--danger-bg, #FFF1F2)',
+          color: 'var(--danger, #BE123C)',
+          border: '1px solid var(--danger-border, #FECDD3)',
+          dotColor: 'var(--danger, #BE123C)'
         };
       case 'amber':
       case 'yellow':
         return {
-          bg: 'rgba(245, 158, 11, 0.15)',
-          color: '#fbbf24',
-          border: '1px solid rgba(245, 158, 11, 0.3)',
-          dotColor: '#f59e0b'
+          bg: 'var(--warning-bg, #FFFBEB)',
+          color: 'var(--warning, #92400E)',
+          border: '1px solid var(--warning-border, #FDE68A)',
+          dotColor: 'var(--warning, #92400E)'
         };
       case 'sky':
       case 'blue':
         return {
-          bg: 'rgba(56, 189, 248, 0.15)',
-          color: '#38bdf8',
-          border: '1px solid rgba(56, 189, 248, 0.3)',
-          dotColor: '#38bdf8'
+          bg: 'var(--info-bg, #EFF6FF)',
+          color: 'var(--info, #1D4ED8)',
+          border: '1px solid var(--info-border, #BFDBFE)',
+          dotColor: 'var(--info, #1D4ED8)'
         };
       case 'slate':
       case 'neutral':
       default:
         return {
-          bg: 'rgba(100, 116, 139, 0.15)',
-          color: '#94a3b8',
-          border: '1px solid rgba(100, 116, 139, 0.25)',
-          dotColor: '#64748b'
+          bg: 'var(--surface-subtle, #F1F5F9)',
+          color: 'var(--foreground-secondary, #475569)',
+          border: '1px solid var(--border-strong, #CBD5E1)',
+          dotColor: 'var(--muted-foreground, #64748B)'
         };
     }
   };

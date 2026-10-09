@@ -27,22 +27,22 @@ export function ClientsClientView({ initialClients }: { initialClients: ClientDt
       header: 'Client ID',
       accessorKey: 'id',
       width: '100px',
-      cell: (c) => <span style={{ fontFamily: 'monospace', color: '#38bdf8' }}>#{c.id}</span>,
+      cell: (c) => <span style={{ fontFamily: 'monospace', color: '#0F766E', fontWeight: 600 }}>#{c.id}</span>,
     },
     {
       header: 'Client / Firm Name',
       accessorKey: 'name',
       cell: (c) => (
         <div>
-          <div style={{ fontWeight: 600, color: '#f8fafc' }}>{c.name}</div>
-          <div style={{ fontSize: '0.775rem', color: '#64748b' }}>{c.phone || 'No phone'}</div>
+          <div style={{ fontWeight: 600, color: '#1F2937' }}>{c.name}</div>
+          <div style={{ fontSize: '0.775rem', color: '#64748B' }}>{c.phone || 'No phone'}</div>
         </div>
       ),
     },
     {
       header: 'Email',
       accessorKey: 'email',
-      cell: (c) => <span style={{ color: '#94a3b8' }}>{c.email || '—'}</span>,
+      cell: (c) => <span style={{ color: '#64748B' }}>{c.email || '—'}</span>,
     },
     {
       header: 'Opening Balance',
@@ -68,7 +68,7 @@ export function ClientsClientView({ initialClients }: { initialClients: ClientDt
         c.currentAdvance > 0 ? (
           <MoneyDisplay amount={c.currentAdvance} type="advance" size="sm" />
         ) : (
-          <span style={{ color: '#64748b' }}>—</span>
+          <span style={{ color: '#94A3B8' }}>—</span>
         )
       ),
     },
@@ -96,7 +96,7 @@ export function ClientsClientView({ initialClients }: { initialClients: ClientDt
                 Purchased (Active)
               </Badge>
               {validDate && (
-                <span style={{ fontSize: '0.725rem', color: '#64748b' }}>
+                <span style={{ fontSize: '0.725rem', color: '#64748B' }}>
                   Valid upto {validDate}
                 </span>
               )}
@@ -130,30 +130,30 @@ export function ClientsClientView({ initialClients }: { initialClients: ClientDt
     <>
       {/* Metric Cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
-        <div style={{ padding: '1.25rem', backgroundColor: 'rgba(15, 23, 42, 0.7)', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-          <span style={{ fontSize: '0.8rem', color: '#94a3b8', fontWeight: 500 }}>Total Registered Clients</span>
-          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#f8fafc', marginTop: '0.25rem' }}>{totalClients}</div>
-          <div style={{ fontSize: '0.75rem', color: '#34d399', marginTop: '0.25rem' }}>
+        <div style={{ padding: '1.25rem', backgroundColor: '#FFFFFF', borderRadius: '10px', border: '1px solid #E2E8F0', boxShadow: 'var(--shadow-sm)' }}>
+          <span style={{ fontSize: '0.875rem', color: '#64748B', fontWeight: 500 }}>Total Registered Clients</span>
+          <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#1F2937', marginTop: '0.25rem', fontVariantNumeric: 'tabular-nums' }}>{totalClients}</div>
+          <div style={{ fontSize: '0.75rem', color: '#047857', marginTop: '0.25rem', fontWeight: 500 }}>
             {purchasedCount} active solution subscriptions
           </div>
         </div>
 
-        <div style={{ padding: '1.25rem', backgroundColor: 'rgba(15, 23, 42, 0.7)', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-          <span style={{ fontSize: '0.8rem', color: '#94a3b8', fontWeight: 500 }}>Total Available Advance (Ledger)</span>
+        <div style={{ padding: '1.25rem', backgroundColor: '#FFFFFF', borderRadius: '10px', border: '1px solid #E2E8F0', boxShadow: 'var(--shadow-sm)' }}>
+          <span style={{ fontSize: '0.875rem', color: '#64748B', fontWeight: 500 }}>Total Available Advance (Ledger)</span>
           <div style={{ marginTop: '0.25rem' }}>
             <MoneyDisplay amount={totalAdvanceSum} type="advance" size="lg" />
           </div>
-          <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.25rem' }}>
+          <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: '0.25rem' }}>
             Available balance for upcoming tender charges
           </div>
         </div>
 
-        <div style={{ padding: '1.25rem', backgroundColor: 'rgba(15, 23, 42, 0.7)', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-          <span style={{ fontSize: '0.8rem', color: '#94a3b8', fontWeight: 500 }}>Total Outstanding Due (Ledger)</span>
+        <div style={{ padding: '1.25rem', backgroundColor: '#FFFFFF', borderRadius: '10px', border: '1px solid #E2E8F0', boxShadow: 'var(--shadow-sm)' }}>
+          <span style={{ fontSize: '0.875rem', color: '#64748B', fontWeight: 500 }}>Total Outstanding Due (Ledger)</span>
           <div style={{ marginTop: '0.25rem' }}>
             <MoneyDisplay amount={totalDueSum} type="due" size="lg" />
           </div>
-          <div style={{ fontSize: '0.75rem', color: '#fb7185', marginTop: '0.25rem' }}>
+          <div style={{ fontSize: '0.75rem', color: '#BE123C', marginTop: '0.25rem', fontWeight: 500 }}>
             Accumulated due across all tenders & subscriptions
           </div>
         </div>

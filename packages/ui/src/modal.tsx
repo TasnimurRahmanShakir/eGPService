@@ -65,14 +65,14 @@ export function Modal({
           width: '100%',
           maxHeight: '92vh',
           overflowY: 'auto',
-          background: '#0b1120',
-          borderRadius: '16px',
-          boxShadow: '0 25px 60px -15px rgba(0, 0, 0, 0.7)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
+          background: 'var(--surface, #FFFFFF)',
+          borderRadius: 'var(--radius-dialog, 14px)',
+          boxShadow: 'var(--shadow-md)',
+          border: '1px solid var(--border, #E2E8F0)',
           padding: '1.75rem',
           position: 'relative',
           boxSizing: 'border-box',
-          color: '#f8fafc',
+          color: 'var(--foreground, #1F2937)',
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -84,15 +84,15 @@ export function Modal({
             right: '1.25rem',
             width: '32px',
             height: '32px',
-            borderRadius: '8px',
-            background: 'rgba(255, 255, 255, 0.05)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            color: '#94a3b8',
+            borderRadius: 'var(--radius-control, 8px)',
+            background: 'var(--surface-subtle, #F1F5F9)',
+            border: '1px solid var(--border, #E2E8F0)',
+            color: 'var(--muted-foreground, #64748B)',
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: '1rem',
+            fontSize: '0.9rem',
             fontWeight: 600,
             lineHeight: 1,
             zIndex: 10,
@@ -105,9 +105,9 @@ export function Modal({
 
         {title && (
           <div style={{ marginBottom: '1.25rem', paddingRight: '2.5rem' }}>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#f8fafc' }}>{title}</h3>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--foreground, #1F2937)' }}>{title}</h3>
             {subtitle && (
-              <p style={{ fontSize: '0.825rem', color: '#94a3b8', marginTop: '0.2rem' }}>
+              <p style={{ fontSize: '0.825rem', color: 'var(--muted-foreground, #64748B)', marginTop: '0.2rem' }}>
                 {subtitle}
               </p>
             )}

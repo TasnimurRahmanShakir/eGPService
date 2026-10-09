@@ -39,9 +39,9 @@ export function Card({
       case 'white':
       default:
         return {
-          backgroundColor: '#FFFFFF',
-          color: '#14231D',
-          border: border ? '1px solid #E3EBE7' : 'none',
+          backgroundColor: 'var(--surface, #FFFFFF)',
+          color: 'var(--foreground, #1F2937)',
+          border: border ? '1px solid var(--border, #E2E8F0)' : 'none',
         };
     }
   };
@@ -49,10 +49,10 @@ export function Card({
   return (
     <div
       style={{
-        borderRadius: '12px',
-        padding: '1.75rem',
-        boxShadow: variant === 'dark' || variant === 'green' ? 'none' : '0 8px 24px rgba(11, 61, 46, 0.08)',
-        transition: 'all 0.25s ease',
+        borderRadius: 'var(--radius-card, 10px)',
+        padding: '1.5rem',
+        boxShadow: 'var(--shadow-sm)',
+        transition: 'all 0.2s ease',
         ...getVariantStyles(),
         ...style,
       }}

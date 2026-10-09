@@ -94,10 +94,10 @@ export function CreateTenderModal({ isOpen, onClose, clients }: CreateTenderModa
           <div
             style={{
               padding: '0.65rem 0.85rem',
-              backgroundColor: 'rgba(244, 63, 94, 0.15)',
-              border: '1px solid rgba(244, 63, 94, 0.3)',
+              backgroundColor: 'var(--danger-bg, #FFF1F2)',
+              border: '1px solid var(--danger-border, #FECDD3)',
               borderRadius: '8px',
-              color: '#fb7185',
+              color: 'var(--danger, #BE123C)',
               fontSize: '0.825rem',
             }}
           >
@@ -257,10 +257,10 @@ export function EditTenderModal({ isOpen, onClose, tender, clients }: EditTender
           <div
             style={{
               padding: '0.65rem 0.85rem',
-              backgroundColor: 'rgba(244, 63, 94, 0.15)',
-              border: '1px solid rgba(244, 63, 94, 0.3)',
+              backgroundColor: 'var(--danger-bg, #FFF1F2)',
+              border: '1px solid var(--danger-border, #FECDD3)',
               borderRadius: '8px',
-              color: '#fb7185',
+              color: 'var(--danger, #BE123C)',
               fontSize: '0.825rem',
             }}
           >
@@ -430,10 +430,10 @@ export function AddTendererModal({ isOpen, onClose, tender }: AddTendererModalPr
           <div
             style={{
               padding: '0.65rem 0.85rem',
-              backgroundColor: 'rgba(244, 63, 94, 0.15)',
-              border: '1px solid rgba(244, 63, 94, 0.3)',
+              backgroundColor: 'var(--danger-bg, #FFF1F2)',
+              border: '1px solid var(--danger-border, #FECDD3)',
               borderRadius: '8px',
-              color: '#fb7185',
+              color: 'var(--danger, #BE123C)',
               fontSize: '0.825rem',
             }}
           >
@@ -496,14 +496,14 @@ export function AddTendererModal({ isOpen, onClose, tender }: AddTendererModalPr
                   alignItems: 'center',
                   gap: '0.35rem',
                   fontSize: '0.8rem',
-                  color: '#cbd5e1',
+                  color: '#0F172A',
                   cursor: 'pointer',
                 }}
               >
                 <input
                   type="checkbox"
                   {...register(f.id as any)}
-                  style={{ accentColor: '#38bdf8' }}
+                  style={{ accentColor: '#059669' }}
                 />
                 {f.label}
               </label>
@@ -615,10 +615,10 @@ export function EditTendererModal({ isOpen, onClose, tenderId, mapping }: EditTe
           <div
             style={{
               padding: '0.65rem 0.85rem',
-              backgroundColor: 'rgba(244, 63, 94, 0.15)',
-              border: '1px solid rgba(244, 63, 94, 0.3)',
+              backgroundColor: 'var(--danger-bg, #FFF1F2)',
+              border: '1px solid var(--danger-border, #FECDD3)',
               borderRadius: '8px',
-              color: '#fb7185',
+              color: 'var(--danger, #BE123C)',
               fontSize: '0.825rem',
             }}
           >
@@ -676,14 +676,14 @@ export function EditTendererModal({ isOpen, onClose, tenderId, mapping }: EditTe
                   alignItems: 'center',
                   gap: '0.35rem',
                   fontSize: '0.8rem',
-                  color: '#cbd5e1',
+                  color: '#0F172A',
                   cursor: 'pointer',
                 }}
               >
                 <input
                   type="checkbox"
                   {...register(f.id as any)}
-                  style={{ accentColor: '#38bdf8' }}
+                  style={{ accentColor: '#059669' }}
                 />
                 {f.label}
               </label>
@@ -789,10 +789,10 @@ export function RecordPaymentModal({
           <div
             style={{
               padding: '0.65rem 0.85rem',
-              backgroundColor: 'rgba(244, 63, 94, 0.15)',
-              border: '1px solid rgba(244, 63, 94, 0.3)',
+              backgroundColor: 'var(--danger-bg, #FFF1F2)',
+              border: '1px solid var(--danger-border, #FECDD3)',
               borderRadius: '8px',
-              color: '#fb7185',
+              color: 'var(--danger, #BE123C)',
               fontSize: '0.825rem',
             }}
           >
@@ -802,16 +802,18 @@ export function RecordPaymentModal({
 
         <div
           style={{
-            padding: '0.85rem',
-            backgroundColor: 'rgba(15, 23, 42, 0.7)',
-            borderRadius: '8px',
-            border: '1px solid rgba(255, 255, 255, 0.05)',
+            padding: '0.85rem 1rem',
+            backgroundColor: 'var(--surface-subtle, #F1F5F9)',
+            borderRadius: 'var(--radius-control, 8px)',
+            border: '1px solid var(--border, #E2E8F0)',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
           }}
         >
-          <span style={{ fontSize: '0.85rem', color: '#94a3b8' }}>Outstanding Due for License:</span>
+          <span style={{ fontSize: '0.875rem', color: 'var(--muted-foreground, #64748B)', fontWeight: 500 }}>
+            Outstanding Due for License:
+          </span>
           <MoneyDisplay amount={dueAmount} type="due" size="lg" />
         </div>
 

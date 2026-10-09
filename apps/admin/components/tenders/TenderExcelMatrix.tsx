@@ -36,12 +36,12 @@ export function TenderExcelMatrix({
             display: 'inline-block',
             padding: '2px 8px',
             borderRadius: '4px',
-            backgroundColor: 'rgba(16, 185, 129, 0.15)',
-            color: '#34d399',
+            backgroundColor: 'var(--success-bg, #ECFDF5)',
+            color: 'var(--success, #047857)',
             fontSize: '0.75rem',
             fontWeight: 700,
             textTransform: 'lowercase',
-            border: '1px solid rgba(16, 185, 129, 0.3)',
+            border: '1px solid var(--success-border, #A7F3D0)',
           }}
         >
           {label || 'ok'}
@@ -55,11 +55,11 @@ export function TenderExcelMatrix({
             display: 'inline-block',
             padding: '2px 8px',
             borderRadius: '4px',
-            backgroundColor: 'rgba(244, 63, 94, 0.15)',
-            color: '#fb7185',
+            backgroundColor: 'var(--danger-bg, #FFF1F2)',
+            color: 'var(--danger, #BE123C)',
             fontSize: '0.75rem',
             fontWeight: 700,
-            border: '1px solid rgba(244, 63, 94, 0.3)',
+            border: '1px solid var(--danger-border, #FECDD3)',
           }}
         >
           No
@@ -67,7 +67,20 @@ export function TenderExcelMatrix({
       );
     }
     return (
-      <span style={{ color: '#475569', fontSize: '0.75rem', fontWeight: 600 }}>NA</span>
+      <span
+        style={{
+          display: 'inline-block',
+          padding: '2px 6px',
+          borderRadius: '4px',
+          backgroundColor: 'var(--surface-subtle, #F1F5F9)',
+          color: 'var(--foreground-secondary, #475569)',
+          fontSize: '0.75rem',
+          fontWeight: 600,
+          border: '1px solid var(--border, #E2E8F0)',
+        }}
+      >
+        NA
+      </span>
     );
   };
 
@@ -88,12 +101,13 @@ export function TenderExcelMatrix({
         style={{
           padding: '3rem 1.5rem',
           textAlign: 'center',
-          backgroundColor: 'rgba(15, 23, 42, 0.6)',
+          backgroundColor: '#FFFFFF',
           borderRadius: '12px',
-          border: '1px solid rgba(255, 255, 255, 0.08)',
+          border: '1px solid #E2E8F0',
+          boxShadow: 'var(--shadow-sm, 0 1px 2px 0 rgba(0, 0, 0, 0.05))',
         }}
       >
-        <p style={{ color: '#94a3b8', fontSize: '0.95rem' }}>No tender records found matching your filters.</p>
+        <p style={{ color: '#64748B', fontSize: '0.95rem' }}>No tender records found matching your filters.</p>
       </div>
     );
   }
@@ -103,67 +117,149 @@ export function TenderExcelMatrix({
       style={{
         overflowX: 'auto',
         borderRadius: '10px',
-        border: '1px solid #334155',
-        backgroundColor: '#090d16',
-        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)',
+        border: '1px solid #E2E8F0',
+        backgroundColor: '#FFFFFF',
+        boxShadow: 'var(--shadow-sm, 0 1px 2px 0 rgba(0, 0, 0, 0.05))',
+        contain: 'paint',
+        contentVisibility: 'auto',
+        containIntrinsicSize: '1200px 600px',
       }}
+      className="tender-matrix-scroll-container"
     >
       <table
         style={{
           width: '100%',
-          borderCollapse: 'collapse',
+          borderCollapse: 'separate',
+          borderSpacing: 0,
           textAlign: 'left',
           fontSize: '0.8rem',
-          color: '#e2e8f0',
+          color: 'var(--foreground, #1F2937)',
         }}
+        className="tender-matrix-table"
       >
         <thead>
           {/* Header Level 1: Category Banners */}
-          <tr style={{ backgroundColor: '#0f172a', borderBottom: '1px solid #334155' }}>
-            <th colSpan={5} style={{ ...headerCellStyle, textAlign: 'center', color: '#94a3b8', fontSize: '0.75rem', letterSpacing: '0.05em' }}>
-              TENDER GENERAL METRICS
+          <tr style={{ backgroundColor: '#F1F5F9', borderBottom: '1px solid #CBD5E1' }}>
+            <th
+              colSpan={3}
+              style={{
+                ...headerCellStyle,
+                position: 'sticky',
+                left: 0,
+                zIndex: 35,
+                width: '358px',
+                minWidth: '358px',
+                maxWidth: '358px',
+                backgroundColor: '#F1F5F9',
+                textAlign: 'center',
+                color: '#475569',
+                fontSize: '0.75rem',
+                letterSpacing: '0.05em',
+                borderRight: '2px solid #CBD5E1',
+                boxShadow: '4px 0 8px -2px rgba(15, 23, 42, 0.05)',
+              }}
+            >
+              TENDER GENERAL
             </th>
-            <th colSpan={11} style={{ ...headerCellStyle, textAlign: 'center', color: '#38bdf8', fontSize: '0.75rem', letterSpacing: '0.05em' }}>
+            <th
+              colSpan={2}
+              style={{
+                ...headerCellStyle,
+                textAlign: 'center',
+                color: '#475569',
+                fontSize: '0.75rem',
+                letterSpacing: '0.05em',
+                backgroundColor: '#F1F5F9',
+              }}
+            >
+              TIMELINE & DEPT
+            </th>
+            <th colSpan={11} style={{ ...headerCellStyle, textAlign: 'center', color: '#0F766E', fontSize: '0.75rem', letterSpacing: '0.05em', backgroundColor: '#F1F5F9' }}>
               eGP LICENSE PARTICIPATION MATRIX & CHECKLISTS
             </th>
-            <th colSpan={2} style={{ ...headerCellStyle, textAlign: 'center', color: '#34d399', fontSize: '0.75rem', letterSpacing: '0.05em' }}>
+            <th colSpan={2} style={{ ...headerCellStyle, textAlign: 'center', color: '#0F766E', fontSize: '0.75rem', letterSpacing: '0.05em', backgroundColor: '#F1F5F9' }}>
               ASSETS & APP
             </th>
-            <th colSpan={4} style={{ ...headerCellStyle, textAlign: 'center', color: '#f59e0b', fontSize: '0.75rem', letterSpacing: '0.05em' }}>
+            <th colSpan={4} style={{ ...headerCellStyle, textAlign: 'center', color: '#0F766E', fontSize: '0.75rem', letterSpacing: '0.05em', backgroundColor: '#F1F5F9' }}>
               PER-LICENSE FINANCIALS & ACTIONS
             </th>
           </tr>
 
           {/* Header Level 2: Specific Column Names */}
-          <tr style={{ backgroundColor: '#1e293b', color: '#f8fafc', fontWeight: 700, fontSize: '0.78rem' }}>
-            <th style={{ ...headerCellStyle, width: '40px', textAlign: 'center' }}>Sl</th>
-            <th style={{ ...headerCellStyle, minWidth: '140px' }}>Client</th>
-            <th style={{ ...headerCellStyle, minWidth: '135px' }}>Tender ID</th>
-            <th style={{ ...headerCellStyle, minWidth: '130px' }}>Closing Date & Time</th>
-            <th style={{ ...headerCellStyle, minWidth: '130px' }}>Department</th>
+          <tr style={{ backgroundColor: '#F8FAFC', color: '#334155', fontWeight: 600, fontSize: '0.75rem', borderBottom: '1px solid #CBD5E1' }}>
+            <th
+              style={{
+                ...headerCellStyle,
+                position: 'sticky',
+                left: 0,
+                zIndex: 30,
+                width: '48px',
+                minWidth: '48px',
+                maxWidth: '48px',
+                textAlign: 'center',
+                backgroundColor: '#F8FAFC',
+                color: '#334155',
+              }}
+            >
+              Sl
+            </th>
+            <th
+              style={{
+                ...headerCellStyle,
+                position: 'sticky',
+                left: '48px',
+                zIndex: 30,
+                width: '140px',
+                minWidth: '140px',
+                maxWidth: '140px',
+                backgroundColor: '#F8FAFC',
+                color: '#334155',
+              }}
+            >
+              Client
+            </th>
+            <th
+              style={{
+                ...headerCellStyle,
+                position: 'sticky',
+                left: '188px',
+                zIndex: 30,
+                width: '170px',
+                minWidth: '170px',
+                maxWidth: '170px',
+                backgroundColor: '#F8FAFC',
+                color: '#334155',
+                borderRight: '2px solid #CBD5E1',
+                boxShadow: '4px 0 8px -2px rgba(15, 23, 42, 0.05)',
+              }}
+            >
+              Tender ID
+            </th>
+            <th style={{ ...headerCellStyle, minWidth: '130px', backgroundColor: '#F8FAFC', color: '#334155' }}>Closing Date & Time</th>
+            <th style={{ ...headerCellStyle, minWidth: '130px', backgroundColor: '#F8FAFC', color: '#334155' }}>Department</th>
 
             {/* License specific headers */}
-            <th style={{ ...headerCellStyle, minWidth: '160px' }}>eGP License</th>
-            <th style={{ ...headerCellStyle, minWidth: '110px', textAlign: 'center' }}>Password</th>
-            <th style={{ ...headerCellStyle, minWidth: '70px', textAlign: 'center' }}>Liquid 1</th>
-            <th style={{ ...headerCellStyle, minWidth: '70px', textAlign: 'center' }}>Liquid 2</th>
-            <th style={{ ...headerCellStyle, minWidth: '70px', textAlign: 'center' }}>Liquid 3</th>
-            <th style={{ ...headerCellStyle, minWidth: '60px', textAlign: 'center' }}>JVCA</th>
-            <th style={{ ...headerCellStyle, minWidth: '60px', textAlign: 'center' }}>Fill</th>
-            <th style={{ ...headerCellStyle, minWidth: '60px', textAlign: 'center' }}>Map</th>
-            <th style={{ ...headerCellStyle, minWidth: '60px', textAlign: 'center' }}>Rate</th>
-            <th style={{ ...headerCellStyle, minWidth: '75px', textAlign: 'center' }}>Less %</th>
-            <th style={{ ...headerCellStyle, minWidth: '60px', textAlign: 'center' }}>Submit</th>
+            <th style={{ ...headerCellStyle, minWidth: '160px', backgroundColor: '#F8FAFC', color: '#334155' }}>eGP License</th>
+            <th style={{ ...headerCellStyle, minWidth: '110px', textAlign: 'center', backgroundColor: '#F8FAFC', color: '#334155' }}>Password</th>
+            <th style={{ ...headerCellStyle, minWidth: '70px', textAlign: 'center', backgroundColor: '#F8FAFC', color: '#334155' }}>Liquid 1</th>
+            <th style={{ ...headerCellStyle, minWidth: '70px', textAlign: 'center', backgroundColor: '#F8FAFC', color: '#334155' }}>Liquid 2</th>
+            <th style={{ ...headerCellStyle, minWidth: '70px', textAlign: 'center', backgroundColor: '#F8FAFC', color: '#334155' }}>Liquid 3</th>
+            <th style={{ ...headerCellStyle, minWidth: '60px', textAlign: 'center', backgroundColor: '#F8FAFC', color: '#334155' }}>JVCA</th>
+            <th style={{ ...headerCellStyle, minWidth: '60px', textAlign: 'center', backgroundColor: '#F8FAFC', color: '#334155' }}>Fill</th>
+            <th style={{ ...headerCellStyle, minWidth: '60px', textAlign: 'center', backgroundColor: '#F8FAFC', color: '#334155' }}>Map</th>
+            <th style={{ ...headerCellStyle, minWidth: '60px', textAlign: 'center', backgroundColor: '#F8FAFC', color: '#334155' }}>Rate</th>
+            <th style={{ ...headerCellStyle, minWidth: '75px', textAlign: 'center', backgroundColor: '#F8FAFC', color: '#334155' }}>Less %</th>
+            <th style={{ ...headerCellStyle, minWidth: '60px', textAlign: 'center', backgroundColor: '#F8FAFC', color: '#334155' }}>Submit</th>
 
             {/* Assets & APP */}
-            <th style={{ ...headerCellStyle, minWidth: '130px' }}>Liquid Assets</th>
-            <th style={{ ...headerCellStyle, minWidth: '100px' }}>APP Code</th>
+            <th style={{ ...headerCellStyle, minWidth: '130px', backgroundColor: '#F8FAFC', color: '#334155' }}>Liquid Assets</th>
+            <th style={{ ...headerCellStyle, minWidth: '100px', backgroundColor: '#F8FAFC', color: '#334155' }}>APP Code</th>
 
             {/* Per-license financials & actions */}
-            <th style={{ ...headerCellStyle, minWidth: '95px', textAlign: 'right' }}>Charge (৳)</th>
-            <th style={{ ...headerCellStyle, minWidth: '95px', textAlign: 'right' }}>Paid (৳)</th>
-            <th style={{ ...headerCellStyle, minWidth: '95px', textAlign: 'right' }}>Due (৳)</th>
-            <th style={{ ...headerCellStyle, minWidth: '140px', textAlign: 'center' }}>Actions</th>
+            <th style={{ ...headerCellStyle, minWidth: '95px', textAlign: 'right', backgroundColor: '#F8FAFC', color: '#334155' }}>Charge (৳)</th>
+            <th style={{ ...headerCellStyle, minWidth: '95px', textAlign: 'right', backgroundColor: '#F8FAFC', color: '#334155' }}>Paid (৳)</th>
+            <th style={{ ...headerCellStyle, minWidth: '95px', textAlign: 'right', backgroundColor: '#F8FAFC', color: '#334155' }}>Due (৳)</th>
+            <th style={{ ...headerCellStyle, minWidth: '140px', textAlign: 'center', backgroundColor: '#F8FAFC', color: '#334155' }}>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -171,6 +267,7 @@ export function TenderExcelMatrix({
             const mappings = tender.tenderers || [];
             const rowCount = mappings.length > 0 ? mappings.length : 1;
             const closingDate = new Date(tender.closingDateTimeUtc);
+            const rowBg = tIdx % 2 === 0 ? '#FFFFFF' : '#F8FAFC';
 
             return (mappings.length > 0 ? mappings : [null]).map((m, mIdx) => {
               const isFirstRowOfTender = mIdx === 0;
@@ -181,9 +278,10 @@ export function TenderExcelMatrix({
               return (
                 <tr
                   key={`${tender.id}-${m ? m.tendererId : 'empty'}`}
+                  className="tender-matrix-row"
                   style={{
-                    backgroundColor: tIdx % 2 === 0 ? 'rgba(15, 23, 42, 0.4)' : 'rgba(30, 41, 59, 0.25)',
-                    borderBottom: isFirstRowOfTender && rowCount === 1 ? '1px solid #334155' : mIdx === rowCount - 1 ? '2px solid #475569' : '1px solid rgba(51, 65, 85, 0.4)',
+                    backgroundColor: rowBg,
+                    borderBottom: mIdx === rowCount - 1 ? '1px solid #CBD5E1' : '1px solid #F1F5F9',
                     transition: 'background-color 0.15s ease',
                   }}
                 >
@@ -194,10 +292,17 @@ export function TenderExcelMatrix({
                         rowSpan={rowCount}
                         style={{
                           ...cellStyle,
+                          position: 'sticky',
+                          left: 0,
+                          zIndex: 20,
+                          width: '48px',
+                          minWidth: '48px',
+                          maxWidth: '48px',
                           textAlign: 'center',
                           verticalAlign: 'middle',
                           fontWeight: 700,
-                          color: '#64748b',
+                          color: '#64748B',
+                          backgroundColor: rowBg,
                         }}
                       >
                         {tIdx + 1}
@@ -207,9 +312,18 @@ export function TenderExcelMatrix({
                         rowSpan={rowCount}
                         style={{
                           ...cellStyle,
+                          position: 'sticky',
+                          left: '48px',
+                          zIndex: 20,
+                          width: '140px',
+                          minWidth: '140px',
+                          maxWidth: '140px',
                           verticalAlign: 'middle',
-                          fontWeight: 700,
-                          color: tender.clientName ? '#38bdf8' : '#64748b',
+                          fontWeight: 600,
+                          color: tender.clientName ? '#1F2937' : '#64748B',
+                          backgroundColor: rowBg,
+                          whiteSpace: 'normal',
+                          wordBreak: 'break-word',
                         }}
                       >
                         {tender.clientName || '— Unassigned —'}
@@ -219,14 +333,23 @@ export function TenderExcelMatrix({
                         rowSpan={rowCount}
                         style={{
                           ...cellStyle,
+                          position: 'sticky',
+                          left: '188px',
+                          zIndex: 20,
+                          width: '170px',
+                          minWidth: '170px',
+                          maxWidth: '170px',
                           verticalAlign: 'middle',
                           fontFamily: 'monospace',
                           fontWeight: 700,
-                          color: '#f8fafc',
+                          color: '#1F2937',
+                          backgroundColor: rowBg,
+                          borderRight: '2px solid #CBD5E1',
+                          boxShadow: '4px 0 8px -2px rgba(15, 23, 42, 0.05)',
                         }}
                       >
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', whiteSpace: 'nowrap' }}>
-                          <span style={{ fontSize: '0.88rem', fontWeight: 800, color: '#f8fafc' }}>{tender.tenderId}</span>
+                          <span style={{ fontSize: '0.88rem', fontWeight: 800, color: '#1F2937' }}>{tender.tenderId}</span>
                           {onEditTender && (
                             <button
                               type="button"
@@ -238,9 +361,9 @@ export function TenderExcelMatrix({
                                 gap: '3px',
                                 padding: '2px 7px',
                                 borderRadius: '4px',
-                                border: '1px solid rgba(148, 163, 184, 0.3)',
-                                backgroundColor: 'rgba(51, 65, 85, 0.4)',
-                                color: '#cbd5e1',
+                                border: '1px solid #CBD5E1',
+                                backgroundColor: '#FFFFFF',
+                                color: '#1F2937',
                                 fontSize: '0.7rem',
                                 fontWeight: 600,
                                 cursor: 'pointer',
@@ -262,8 +385,8 @@ export function TenderExcelMatrix({
                       fontSize: '0.78rem',
                     }}
                   >
-                    <div style={{ color: '#f8fafc' }}>{closingDate.toLocaleDateString()}</div>
-                    <div style={{ color: '#94a3b8' }}>
+                    <div style={{ color: '#1F2937', fontWeight: 600 }}>{closingDate.toLocaleDateString()}</div>
+                    <div style={{ color: '#64748B' }}>
                       {closingDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </div>
                   </td>
@@ -273,7 +396,7 @@ export function TenderExcelMatrix({
                     style={{
                       ...cellStyle,
                       verticalAlign: 'middle',
-                      color: '#cbd5e1',
+                      color: '#475569',
                     }}
                   >
                     {tender.department}
@@ -285,7 +408,7 @@ export function TenderExcelMatrix({
                   {/* If no licenses assigned to this tender yet */ }
                   {!m ? (
               <>
-                <td colSpan={11} style={{ ...cellStyle, textAlign: 'center', color: '#94a3b8', fontStyle: 'italic', padding: '1rem' }}>
+                <td colSpan={11} style={{ ...cellStyle, textAlign: 'center', color: '#64748B', fontStyle: 'italic', padding: '1rem' }}>
                   No eGP license added yet.{' '}
                   {onAddTenderer && (
                     <button
@@ -298,9 +421,9 @@ export function TenderExcelMatrix({
                         gap: '4px',
                         padding: '3px 8px',
                         borderRadius: '5px',
-                        backgroundColor: 'rgba(56, 189, 248, 0.15)',
-                        border: '1px solid rgba(56, 189, 248, 0.3)',
-                        color: '#38bdf8',
+                        backgroundColor: '#F0FDFA',
+                        border: '1px solid #99F6E4',
+                        color: '#0F766E',
                         fontSize: '0.75rem',
                         fontWeight: 600,
                         cursor: 'pointer',
@@ -310,25 +433,25 @@ export function TenderExcelMatrix({
                     </button>
                   )}
                 </td>
-                <td style={{ ...cellStyle, verticalAlign: 'middle', color: '#34d399', fontWeight: 600 }}>
+                <td style={{ ...cellStyle, verticalAlign: 'middle', color: '#047857', fontWeight: 600 }}>
                   {formatLiquidAsset(tender.liquidAssetAmount)}
                 </td>
-                <td style={{ ...cellStyle, verticalAlign: 'middle', fontFamily: 'monospace', color: '#cbd5e1' }}>
+                <td style={{ ...cellStyle, verticalAlign: 'middle', fontFamily: 'monospace', color: '#64748B' }}>
                   {tender.appCode || '—'}
                 </td>
-                <td style={{ ...cellStyle, textAlign: 'right', color: '#64748b' }}>—</td>
-                <td style={{ ...cellStyle, textAlign: 'right', color: '#64748b' }}>—</td>
-                <td style={{ ...cellStyle, textAlign: 'right', color: '#64748b' }}>—</td>
-                <td style={{ ...cellStyle, textAlign: 'center', color: '#64748b' }}>
+                <td style={{ ...cellStyle, textAlign: 'right', color: '#64748B' }}>—</td>
+                <td style={{ ...cellStyle, textAlign: 'right', color: '#64748B' }}>—</td>
+                <td style={{ ...cellStyle, textAlign: 'right', color: '#64748B' }}>—</td>
+                <td style={{ ...cellStyle, textAlign: 'center', color: '#64748B' }}>
                   —
                 </td>
               </>
             ) : (
               <>
                 {/* License specific items */}
-                <td style={{ ...cellStyle, fontWeight: 600, color: '#f1f5f9' }}>
-                  <span style={{ color: '#38bdf8', fontWeight: 700 }}>{m.tendererName}</span>
-                  <div style={{ fontSize: '0.7rem', color: '#64748b', fontFamily: 'monospace' }}>
+                <td style={{ ...cellStyle, fontWeight: 600, color: '#1F2937' }}>
+                  <span style={{ color: '#1F2937', fontWeight: 700 }}>{m.tendererName}</span>
+                  <div style={{ fontSize: '0.7rem', color: '#64748B', fontFamily: 'monospace' }}>
                     {m.username}
                   </div>
                 </td>
@@ -342,11 +465,11 @@ export function TenderExcelMatrix({
                           fontFamily: 'monospace',
                           fontSize: '0.78rem',
                           fontWeight: 600,
-                          color: '#fbbf24',
-                          backgroundColor: 'rgba(251, 191, 36, 0.1)',
+                          color: '#92400E',
+                          backgroundColor: '#FFFBEB',
                           padding: '2px 6px',
                           borderRadius: '4px',
-                          border: '1px solid rgba(251, 191, 36, 0.25)',
+                          border: '1px solid #FDE68A',
                         }}
                       >
                         {isPwdVisible ? displayPassword : '••••••••'}
@@ -359,7 +482,7 @@ export function TenderExcelMatrix({
                           background: 'none',
                           border: 'none',
                           cursor: 'pointer',
-                          color: '#94a3b8',
+                          color: '#64748B',
                           padding: '2px',
                           display: 'flex',
                           alignItems: 'center',
@@ -393,7 +516,7 @@ export function TenderExcelMatrix({
                 {/* Less % */}
                 <td style={{ ...cellStyle, textAlign: 'center' }}>
                   {m.lessPercentage !== null && m.lessPercentage !== undefined ? (
-                    <span style={{ fontFamily: 'monospace', fontWeight: 700, color: '#fbbf24' }}>
+                    <span style={{ fontFamily: 'monospace', fontWeight: 700, color: '#92400E' }}>
                       {Number(m.lessPercentage).toFixed(3)}
                     </span>
                   ) : (
@@ -412,7 +535,7 @@ export function TenderExcelMatrix({
                       style={{
                         ...cellStyle,
                         verticalAlign: 'middle',
-                        color: '#34d399',
+                        color: '#047857',
                         fontWeight: 600,
                       }}
                     >
@@ -425,7 +548,7 @@ export function TenderExcelMatrix({
                         ...cellStyle,
                         verticalAlign: 'middle',
                         fontFamily: 'monospace',
-                        color: '#cbd5e1',
+                        color: '#64748B',
                       }}
                     >
                       {tender.appCode || '—'}
@@ -465,9 +588,9 @@ export function TenderExcelMatrix({
                         style={{
                           padding: '3px 7px',
                           borderRadius: '5px',
-                          border: '1px solid rgba(56, 189, 248, 0.4)',
-                          backgroundColor: 'rgba(56, 189, 248, 0.12)',
-                          color: '#38bdf8',
+                          border: '1px solid #99F6E4',
+                          backgroundColor: '#F0FDFA',
+                          color: '#0F766E',
                           cursor: 'pointer',
                           fontSize: '0.72rem',
                           fontWeight: 600,
@@ -489,9 +612,9 @@ export function TenderExcelMatrix({
                         style={{
                           padding: '4px 7px',
                           borderRadius: '5px',
-                          border: '1px solid #334155',
-                          backgroundColor: 'rgba(30, 41, 59, 0.7)',
-                          color: '#e2e8f0',
+                          border: '1px solid #CBD5E1',
+                          backgroundColor: '#FFFFFF',
+                          color: '#1F2937',
                           cursor: 'pointer',
                           fontSize: '0.75rem',
                           display: 'inline-flex',
@@ -505,7 +628,7 @@ export function TenderExcelMatrix({
 
                     <Button
                       size="sm"
-                      variant={m.dueAmount > 0 ? 'emerald' : 'secondary'}
+                      variant={m.dueAmount > 0 ? 'primary' : 'secondary'}
                       icon={<CreditCard size={11} />}
                       onClick={() => onRecordPayment(tender, m.tendererId, m.dueAmount, m.tendererName)}
                     >
@@ -531,9 +654,9 @@ export function TenderExcelMatrix({
                           style={{
                             padding: '4px 6px',
                             borderRadius: '5px',
-                            border: hasPayments ? '1px solid rgba(148, 163, 184, 0.2)' : '1px solid rgba(244, 63, 94, 0.3)',
-                            backgroundColor: hasPayments ? 'rgba(148, 163, 184, 0.05)' : 'rgba(244, 63, 94, 0.1)',
-                            color: hasPayments ? '#64748b' : '#fb7185',
+                            border: hasPayments ? '1px solid #E2E8F0' : '1px solid #FECDD3',
+                            backgroundColor: hasPayments ? '#F1F5F9' : '#FFF1F2',
+                            color: hasPayments ? '#94A3B8' : '#BE123C',
                             cursor: hasPayments ? 'not-allowed' : 'pointer',
                             fontSize: '0.75rem',
                             display: 'inline-flex',
@@ -555,20 +678,21 @@ export function TenderExcelMatrix({
           })}
       </tbody>
     </table>
-    </div >
+    </div>
   );
 }
 
 const headerCellStyle: React.CSSProperties = {
-  padding: '0.75rem 0.65rem',
-  borderRight: '1px solid #334155',
-  borderBottom: '2px solid #334155',
+  padding: '0.65rem 0.65rem',
+  borderRight: '1px solid #E2E8F0',
+  borderBottom: '1px solid #CBD5E1',
   textTransform: 'none',
   whiteSpace: 'nowrap',
 };
 
 const cellStyle: React.CSSProperties = {
   padding: '0.65rem',
-  borderRight: '1px solid rgba(51, 65, 85, 0.4)',
+  borderRight: '1px solid #F1F5F9',
+  borderBottom: '1px solid #F1F5F9',
   whiteSpace: 'nowrap',
 };

@@ -141,8 +141,8 @@ export function Combobox({
           htmlFor={id}
           style={{
             fontSize: '0.815rem',
-            fontWeight: 500,
-            color: '#94a3b8',
+            fontWeight: 600,
+            color: 'var(--foreground-secondary, #475569)',
           }}
         >
           {label}
@@ -155,18 +155,18 @@ export function Combobox({
         onClick={handleToggle}
         style={{
           width: '100%',
-          backgroundColor: disabled ? 'rgba(15, 23, 42, 0.4)' : 'rgba(15, 23, 42, 0.95)',
-          border: error ? '1px solid #f43f5e' : isOpen ? '1px solid #38bdf8' : '1px solid rgba(255, 255, 255, 0.1)',
-          borderRadius: '8px',
+          backgroundColor: disabled ? 'var(--disabled-bg, #F1F5F9)' : 'var(--input-bg, #FFFFFF)',
+          border: error ? '1px solid var(--danger, #BE123C)' : isOpen ? '1px solid var(--primary, #0F766E)' : '1px solid var(--input-border, #CBD5E1)',
+          borderRadius: 'var(--radius-control, 8px)',
           padding: '0.55rem 0.85rem',
-          color: selectedOption ? '#f8fafc' : '#64748b',
+          color: selectedOption ? 'var(--foreground, #1F2937)' : 'var(--muted-foreground, #64748B)',
           fontSize: '0.875rem',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
           cursor: disabled ? 'not-allowed' : 'pointer',
           userSelect: 'none',
-          boxShadow: isOpen ? '0 0 10px rgba(56, 189, 248, 0.2)' : 'none',
+          boxShadow: isOpen ? '0 0 0 3px rgba(15, 118, 110, 0.15)' : 'none',
           transition: 'border-color 0.15s ease, box-shadow 0.15s ease',
           opacity: disabled ? 0.6 : 1,
         }}
@@ -174,11 +174,11 @@ export function Combobox({
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', overflow: 'hidden', flex: 1 }}>
           {selectedOption ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', overflow: 'hidden' }}>
-              <span style={{ fontWeight: 600, color: '#f8fafc', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
+              <span style={{ fontWeight: 600, color: 'var(--foreground, #1F2937)', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
                 {selectedOption.label}
               </span>
               {selectedOption.subLabel && (
-                <span style={{ fontSize: '0.75rem', color: '#94a3b8', whiteSpace: 'nowrap' }}>
+                <span style={{ fontSize: '0.75rem', color: '#64748B', whiteSpace: 'nowrap' }}>
                   ({selectedOption.subLabel})
                 </span>
               )}
@@ -238,15 +238,14 @@ export function Combobox({
             left: 0,
             right: 0,
             zIndex: 9999,
-            backgroundColor: '#0b1329',
-            border: '1px solid rgba(56, 189, 248, 0.3)',
+            backgroundColor: '#FFFFFF',
+            border: '1px solid #CBD5E1',
             borderRadius: '10px',
-            boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.6)',
+            boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05)',
             padding: '0.5rem',
             display: 'flex',
             flexDirection: 'column',
             gap: '0.4rem',
-            backdropFilter: 'blur(12px)',
           }}
         >
           {/* Search Box */}
@@ -262,7 +261,7 @@ export function Combobox({
               height="14"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="#64748b"
+              stroke="#64748B"
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -279,11 +278,11 @@ export function Combobox({
               placeholder={searchPlaceholder}
               style={{
                 width: '100%',
-                backgroundColor: 'rgba(15, 23, 42, 0.8)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
+                backgroundColor: 'var(--surface-subtle, #F1F5F9)',
+                border: '1px solid var(--border-strong, #CBD5E1)',
                 borderRadius: '6px',
                 padding: '0.45rem 0.65rem 0.45rem 2rem',
-                color: '#f8fafc',
+                color: 'var(--foreground, #1F2937)',
                 fontSize: '0.825rem',
                 outline: 'none',
               }}
@@ -305,7 +304,7 @@ export function Combobox({
                 style={{
                   padding: '1rem',
                   textAlign: 'center',
-                  color: '#38bdf8',
+                  color: 'var(--primary, #0F766E)',
                   fontSize: '0.8rem',
                   display: 'flex',
                   alignItems: 'center',
@@ -318,7 +317,7 @@ export function Combobox({
                     display: 'inline-block',
                     width: '12px',
                     height: '12px',
-                    border: '2px solid #38bdf8',
+                    border: '2px solid var(--primary, #0F766E)',
                     borderRightColor: 'transparent',
                     borderRadius: '50%',
                     animation: 'spin 0.6s linear infinite',
@@ -327,7 +326,7 @@ export function Combobox({
                 Loading data from server...
               </div>
             ) : filteredOptions.length === 0 ? (
-              <div style={{ padding: '0.85rem', textAlign: 'center', color: '#64748b', fontSize: '0.8rem' }}>
+              <div style={{ padding: '0.85rem', textAlign: 'center', color: 'var(--muted-foreground, #64748B)', fontSize: '0.8rem' }}>
                 No results found
               </div>
             ) : (
@@ -340,12 +339,12 @@ export function Combobox({
                       borderRadius: '6px',
                       cursor: 'pointer',
                       fontSize: '0.8rem',
-                      color: '#94a3b8',
+                      color: 'var(--muted-foreground, #64748B)',
                       fontStyle: 'italic',
                       backgroundColor: 'transparent',
                       transition: 'background-color 0.1s ease',
                     }}
-                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.05)')}
+                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--surface-hover, #F8FAFC)')}
                     onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
                   >
                     — None / Clear Selection —
@@ -365,13 +364,13 @@ export function Combobox({
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
-                        backgroundColor: isSelected ? 'rgba(56, 189, 248, 0.15)' : 'transparent',
-                        color: isSelected ? '#38bdf8' : '#e2e8f0',
-                        border: isSelected ? '1px solid rgba(56, 189, 248, 0.3)' : '1px solid transparent',
+                        backgroundColor: isSelected ? 'var(--surface-selected, #F0FDFA)' : 'transparent',
+                        color: isSelected ? 'var(--primary, #0F766E)' : 'var(--foreground, #1F2937)',
+                        border: isSelected ? '1px solid var(--primary-border, #99F6E4)' : '1px solid transparent',
                         transition: 'background-color 0.1s ease',
                       }}
                       onMouseEnter={(e) => {
-                        if (!isSelected) e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.06)';
+                        if (!isSelected) e.currentTarget.style.backgroundColor = 'var(--surface-hover, #F8FAFC)';
                       }}
                       onMouseLeave={(e) => {
                         if (!isSelected) e.currentTarget.style.backgroundColor = 'transparent';
@@ -380,7 +379,7 @@ export function Combobox({
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '1px', overflow: 'hidden' }}>
                         <span style={{ fontWeight: isSelected ? 700 : 500 }}>{opt.label}</span>
                         {opt.subLabel && (
-                          <span style={{ fontSize: '0.725rem', color: isSelected ? '#7dd3fc' : '#94a3b8' }}>
+                          <span style={{ fontSize: '0.725rem', color: isSelected ? 'var(--primary, #0F766E)' : 'var(--muted-foreground, #64748B)' }}>
                             {opt.subLabel}
                           </span>
                         )}
@@ -392,8 +391,8 @@ export function Combobox({
                             fontSize: '0.7rem',
                             padding: '1px 6px',
                             borderRadius: '4px',
-                            backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                            color: '#cbd5e1',
+                            backgroundColor: isSelected ? 'var(--primary-border, #99F6E4)' : 'var(--surface-subtle, #F1F5F9)',
+                            color: isSelected ? 'var(--primary-active, #134E4A)' : 'var(--foreground-secondary, #475569)',
                           }}
                         >
                           {opt.badge}
@@ -408,9 +407,9 @@ export function Combobox({
         </div>
       )}
 
-      {error && <span style={{ fontSize: '0.75rem', color: '#f43f5e', marginTop: '0.1rem' }}>{error}</span>}
+      {error && <span style={{ fontSize: '0.75rem', color: 'var(--danger, #BE123C)', marginTop: '0.1rem' }}>{error}</span>}
       {helperText && !error && (
-        <span style={{ fontSize: '0.725rem', color: '#94a3b8', marginTop: '0.1rem' }}>{helperText}</span>
+        <span style={{ fontSize: '0.725rem', color: 'var(--muted-foreground, #64748B)', marginTop: '0.1rem' }}>{helperText}</span>
       )}
     </div>
   );

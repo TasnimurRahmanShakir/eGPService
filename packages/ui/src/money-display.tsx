@@ -27,12 +27,12 @@ export function MoneyDisplay({
   const getColor = () => {
     switch (type) {
       case 'due':
-        return '#f43f5e'; // Rose / Red
+        return 'var(--danger, #BE123C)';
       case 'advance':
-        return '#10b981'; // Emerald / Green
+        return 'var(--success, #047857)';
       case 'neutral':
       default:
-        return '#f8fafc'; // White
+        return 'var(--foreground, #1F2937)';
     }
   };
 

@@ -134,56 +134,72 @@ export function TendersClientView({
         <div
           style={{
             padding: '1.25rem',
-            backgroundColor: 'rgba(15, 23, 42, 0.7)',
-            borderRadius: '12px',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
+            backgroundColor: 'var(--surface, #FFFFFF)',
+            borderRadius: 'var(--radius-card, 10px)',
+            border: '1px solid var(--border, #E2E8F0)',
+            boxShadow: 'var(--shadow-sm)',
           }}
         >
-          <span style={{ fontSize: '0.8rem', color: '#94a3b8', fontWeight: 500 }}>Total Tenders</span>
-          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#f8fafc', marginTop: '0.25rem' }}>
+          <span style={{ fontSize: '0.875rem', color: 'var(--muted-foreground, #64748B)', fontWeight: 500 }}>Total Tenders</span>
+          <div style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--foreground, #1F2937)', marginTop: '0.25rem', fontVariantNumeric: 'tabular-nums' }}>
             {optimisticTenders.length}
+          </div>
+          <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground, #64748B)', marginTop: '0.25rem' }}>
+            Registered tenders
           </div>
         </div>
 
         <div
           style={{
             padding: '1.25rem',
-            backgroundColor: 'rgba(15, 23, 42, 0.7)',
-            borderRadius: '12px',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
+            backgroundColor: 'var(--surface, #FFFFFF)',
+            borderRadius: 'var(--radius-card, 10px)',
+            border: '1px solid var(--border, #E2E8F0)',
+            boxShadow: 'var(--shadow-sm)',
           }}
         >
-          <span style={{ fontSize: '0.8rem', color: '#94a3b8', fontWeight: 500 }}>Total Charge</span>
+          <span style={{ fontSize: '0.875rem', color: 'var(--muted-foreground, #64748B)', fontWeight: 500 }}>Total Charge</span>
           <div style={{ marginTop: '0.25rem' }}>
             <MoneyDisplay amount={totalCharge} size="lg" />
           </div>
-        </div>
-
-        <div
-          style={{
-            padding: '1.25rem',
-            backgroundColor: 'rgba(15, 23, 42, 0.7)',
-            borderRadius: '12px',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
-          }}
-        >
-          <span style={{ fontSize: '0.8rem', color: '#94a3b8', fontWeight: 500 }}>Total Collected (Paid)</span>
-          <div style={{ marginTop: '0.25rem' }}>
-            <MoneyDisplay amount={totalPaid} type="advance" size="lg" />
+          <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground, #64748B)', marginTop: '0.25rem' }}>
+            Total mapped charges
           </div>
         </div>
 
         <div
           style={{
             padding: '1.25rem',
-            backgroundColor: 'rgba(15, 23, 42, 0.7)',
-            borderRadius: '12px',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
+            backgroundColor: 'var(--surface, #FFFFFF)',
+            borderRadius: 'var(--radius-card, 10px)',
+            border: '1px solid var(--border, #E2E8F0)',
+            boxShadow: 'var(--shadow-sm)',
           }}
         >
-          <span style={{ fontSize: '0.8rem', color: '#94a3b8', fontWeight: 500 }}>Total Outstanding Due</span>
+          <span style={{ fontSize: '0.875rem', color: 'var(--muted-foreground, #64748B)', fontWeight: 500 }}>Total Collected</span>
+          <div style={{ marginTop: '0.25rem' }}>
+            <MoneyDisplay amount={totalPaid} type="advance" size="lg" />
+          </div>
+          <div style={{ fontSize: '0.75rem', color: 'var(--success, #047857)', marginTop: '0.25rem', fontWeight: 500 }}>
+            Confirmed payments
+          </div>
+        </div>
+
+        <div
+          style={{
+            padding: '1.25rem',
+            backgroundColor: 'var(--surface, #FFFFFF)',
+            borderRadius: 'var(--radius-card, 10px)',
+            border: '1px solid var(--border, #E2E8F0)',
+            boxShadow: 'var(--shadow-sm)',
+          }}
+        >
+          <span style={{ fontSize: '0.875rem', color: 'var(--muted-foreground, #64748B)', fontWeight: 500 }}>Outstanding Due</span>
           <div style={{ marginTop: '0.25rem' }}>
             <MoneyDisplay amount={totalDue} type="due" size="lg" />
+          </div>
+          <div style={{ fontSize: '0.75rem', color: 'var(--danger, #BE123C)', marginTop: '0.25rem', fontWeight: 500 }}>
+            Remaining amount
           </div>
         </div>
       </div>
@@ -206,7 +222,7 @@ export function TendersClientView({
               left: '0.85rem',
               top: '50%',
               transform: 'translateY(-50%)',
-              color: '#64748b',
+              color: 'var(--muted-foreground, #64748B)',
             }}
           />
           <input
@@ -217,13 +233,14 @@ export function TendersClientView({
             style={{
               width: '100%',
               padding: '0.65rem 0.85rem 0.65rem 2.4rem',
-              backgroundColor: 'rgba(15, 23, 42, 0.6)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              borderRadius: '8px',
-              color: '#f8fafc',
-              fontSize: '0.85rem',
+              backgroundColor: 'var(--input-bg, #FFFFFF)',
+              border: '1px solid var(--input-border, #CBD5E1)',
+              borderRadius: 'var(--radius-control, 8px)',
+              color: 'var(--foreground, #1F2937)',
+              fontSize: '0.875rem',
               outline: 'none',
             }}
+            className="egp-input"
           />
         </div>
 
