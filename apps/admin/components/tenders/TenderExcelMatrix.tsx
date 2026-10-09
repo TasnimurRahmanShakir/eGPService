@@ -147,9 +147,9 @@ export function TenderExcelMatrix({
                 position: 'sticky',
                 left: 0,
                 zIndex: 35,
-                width: '358px',
-                minWidth: '358px',
-                maxWidth: '358px',
+                width: '338px',
+                minWidth: '338px',
+                maxWidth: '338px',
                 backgroundColor: '#F1F5F9',
                 textAlign: 'center',
                 color: '#475569',
@@ -224,9 +224,9 @@ export function TenderExcelMatrix({
                 position: 'sticky',
                 left: '188px',
                 zIndex: 30,
-                width: '170px',
-                minWidth: '170px',
-                maxWidth: '170px',
+                width: '150px',
+                minWidth: '150px',
+                maxWidth: '150px',
                 backgroundColor: '#F8FAFC',
                 color: '#334155',
                 borderRight: '2px solid #CBD5E1',
@@ -336,9 +336,9 @@ export function TenderExcelMatrix({
                           position: 'sticky',
                           left: '188px',
                           zIndex: 20,
-                          width: '170px',
-                          minWidth: '170px',
-                          maxWidth: '170px',
+                          width: '150px',
+                          minWidth: '150px',
+                          maxWidth: '150px',
                           verticalAlign: 'middle',
                           fontFamily: 'monospace',
                           fontWeight: 700,
@@ -348,8 +348,25 @@ export function TenderExcelMatrix({
                           boxShadow: '4px 0 8px -2px rgba(15, 23, 42, 0.05)',
                         }}
                       >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', whiteSpace: 'nowrap' }}>
-                          <span style={{ fontSize: '0.88rem', fontWeight: 800, color: '#1F2937' }}>{tender.tenderId}</span>
+                        <div
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'flex-start',
+                            gap: '0.3rem',
+                          }}
+                        >
+                          <span
+                            style={{
+                              fontSize: '0.86rem',
+                              fontWeight: 800,
+                              color: '#1F2937',
+                              fontFamily: "'JetBrains Mono', monospace",
+                              letterSpacing: '-0.01em',
+                            }}
+                          >
+                            {tender.tenderId}
+                          </span>
                           {onEditTender && (
                             <button
                               type="button"
@@ -363,12 +380,22 @@ export function TenderExcelMatrix({
                                 borderRadius: '4px',
                                 border: '1px solid #CBD5E1',
                                 backgroundColor: '#FFFFFF',
-                                color: '#1F2937',
-                                fontSize: '0.7rem',
+                                color: '#334155',
+                                fontSize: '0.72rem',
                                 fontWeight: 600,
                                 cursor: 'pointer',
                                 whiteSpace: 'nowrap',
                                 transition: 'all 0.15s ease',
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.borderColor = '#0F766E';
+                                e.currentTarget.style.color = '#0F766E';
+                                e.currentTarget.style.backgroundColor = '#F0FDFA';
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.borderColor = '#CBD5E1';
+                                e.currentTarget.style.color = '#334155';
+                                e.currentTarget.style.backgroundColor = '#FFFFFF';
                               }}
                             >
                               <Pencil size={10} /> Edit Tender
@@ -377,307 +404,307 @@ export function TenderExcelMatrix({
                         </div>
                       </td>
 
-                  <td
-                    rowSpan={rowCount}
-                    style={{
-                      ...cellStyle,
-                      verticalAlign: 'middle',
-                      fontSize: '0.78rem',
-                    }}
-                  >
-                    <div style={{ color: '#1F2937', fontWeight: 600 }}>{closingDate.toLocaleDateString()}</div>
-                    <div style={{ color: '#64748B' }}>
-                      {closingDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </div>
-                  </td>
-
-                  <td
-                    rowSpan={rowCount}
-                    style={{
-                      ...cellStyle,
-                      verticalAlign: 'middle',
-                      color: '#475569',
-                    }}
-                  >
-                    {tender.department}
-                  </td>
-                </>
-              )
-            }
-
-                  {/* If no licenses assigned to this tender yet */ }
-                  {!m ? (
-              <>
-                <td colSpan={11} style={{ ...cellStyle, textAlign: 'center', color: '#64748B', fontStyle: 'italic', padding: '1rem' }}>
-                  No eGP license added yet.{' '}
-                  {onAddTenderer && (
-                    <button
-                      type="button"
-                      onClick={() => onAddTenderer(tender)}
-                      style={{
-                        marginLeft: '0.5rem',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '4px',
-                        padding: '3px 8px',
-                        borderRadius: '5px',
-                        backgroundColor: '#F0FDFA',
-                        border: '1px solid #99F6E4',
-                        color: '#0F766E',
-                        fontSize: '0.75rem',
-                        fontWeight: 600,
-                        cursor: 'pointer',
-                      }}
-                    >
-                      <Plus size={12} /> Add New License
-                    </button>
-                  )}
-                </td>
-                <td style={{ ...cellStyle, verticalAlign: 'middle', color: '#047857', fontWeight: 600 }}>
-                  {formatLiquidAsset(tender.liquidAssetAmount)}
-                </td>
-                <td style={{ ...cellStyle, verticalAlign: 'middle', fontFamily: 'monospace', color: '#64748B' }}>
-                  {tender.appCode || '—'}
-                </td>
-                <td style={{ ...cellStyle, textAlign: 'right', color: '#64748B' }}>—</td>
-                <td style={{ ...cellStyle, textAlign: 'right', color: '#64748B' }}>—</td>
-                <td style={{ ...cellStyle, textAlign: 'right', color: '#64748B' }}>—</td>
-                <td style={{ ...cellStyle, textAlign: 'center', color: '#64748B' }}>
-                  —
-                </td>
-              </>
-            ) : (
-              <>
-                {/* License specific items */}
-                <td style={{ ...cellStyle, fontWeight: 600, color: '#1F2937' }}>
-                  <span style={{ color: '#1F2937', fontWeight: 700 }}>{m.tendererName}</span>
-                  <div style={{ fontSize: '0.7rem', color: '#64748B', fontFamily: 'monospace' }}>
-                    {m.username}
-                  </div>
-                </td>
-
-                {/* Password Column */}
-                <td style={{ ...cellStyle, textAlign: 'center' }}>
-                  {displayPassword ? (
-                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
-                      <span
+                      <td
+                        rowSpan={rowCount}
                         style={{
-                          fontFamily: 'monospace',
+                          ...cellStyle,
+                          verticalAlign: 'middle',
                           fontSize: '0.78rem',
-                          fontWeight: 600,
-                          color: '#92400E',
-                          backgroundColor: '#FFFBEB',
-                          padding: '2px 6px',
-                          borderRadius: '4px',
-                          border: '1px solid #FDE68A',
                         }}
                       >
-                        {isPwdVisible ? displayPassword : '••••••••'}
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => togglePasswordVisibility(pwdKey)}
-                        title={isPwdVisible ? 'Hide password' : 'Show actual password'}
+                        <div style={{ color: '#1F2937', fontWeight: 600 }}>{closingDate.toLocaleDateString()}</div>
+                        <div style={{ color: '#64748B' }}>
+                          {closingDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </div>
+                      </td>
+
+                      <td
+                        rowSpan={rowCount}
                         style={{
-                          background: 'none',
-                          border: 'none',
-                          cursor: 'pointer',
-                          color: '#64748B',
-                          padding: '2px',
-                          display: 'flex',
-                          alignItems: 'center',
+                          ...cellStyle,
+                          verticalAlign: 'middle',
+                          color: '#475569',
                         }}
                       >
-                        {isPwdVisible ? <EyeOff size={13} /> : <Eye size={13} />}
-                      </button>
-                    </div>
+                        {tender.department}
+                      </td>
+                    </>
+                  )
+                  }
+
+                  {/* If no licenses assigned to this tender yet */}
+                  {!m ? (
+                    <>
+                      <td colSpan={11} style={{ ...cellStyle, textAlign: 'center', color: '#64748B', fontStyle: 'italic', padding: '1rem' }}>
+                        No eGP license added yet.{' '}
+                        {onAddTenderer && (
+                          <button
+                            type="button"
+                            onClick={() => onAddTenderer(tender)}
+                            style={{
+                              marginLeft: '0.5rem',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '4px',
+                              padding: '3px 8px',
+                              borderRadius: '5px',
+                              backgroundColor: '#F0FDFA',
+                              border: '1px solid #99F6E4',
+                              color: '#0F766E',
+                              fontSize: '0.75rem',
+                              fontWeight: 600,
+                              cursor: 'pointer',
+                            }}
+                          >
+                            <Plus size={12} /> Add New License
+                          </button>
+                        )}
+                      </td>
+                      <td style={{ ...cellStyle, verticalAlign: 'middle', color: '#047857', fontWeight: 600 }}>
+                        {formatLiquidAsset(tender.liquidAssetAmount)}
+                      </td>
+                      <td style={{ ...cellStyle, verticalAlign: 'middle', fontFamily: 'monospace', color: '#64748B' }}>
+                        {tender.appCode || '—'}
+                      </td>
+                      <td style={{ ...cellStyle, textAlign: 'right', color: '#64748B' }}>—</td>
+                      <td style={{ ...cellStyle, textAlign: 'right', color: '#64748B' }}>—</td>
+                      <td style={{ ...cellStyle, textAlign: 'right', color: '#64748B' }}>—</td>
+                      <td style={{ ...cellStyle, textAlign: 'center', color: '#64748B' }}>
+                        —
+                      </td>
+                    </>
                   ) : (
-                    <span style={{ color: '#475569', fontSize: '0.75rem' }}>—</span>
+                    <>
+                      {/* License specific items */}
+                      <td style={{ ...cellStyle, fontWeight: 600, color: '#1F2937' }}>
+                        <span style={{ color: '#1F2937', fontWeight: 700 }}>{m.tendererName}</span>
+                        <div style={{ fontSize: '0.7rem', color: '#64748B', fontFamily: 'monospace' }}>
+                          {m.username}
+                        </div>
+                      </td>
+
+                      {/* Password Column */}
+                      <td style={{ ...cellStyle, textAlign: 'center' }}>
+                        {displayPassword ? (
+                          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+                            <span
+                              style={{
+                                fontFamily: 'monospace',
+                                fontSize: '0.78rem',
+                                fontWeight: 600,
+                                color: '#92400E',
+                                backgroundColor: '#FFFBEB',
+                                padding: '2px 6px',
+                                borderRadius: '4px',
+                                border: '1px solid #FDE68A',
+                              }}
+                            >
+                              {isPwdVisible ? displayPassword : '••••••••'}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => togglePasswordVisibility(pwdKey)}
+                              title={isPwdVisible ? 'Hide password' : 'Show actual password'}
+                              style={{
+                                background: 'none',
+                                border: 'none',
+                                cursor: 'pointer',
+                                color: '#64748B',
+                                padding: '2px',
+                                display: 'flex',
+                                alignItems: 'center',
+                              }}
+                            >
+                              {isPwdVisible ? <EyeOff size={13} /> : <Eye size={13} />}
+                            </button>
+                          </div>
+                        ) : (
+                          <span style={{ color: '#475569', fontSize: '0.75rem' }}>—</span>
+                        )}
+                      </td>
+
+                      {/* 3 Fixed Liquid Columns */}
+                      <td style={{ ...cellStyle, textAlign: 'center' }}>
+                        {renderStatus(m.liquid1Status, 'ok')}
+                      </td>
+                      <td style={{ ...cellStyle, textAlign: 'center' }}>
+                        {renderStatus(m.liquid2Status, 'ok')}
+                      </td>
+                      <td style={{ ...cellStyle, textAlign: 'center' }}>
+                        {renderStatus(m.liquid3Status, 'ok')}
+                      </td>
+
+                      {/* Checklists */}
+                      <td style={{ ...cellStyle, textAlign: 'center' }}>{renderStatus(m.jvcaStatus, 'ok')}</td>
+                      <td style={{ ...cellStyle, textAlign: 'center' }}>{renderStatus(m.fillStatus, 'ok')}</td>
+                      <td style={{ ...cellStyle, textAlign: 'center' }}>{renderStatus(m.mapStatus, 'ok')}</td>
+                      <td style={{ ...cellStyle, textAlign: 'center' }}>{renderStatus(m.rateStatus, 'ok')}</td>
+
+                      {/* Less % */}
+                      <td style={{ ...cellStyle, textAlign: 'center' }}>
+                        {m.lessPercentage !== null && m.lessPercentage !== undefined ? (
+                          <span style={{ fontFamily: 'monospace', fontWeight: 700, color: '#92400E' }}>
+                            {Number(m.lessPercentage).toFixed(3)}
+                          </span>
+                        ) : (
+                          <span style={{ color: '#475569', fontSize: '0.75rem', fontWeight: 600 }}>NA</span>
+                        )}
+                      </td>
+
+                      {/* Submit (between Less % and Liquid Assets) */}
+                      <td style={{ ...cellStyle, textAlign: 'center' }}>{renderStatus(m.submitStatus, 'ok')}</td>
+
+                      {/* Liquid Assets & APP Code (Rowspanned per tender) */}
+                      {isFirstRowOfTender && (
+                        <>
+                          <td
+                            rowSpan={rowCount}
+                            style={{
+                              ...cellStyle,
+                              verticalAlign: 'middle',
+                              color: '#047857',
+                              fontWeight: 600,
+                            }}
+                          >
+                            {formatLiquidAsset(tender.liquidAssetAmount)}
+                          </td>
+
+                          <td
+                            rowSpan={rowCount}
+                            style={{
+                              ...cellStyle,
+                              verticalAlign: 'middle',
+                              fontFamily: 'monospace',
+                              color: '#64748B',
+                            }}
+                          >
+                            {tender.appCode || '—'}
+                          </td>
+                        </>
+                      )}
+
+                      {/* Financial Columns strictly PER TENDERER */}
+                      <td style={{ ...cellStyle, textAlign: 'right', fontFamily: 'monospace' }}>
+                        <MoneyDisplay amount={m.chargeAmount} size="sm" />
+                      </td>
+
+                      <td style={{ ...cellStyle, textAlign: 'right', fontFamily: 'monospace' }}>
+                        {m.totalPaid > 0 ? (
+                          <MoneyDisplay amount={m.totalPaid} type="advance" size="sm" />
+                        ) : (
+                          <span style={{ color: '#475569' }}>—</span>
+                        )}
+                      </td>
+
+                      <td style={{ ...cellStyle, textAlign: 'right', fontFamily: 'monospace' }}>
+                        <MoneyDisplay
+                          amount={m.dueAmount}
+                          type={m.dueAmount > 0 ? 'due' : 'neutral'}
+                          size="sm"
+                        />
+                      </td>
+
+                      {/* Actions PER LICENSE */}
+                      <td style={{ ...cellStyle, textAlign: 'center' }}>
+                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+                          {onAddTenderer && isFirstRowOfTender && (
+                            <button
+                              type="button"
+                              onClick={() => onAddTenderer(tender)}
+                              title="Add another license to this tender"
+                              style={{
+                                padding: '3px 7px',
+                                borderRadius: '5px',
+                                border: '1px solid #99F6E4',
+                                backgroundColor: '#F0FDFA',
+                                color: '#0F766E',
+                                cursor: 'pointer',
+                                fontSize: '0.72rem',
+                                fontWeight: 600,
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '3px',
+                                whiteSpace: 'nowrap',
+                              }}
+                            >
+                              <Plus size={11} /> Add License
+                            </button>
+                          )}
+
+                          {onEditTenderer && (
+                            <button
+                              type="button"
+                              onClick={() => onEditTenderer(tender.id, m)}
+                              title="Edit License Settings"
+                              style={{
+                                padding: '4px 7px',
+                                borderRadius: '5px',
+                                border: '1px solid #CBD5E1',
+                                backgroundColor: '#FFFFFF',
+                                color: '#1F2937',
+                                cursor: 'pointer',
+                                fontSize: '0.75rem',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '3px',
+                              }}
+                            >
+                              <Pencil size={11} /> Edit
+                            </button>
+                          )}
+
+                          <Button
+                            size="sm"
+                            variant={m.dueAmount > 0 ? 'primary' : 'secondary'}
+                            icon={<CreditCard size={11} />}
+                            onClick={() => onRecordPayment(tender, m.tendererId, m.dueAmount, m.tendererName)}
+                          >
+                            {m.dueAmount > 0 ? 'Pay' : 'Paid'}
+                          </Button>
+
+                          {onRemoveTenderer && (() => {
+                            const hasPayments = (m.totalPaid > 0) || (m.chargeAmount !== m.dueAmount);
+                            return (
+                              <button
+                                type="button"
+                                disabled={hasPayments}
+                                onClick={() => {
+                                  if (!hasPayments) {
+                                    onRemoveTenderer(tender.id, m.tendererId, m.tendererName);
+                                  }
+                                }}
+                                title={
+                                  hasPayments
+                                    ? `Cannot remove license because payments (৳${m.totalPaid.toLocaleString()}) have already been recorded.`
+                                    : 'Remove license from this tender'
+                                }
+                                style={{
+                                  padding: '4px 6px',
+                                  borderRadius: '5px',
+                                  border: hasPayments ? '1px solid #E2E8F0' : '1px solid #FECDD3',
+                                  backgroundColor: hasPayments ? '#F1F5F9' : '#FFF1F2',
+                                  color: hasPayments ? '#94A3B8' : '#BE123C',
+                                  cursor: hasPayments ? 'not-allowed' : 'pointer',
+                                  fontSize: '0.75rem',
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  opacity: hasPayments ? 0.45 : 1,
+                                }}
+                              >
+                                <Trash2 size={12} />
+                              </button>
+                            );
+                          })()}
+                        </div>
+                      </td>
+                    </>
                   )}
-                </td>
-
-                {/* 3 Fixed Liquid Columns */}
-                <td style={{ ...cellStyle, textAlign: 'center' }}>
-                  {renderStatus(m.liquid1Status, 'ok')}
-                </td>
-                <td style={{ ...cellStyle, textAlign: 'center' }}>
-                  {renderStatus(m.liquid2Status, 'ok')}
-                </td>
-                <td style={{ ...cellStyle, textAlign: 'center' }}>
-                  {renderStatus(m.liquid3Status, 'ok')}
-                </td>
-
-                {/* Checklists */}
-                <td style={{ ...cellStyle, textAlign: 'center' }}>{renderStatus(m.jvcaStatus, 'ok')}</td>
-                <td style={{ ...cellStyle, textAlign: 'center' }}>{renderStatus(m.fillStatus, 'ok')}</td>
-                <td style={{ ...cellStyle, textAlign: 'center' }}>{renderStatus(m.mapStatus, 'ok')}</td>
-                <td style={{ ...cellStyle, textAlign: 'center' }}>{renderStatus(m.rateStatus, 'ok')}</td>
-
-                {/* Less % */}
-                <td style={{ ...cellStyle, textAlign: 'center' }}>
-                  {m.lessPercentage !== null && m.lessPercentage !== undefined ? (
-                    <span style={{ fontFamily: 'monospace', fontWeight: 700, color: '#92400E' }}>
-                      {Number(m.lessPercentage).toFixed(3)}
-                    </span>
-                  ) : (
-                    <span style={{ color: '#475569', fontSize: '0.75rem', fontWeight: 600 }}>NA</span>
-                  )}
-                </td>
-
-                {/* Submit (between Less % and Liquid Assets) */}
-                <td style={{ ...cellStyle, textAlign: 'center' }}>{renderStatus(m.submitStatus, 'ok')}</td>
-
-                {/* Liquid Assets & APP Code (Rowspanned per tender) */}
-                {isFirstRowOfTender && (
-                  <>
-                    <td
-                      rowSpan={rowCount}
-                      style={{
-                        ...cellStyle,
-                        verticalAlign: 'middle',
-                        color: '#047857',
-                        fontWeight: 600,
-                      }}
-                    >
-                      {formatLiquidAsset(tender.liquidAssetAmount)}
-                    </td>
-
-                    <td
-                      rowSpan={rowCount}
-                      style={{
-                        ...cellStyle,
-                        verticalAlign: 'middle',
-                        fontFamily: 'monospace',
-                        color: '#64748B',
-                      }}
-                    >
-                      {tender.appCode || '—'}
-                    </td>
-                  </>
-                )}
-
-                {/* Financial Columns strictly PER TENDERER */}
-                <td style={{ ...cellStyle, textAlign: 'right', fontFamily: 'monospace' }}>
-                  <MoneyDisplay amount={m.chargeAmount} size="sm" />
-                </td>
-
-                <td style={{ ...cellStyle, textAlign: 'right', fontFamily: 'monospace' }}>
-                  {m.totalPaid > 0 ? (
-                    <MoneyDisplay amount={m.totalPaid} type="advance" size="sm" />
-                  ) : (
-                    <span style={{ color: '#475569' }}>—</span>
-                  )}
-                </td>
-
-                <td style={{ ...cellStyle, textAlign: 'right', fontFamily: 'monospace' }}>
-                  <MoneyDisplay
-                    amount={m.dueAmount}
-                    type={m.dueAmount > 0 ? 'due' : 'neutral'}
-                    size="sm"
-                  />
-                </td>
-
-                {/* Actions PER LICENSE */}
-                <td style={{ ...cellStyle, textAlign: 'center' }}>
-                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
-                    {onAddTenderer && isFirstRowOfTender && (
-                      <button
-                        type="button"
-                        onClick={() => onAddTenderer(tender)}
-                        title="Add another license to this tender"
-                        style={{
-                          padding: '3px 7px',
-                          borderRadius: '5px',
-                          border: '1px solid #99F6E4',
-                          backgroundColor: '#F0FDFA',
-                          color: '#0F766E',
-                          cursor: 'pointer',
-                          fontSize: '0.72rem',
-                          fontWeight: 600,
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '3px',
-                          whiteSpace: 'nowrap',
-                        }}
-                      >
-                        <Plus size={11} /> Add License
-                      </button>
-                    )}
-
-                    {onEditTenderer && (
-                      <button
-                        type="button"
-                        onClick={() => onEditTenderer(tender.id, m)}
-                        title="Edit License Settings"
-                        style={{
-                          padding: '4px 7px',
-                          borderRadius: '5px',
-                          border: '1px solid #CBD5E1',
-                          backgroundColor: '#FFFFFF',
-                          color: '#1F2937',
-                          cursor: 'pointer',
-                          fontSize: '0.75rem',
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '3px',
-                        }}
-                      >
-                        <Pencil size={11} /> Edit
-                      </button>
-                    )}
-
-                    <Button
-                      size="sm"
-                      variant={m.dueAmount > 0 ? 'primary' : 'secondary'}
-                      icon={<CreditCard size={11} />}
-                      onClick={() => onRecordPayment(tender, m.tendererId, m.dueAmount, m.tendererName)}
-                    >
-                      {m.dueAmount > 0 ? 'Pay' : 'Paid'}
-                    </Button>
-
-                    {onRemoveTenderer && (() => {
-                      const hasPayments = (m.totalPaid > 0) || (m.chargeAmount !== m.dueAmount);
-                      return (
-                        <button
-                          type="button"
-                          disabled={hasPayments}
-                          onClick={() => {
-                            if (!hasPayments) {
-                              onRemoveTenderer(tender.id, m.tendererId, m.tendererName);
-                            }
-                          }}
-                          title={
-                            hasPayments
-                              ? `Cannot remove license because payments (৳${m.totalPaid.toLocaleString()}) have already been recorded.`
-                              : 'Remove license from this tender'
-                          }
-                          style={{
-                            padding: '4px 6px',
-                            borderRadius: '5px',
-                            border: hasPayments ? '1px solid #E2E8F0' : '1px solid #FECDD3',
-                            backgroundColor: hasPayments ? '#F1F5F9' : '#FFF1F2',
-                            color: hasPayments ? '#94A3B8' : '#BE123C',
-                            cursor: hasPayments ? 'not-allowed' : 'pointer',
-                            fontSize: '0.75rem',
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            opacity: hasPayments ? 0.45 : 1,
-                          }}
-                        >
-                          <Trash2 size={12} />
-                        </button>
-                      );
-                    })()}
-                  </div>
-                </td>
-              </>
-            )}
                 </tr>
-        );
+              );
             });
           })}
-      </tbody>
-    </table>
+        </tbody>
+      </table>
     </div>
   );
 }

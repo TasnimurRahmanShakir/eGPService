@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic';
 
 async function fetchAuditLogs(): Promise<AuditLogDto[]> {
   try {
-    return await apiClient.auditLogs.getLogs({ pageNumber: 1, pageSize: 100 }, { next: { revalidate: 0 } });
+    return await apiClient.auditLogs.getLogs({ pageSize: 15 }, { next: { revalidate: 0 } });
   } catch (err) {
     console.warn('[AuditLogsPage] Backend API is currently unreachable. Showing empty audit trail.');
     return [];
@@ -19,11 +19,11 @@ export default async function AuditLogsPage() {
   return (
     <div style={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       <div>
-        <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#f8fafc', letterSpacing: '-0.02em' }}>
+        <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#1F2937', letterSpacing: '-0.02em' }}>
           Central Audit Trail Explorer
         </h1>
-        <p style={{ color: '#94a3b8', fontSize: '0.875rem', marginTop: '0.25rem' }}>
-          Complete, non-JSON relational audit trail capturing property-level diffs, action summaries, and client context metadata (IP, OS, Device, User).
+        <p style={{ color: '#64748B', fontSize: '0.875rem', marginTop: '0.25rem' }}>
+          Real-time relational audit trail with cursor pagination and detailed inspection.
         </p>
       </div>
 

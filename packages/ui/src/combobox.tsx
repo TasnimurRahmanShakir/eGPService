@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 
 export interface ComboboxOption {
   value: string | number;
@@ -47,9 +48,37 @@ export function Combobox({
   const [internalOptions, setInternalOptions] = useState<ComboboxOption[]>(options);
   const [isLoading, setIsLoading] = useState(false);
   const [hasFetched, setHasFetched] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [dropdownPos, setDropdownPos] = useState<{
+    top: number;
+    left: number;
+    width: number;
+    placeAbove: boolean;
+  }>({ top: 0, left: 0, width: 0, placeAbove: false });
 
   const containerRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const updatePosition = useCallback(() => {
+    if (triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect();
+      const spaceBelow = window.innerHeight - rect.bottom;
+      const estimatedHeight = 280;
+      const placeAbove = spaceBelow < estimatedHeight && rect.top > spaceBelow;
+      setDropdownPos({
+        top: placeAbove ? rect.top - 4 : rect.bottom + 4,
+        left: rect.left,
+        width: rect.width,
+        placeAbove,
+      });
+    }
+  }, []);
 
   // Sync internal options if props options change
   useEffect(() => {
@@ -58,28 +87,45 @@ export function Combobox({
     }
   }, [options]);
 
-  // Click outside listener
+  // Click outside and viewport resize/scroll listeners
   useEffect(() => {
+    if (!isOpen) return;
+
+    updatePosition();
+    const handleScrollOrResize = () => {
+      updatePosition();
+    };
+
     const handleClickOutside = (event: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+      const target = event.target as Node;
+      if (
+        triggerRef.current && !triggerRef.current.contains(target) &&
+        dropdownRef.current && !dropdownRef.current.contains(target)
+      ) {
         setIsOpen(false);
       }
     };
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
+
+    window.addEventListener('resize', handleScrollOrResize);
+    window.addEventListener('scroll', handleScrollOrResize, true);
+    document.addEventListener('mousedown', handleClickOutside);
+
     return () => {
+      window.removeEventListener('resize', handleScrollOrResize);
+      window.removeEventListener('scroll', handleScrollOrResize, true);
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isOpen]);
+  }, [isOpen, updatePosition]);
 
   // Handle open and dynamic fetch on click
   const handleToggle = async () => {
     if (disabled) return;
 
     if (!isOpen) {
+      updatePosition();
       setIsOpen(true);
       setTimeout(() => {
+        updatePosition();
         searchInputRef.current?.focus();
       }, 50);
 
@@ -151,6 +197,7 @@ export function Combobox({
 
       {/* Trigger Button */}
       <div
+        ref={triggerRef}
         id={id}
         onClick={handleToggle}
         style={{
@@ -229,24 +276,28 @@ export function Combobox({
         </div>
       </div>
 
-      {/* Dropdown Menu */}
-      {isOpen && (
+      {/* Dropdown Menu Portal */}
+      {isOpen && mounted && createPortal(
         <div
+          ref={dropdownRef}
           style={{
-            position: 'absolute',
-            top: 'calc(100% + 4px)',
-            left: 0,
-            right: 0,
-            zIndex: 9999,
-            backgroundColor: '#FFFFFF',
-            border: '1px solid #CBD5E1',
-            borderRadius: '10px',
-            boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05)',
+            position: 'fixed',
+            top: dropdownPos.placeAbove ? 'auto' : `${dropdownPos.top}px`,
+            bottom: dropdownPos.placeAbove ? `${Math.max(8, window.innerHeight - dropdownPos.top)}px` : 'auto',
+            left: `${dropdownPos.left}px`,
+            width: `${dropdownPos.width}px`,
+            zIndex: 99999,
+            backgroundColor: 'var(--surface, #FFFFFF)',
+            border: '1px solid var(--border-strong, #CBD5E1)',
+            borderRadius: 'var(--radius-card, 10px)',
+            boxShadow: '0 10px 25px -5px rgba(15, 23, 42, 0.15), 0 8px 10px -6px rgba(15, 23, 42, 0.08)',
             padding: '0.5rem',
             display: 'flex',
             flexDirection: 'column',
             gap: '0.4rem',
+            boxSizing: 'border-box',
           }}
+          onMouseDown={(e) => e.stopPropagation()}
         >
           {/* Search Box */}
           <div
@@ -404,7 +455,8 @@ export function Combobox({
               </>
             )}
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {error && <span style={{ fontSize: '0.75rem', color: 'var(--danger, #BE123C)', marginTop: '0.1rem' }}>{error}</span>}

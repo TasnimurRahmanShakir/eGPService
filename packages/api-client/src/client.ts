@@ -192,7 +192,7 @@ export function createApiClient(customBaseUrl?: string) {
     },
 
     auditLogs: {
-      getLogs: (params?: { moduleName?: string; recordId?: number; pageNumber?: number; pageSize?: number }, options?: RequestOptions) =>
+      getLogs: (params?: { moduleName?: string; recordId?: number; pageNumber?: number; pageSize?: number; cursor?: number }, options?: RequestOptions) =>
         request<AuditLogDto[]>('/auditlogs', {
           ...options,
           params: { ...options?.params, ...params }
