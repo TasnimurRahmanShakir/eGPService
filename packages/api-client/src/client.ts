@@ -36,10 +36,14 @@ export interface RequestOptions extends RequestInit {
 
 export const getBaseUrl = (): string => {
   if (typeof window === 'undefined') {
-    return process.env.INTERNAL_API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5276/api';
+    // Node.js server theke call korle (Server Actions, Server Components, SSR)
+    return process.env.INTERNAL_API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://backend:8080/api';
   }
-  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5276/api';
+  // Browser theke call korle (Client Components)
+  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
 };
+
+export const API_BASE_URL = getBaseUrl();
 
 export function createApiClient(customBaseUrl?: string) {
   const resolveBaseUrl = () => customBaseUrl || getBaseUrl();
