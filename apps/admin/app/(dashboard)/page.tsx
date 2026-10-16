@@ -10,6 +10,7 @@ import {
   CreditCard,
 } from 'lucide-react';
 import { RecentTendersTable } from '@/components/dashboard/RecentTendersTable';
+import { LocalDateText } from '@/components/common/LocalDateText';
 
 export const dynamic = 'force-dynamic';
 
@@ -153,7 +154,7 @@ export default async function AdminDashboardOverview() {
                     {log.actionMessage}
                   </p>
                   <span style={{ fontSize: '0.7rem', color: '#64748B' }}>
-                    By {log.performedBy} • {new Date(log.timestampUtc).toLocaleTimeString()}
+                    By {log.performedBy} • <LocalDateText date={log.timestampUtc} format="time" />
                   </span>
                 </div>
               ))

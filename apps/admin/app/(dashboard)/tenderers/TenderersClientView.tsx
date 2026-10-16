@@ -5,6 +5,7 @@ import { Plus, KeyRound, ShieldCheck } from 'lucide-react';
 import { Button, Badge, DataTable, type Column } from '@egp/ui';
 import type { TendererDto } from '@egp/api-client';
 import { CreateTendererModal } from '@/components/tenderers/TendererModals';
+import { formatLocalDate } from '@/lib/date-utils';
 
 export function TenderersClientView({ initialTenderers }: { initialTenderers: TendererDto[] }) {
   const [search, setSearch] = useState('');
@@ -65,8 +66,8 @@ export function TenderersClientView({ initialTenderers }: { initialTenderers: Te
     {
       header: 'Created Date',
       cell: (t) => (
-        <span style={{ color: '#64748b', fontSize: '0.825rem' }}>
-          {new Date(t.createdAtUtc).toLocaleDateString()}
+        <span style={{ color: '#64748b', fontSize: '0.825rem' }} suppressHydrationWarning>
+          {formatLocalDate(t.createdAtUtc)}
         </span>
       ),
     },

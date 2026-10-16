@@ -11,6 +11,7 @@ import {
   type ClientSubscriptionCreateInput
 } from '@egp/schema';
 import { createClientAction, addSubscriptionAction } from '../../app/actions/clientActions';
+import { localInputToUtcIso } from '@/lib/date-utils';
 
 interface CreateClientModalProps {
   isOpen: boolean;
@@ -125,8 +126,11 @@ export function AddSubscriptionModal({ isOpen, onClose, clientId, clientName }: 
   const [isPending, startTransition] = useTransition();
   const [serverError, setServerError] = useState<string | null>(null);
 
-  const today = new Date().toISOString().split('T')[0];
-  const nextYear = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+  const pad = (n: number) => String(n).padStart(2, '0');
+  const now = new Date();
+  const today = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+  const nextYearDate = new Date(now.getFullYear() + 1, now.getMonth(), now.getDate());
+  const nextYear = `${nextYearDate.getFullYear()}-${pad(nextYearDate.getMonth() + 1)}-${pad(nextYearDate.getDate())}`;
 
   const {
     register,
@@ -148,7 +152,13 @@ export function AddSubscriptionModal({ isOpen, onClose, clientId, clientName }: 
   const onSubmit = (data: ClientSubscriptionCreateInput) => {
     setServerError(null);
     startTransition(async () => {
-      const res = await addSubscriptionAction({ ...data, clientId });
+      const payload = {
+        ...data,
+        clientId,
+        startDateUtc: localInputToUtcIso(data.startDateUtc),
+        validUptoUtc: localInputToUtcIso(data.validUptoUtc),
+      };
+      const res = await addSubscriptionAction(payload);
       if (res.success) {
         reset();
         onClose();

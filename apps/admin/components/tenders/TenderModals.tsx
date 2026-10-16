@@ -27,6 +27,7 @@ import {
   fetchTendererOptionsAction,
 } from '../../app/actions/tenderActions';
 import { fetchClientOptionsAction } from '../../app/actions/clientActions';
+import { toLocalDatetimeInput, localInputToUtcIso } from '@/lib/date-utils';
 
 // -------------------------------------------------------------
 // 1. CREATE TENDER MODAL (Lightweight, Step-1 Creation)
@@ -42,7 +43,7 @@ export function CreateTenderModal({ isOpen, onClose, clients }: CreateTenderModa
   const [serverError, setServerError] = useState<string | null>(null);
 
   const now = new Date();
-  const closingDefault = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16);
+  const closingDefault = toLocalDatetimeInput(new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000));
 
   const {
     register,
@@ -69,7 +70,11 @@ export function CreateTenderModal({ isOpen, onClose, clients }: CreateTenderModa
     setServerError(null);
 
     startTransition(async () => {
-      const res = await createTenderAction(data);
+      const payload = {
+        ...data,
+        closingDateTimeUtc: localInputToUtcIso(data.closingDateTimeUtc),
+      };
+      const res = await createTenderAction(payload);
       if (res.success) {
         toast.success(res.message || 'Tender created successfully.');
         reset();
@@ -198,7 +203,7 @@ export function EditTenderModal({ isOpen, onClose, tender, clients }: EditTender
     defaultValues: {
       id: tender?.id || 0,
       tenderId: tender?.tenderId || '',
-      closingDateTimeUtc: tender?.closingDateTimeUtc ? tender.closingDateTimeUtc.slice(0, 16) : '',
+      closingDateTimeUtc: toLocalDatetimeInput(tender?.closingDateTimeUtc),
       department: tender?.department || '',
       clientId: tender?.clientId || null,
       liquidAssetAmount: tender?.liquidAssetAmount ?? null,
@@ -213,7 +218,7 @@ export function EditTenderModal({ isOpen, onClose, tender, clients }: EditTender
       reset({
         id: tender.id,
         tenderId: tender.tenderId,
-        closingDateTimeUtc: tender.closingDateTimeUtc ? tender.closingDateTimeUtc.slice(0, 16) : '',
+        closingDateTimeUtc: toLocalDatetimeInput(tender.closingDateTimeUtc),
         department: tender.department,
         clientId: tender.clientId || null,
         liquidAssetAmount: tender.liquidAssetAmount ?? null,
@@ -235,7 +240,11 @@ export function EditTenderModal({ isOpen, onClose, tender, clients }: EditTender
     }
 
     startTransition(async () => {
-      const res = await updateTenderAction(data);
+      const payload = {
+        ...data,
+        closingDateTimeUtc: localInputToUtcIso(data.closingDateTimeUtc),
+      };
+      const res = await updateTenderAction(payload);
       if (res.success) {
         toast.success(res.message || 'Tender updated successfully.');
         onClose();
@@ -739,7 +748,9 @@ export function RecordPaymentModal({
   const [isPending, startTransition] = useTransition();
   const [serverError, setServerError] = useState<string | null>(null);
 
-  const today = new Date().toISOString().split('T')[0];
+  const pad = (n: number) => String(n).padStart(2, '0');
+  const now = new Date();
+  const today = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
 
   const {
     register,
@@ -776,7 +787,11 @@ export function RecordPaymentModal({
     setServerError(null);
 
     startTransition(async () => {
-      const res = await recordPaymentAction(data);
+      const payload = {
+        ...data,
+        paymentDateUtc: localInputToUtcIso(data.paymentDateUtc),
+      };
+      const res = await recordPaymentAction(payload);
       if (!res.success) {
         toast.error(res.message || 'Payment failed.');
         setServerError(res.message);

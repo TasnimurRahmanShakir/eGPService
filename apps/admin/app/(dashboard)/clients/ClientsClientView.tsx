@@ -5,6 +5,7 @@ import { Plus, Sparkles, CheckCircle2, XCircle, AlertCircle, ShieldCheck } from 
 import { Button, Badge, DataTable, MoneyDisplay, type Column } from '@egp/ui';
 import type { ClientDto } from '@egp/api-client';
 import { CreateClientModal, AddSubscriptionModal } from '@/components/clients/ClientModals';
+import { formatLocalDate } from '@/lib/date-utils';
 
 export function ClientsClientView({ initialClients }: { initialClients: ClientDto[] }) {
   const [search, setSearch] = useState('');
@@ -88,7 +89,7 @@ export function ClientsClientView({ initialClients }: { initialClients: ClientDt
       cell: (c) => {
         if (c.hasPurchasedSolution) {
           const validDate = c.solutionValidUptoUtc
-            ? new Date(c.solutionValidUptoUtc).toLocaleDateString()
+            ? formatLocalDate(c.solutionValidUptoUtc)
             : null;
           return (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem' }}>

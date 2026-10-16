@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { CreditCard, Eye, EyeOff, Pencil, Plus, Trash2 } from 'lucide-react';
 import { Button, MoneyDisplay } from '@egp/ui';
 import type { TenderDto, TendererMappingDto } from '@egp/api-client';
+import { formatLocalDate, formatLocalTime } from '@/lib/date-utils';
 
 interface TenderExcelMatrixProps {
   tenders: TenderDto[];
@@ -266,7 +267,6 @@ export function TenderExcelMatrix({
           {tenders.map((tender, tIdx) => {
             const mappings = tender.tenderers || [];
             const rowCount = mappings.length > 0 ? mappings.length : 1;
-            const closingDate = new Date(tender.closingDateTimeUtc);
             const rowBg = tIdx % 2 === 0 ? '#FFFFFF' : '#F8FAFC';
 
             return (mappings.length > 0 ? mappings : [null]).map((m, mIdx) => {
@@ -411,10 +411,13 @@ export function TenderExcelMatrix({
                           verticalAlign: 'middle',
                           fontSize: '0.78rem',
                         }}
+                        suppressHydrationWarning
                       >
-                        <div style={{ color: '#1F2937', fontWeight: 600 }}>{closingDate.toLocaleDateString()}</div>
+                        <div style={{ color: '#1F2937', fontWeight: 600 }}>
+                          {formatLocalDate(tender.closingDateTimeUtc)}
+                        </div>
                         <div style={{ color: '#64748B' }}>
-                          {closingDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          {formatLocalTime(tender.closingDateTimeUtc, { hour: '2-digit', minute: '2-digit' })}
                         </div>
                       </td>
 

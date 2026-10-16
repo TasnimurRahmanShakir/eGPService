@@ -5,6 +5,7 @@ import { History, Shield, Monitor, Smartphone, Globe, Eye, ChevronLeft, ChevronR
 import { Badge, DataTable, type Column, Modal, Button } from '@egp/ui';
 import type { AuditLogDto } from '@egp/api-client';
 import { fetchAuditLogsAction } from '@/app/actions/auditActions';
+import { formatLocalDate, formatLocalTime, formatLocalDateTime, getUserTimezone } from '@/lib/date-utils';
 
 const PAGE_SIZE = 15;
 
@@ -91,15 +92,16 @@ export function AuditLogsClientView({ initialLogs }: { initialLogs: AuditLogDto[
     {
       header: 'Timestamp',
       width: '160px',
-      cell: (l) => {
-        const d = new Date(l.timestampUtc);
-        return (
-          <div style={{ fontSize: '0.8rem', fontFamily: 'monospace' }}>
-            <div style={{ color: 'var(--foreground, #1F2937)', fontWeight: 600 }}>{d.toLocaleDateString()}</div>
-            <div style={{ color: 'var(--muted-foreground, #64748B)', fontSize: '0.75rem' }}>{d.toLocaleTimeString()}</div>
+      cell: (l) => (
+        <div style={{ fontSize: '0.8rem', fontFamily: 'monospace' }} suppressHydrationWarning>
+          <div style={{ color: 'var(--foreground, #1F2937)', fontWeight: 600 }}>
+            {formatLocalDate(l.timestampUtc)}
           </div>
-        );
-      },
+          <div style={{ color: 'var(--muted-foreground, #64748B)', fontSize: '0.75rem' }}>
+            {formatLocalTime(l.timestampUtc)}
+          </div>
+        </div>
+      ),
     },
     {
       header: 'Module & Entity',
@@ -406,9 +408,14 @@ export function AuditLogsClientView({ initialLogs }: { initialLogs: AuditLogDto[
               </div>
 
               <div>
-                <span style={{ fontSize: '0.72rem', color: '#64748B', textTransform: 'uppercase', fontWeight: 600 }}>Time (UTC)</span>
-                <div style={{ marginTop: '0.2rem', fontSize: '0.785rem', fontFamily: 'monospace', color: '#475569' }}>
-                  {new Date(selectedLog.timestampUtc).toLocaleString()}
+                <span style={{ fontSize: '0.72rem', color: '#64748B', textTransform: 'uppercase', fontWeight: 600 }}>
+                  Timestamp (Local Time)
+                </span>
+                <div style={{ marginTop: '0.2rem', fontSize: '0.8rem', fontFamily: 'monospace', color: '#0F766E', fontWeight: 600 }} suppressHydrationWarning>
+                  {formatLocalDateTime(selectedLog.timestampUtc)}
+                </div>
+                <div style={{ fontSize: '0.7rem', color: '#94A3B8', marginTop: '0.1rem' }}>
+                  Zone: {getUserTimezone()}
                 </div>
               </div>
             </div>
