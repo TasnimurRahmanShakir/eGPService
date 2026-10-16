@@ -47,7 +47,7 @@ export function CreateTendererModal({ isOpen, onClose }: CreateTendererModalProp
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Create e-GP Tenderer Account"
+      title="Create e-GP License Account"
       subtitle="Credentials will be securely encrypted with AES-256 on the server"
     >
       <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -58,7 +58,7 @@ export function CreateTendererModal({ isOpen, onClose }: CreateTendererModalProp
         )}
 
         <Input
-          label="Tenderer / Firm Name"
+          label="License / Firm Name"
           placeholder="e.g. KB, BA, AMIR, GALAXY"
           {...register('name')}
           error={errors.name?.message}
@@ -66,7 +66,7 @@ export function CreateTendererModal({ isOpen, onClose }: CreateTendererModalProp
 
         <Input
           label="e-GP Username"
-          placeholder="e.g. tenderer_kb"
+          placeholder="e.g. license_kb"
           {...register('username')}
           error={errors.username?.message}
         />
@@ -80,12 +80,12 @@ export function CreateTendererModal({ isOpen, onClose }: CreateTendererModalProp
           error={errors.password?.message}
         />
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '0.75rem' }}>
+        <div className="modal-form-actions">
           <Button type="button" variant="secondary" onClick={onClose} disabled={isPending}>
             Cancel
           </Button>
           <Button type="submit" variant="primary" isLoading={isPending}>
-            Save Tenderer
+            Save License
           </Button>
         </div>
       </form>

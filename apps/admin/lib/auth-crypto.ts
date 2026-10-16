@@ -1,6 +1,6 @@
 export const ADMIN_COOKIE_NAME = 'egp_admin_session';
 
-const SECRET = process.env.ADMIN_SESSION_SECRET || 'egp-command-enterprise-ultra-secure-secret-key-2026';
+const SECRET = process.env.ADMIN_SESSION_SECRET || 'egp-tender-bd-enterprise-ultra-secure-secret-key-2026';
 
 function strToUint8(str: string): Uint8Array {
   return new TextEncoder().encode(str);

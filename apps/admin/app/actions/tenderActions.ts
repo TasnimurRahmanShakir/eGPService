@@ -91,11 +91,11 @@ export async function addTendererToTenderAction(formData: unknown): Promise<Acti
     revalidatePath('/tenders');
     revalidatePath('/clients');
     revalidatePath('/');
-    return { success: true, message: res.message || 'Tenderer added to tender successfully' };
+    return { success: true, message: res.message || 'License added to tender successfully' };
   } catch (error: any) {
     return {
       success: false,
-      message: error.problemDetails?.detail || error.problemDetails?.title || error.message || 'Failed to add tenderer',
+      message: error.problemDetails?.detail || error.problemDetails?.title || error.message || 'Failed to add license',
       errors: error.problemDetails?.errors
     };
   }
@@ -120,11 +120,11 @@ export async function updateTendererAction(formData: unknown): Promise<ActionRes
     revalidatePath('/tenders');
     revalidatePath('/clients');
     revalidatePath('/');
-    return { success: true, message: res.message || 'Tenderer updated successfully' };
+    return { success: true, message: res.message || 'License updated successfully' };
   } catch (error: any) {
     return {
       success: false,
-      message: error.problemDetails?.detail || error.problemDetails?.title || error.message || 'Failed to update tenderer',
+      message: error.problemDetails?.detail || error.problemDetails?.title || error.message || 'Failed to update license',
       errors: error.problemDetails?.errors
     };
   }
@@ -138,11 +138,11 @@ export async function removeTendererAction(tenderId: number, tendererId: number)
     revalidatePath('/tenders');
     revalidatePath('/clients');
     revalidatePath('/');
-    return { success: true, message: res.message || 'Tenderer removed successfully' };
+    return { success: true, message: res.message || 'License removed successfully' };
   } catch (error: any) {
     return {
       success: false,
-      message: error.problemDetails?.detail || error.problemDetails?.title || error.message || 'Failed to remove tenderer',
+      message: error.problemDetails?.detail || error.problemDetails?.title || error.message || 'Failed to remove license',
       errors: error.problemDetails?.errors
     };
   }

@@ -47,11 +47,11 @@ export function AdminSidebar({
       {/* Brand Header */}
       <div className="sidebar-brand-header">
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', overflow: 'hidden' }}>
-          <div className="brand-logo-badge" title="eGP Command Enterprise Portal">
+          <div className="brand-logo-badge" title="eGP Tender BD Enterprise Portal">
             <ShieldCheck size={20} strokeWidth={2.5} />
           </div>
           <div className="sidebar-text-hide" style={{ minWidth: 0 }}>
-            <h2 className="brand-title">eGP Command</h2>
+            <h2 className="brand-title">eGP Tender BD</h2>
             <span className="brand-subtitle">Enterprise Portal</span>
           </div>
         </div>
@@ -210,7 +210,7 @@ export function AdminLayoutWrapper({
               <ShieldCheck size={16} />
             </div>
             <span style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-headline)' }}>
-              eGP Command
+              eGP Tender BD
             </span>
           </div>
 

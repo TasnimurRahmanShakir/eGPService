@@ -91,7 +91,7 @@ export default function AboutPage() {
                 </div>
 
                 <div className="about-hero-badge">
-                  Integrity, Compliance<br />&amp; Precision
+                  {t.aboutPage.heroBadge1}<br />{t.aboutPage.heroBadge2}
                 </div>
               </div>
             </div>
@@ -105,22 +105,22 @@ export default function AboutPage() {
           <div className="about-wrap-container">
             <div className="about-mission-grid">
               <div>
-                <span className="about-eyebrow">Our Mission</span>
+                <span className="about-eyebrow">{t.aboutPage.missionEyebrow}</span>
                 <h2 className="about-section-heading">
-                  From Opportunity to Award.{' '}
+                  {t.aboutPage.missionHeading1}{' '}
                   <span style={{ color: '#12A672' }}>
-                    We Make Procurement Reliable.
+                    {t.aboutPage.missionHeading2}
                   </span>
                 </h2>
               </div>
 
               <div>
                 <p className="about-lead-text">
-                  Electronic public procurement in Bangladesh has modernized how tenders are published and evaluated, but procedural precision remains paramount.
+                  {t.aboutPage.missionLead}
                 </p>
 
                 <p className="about-body-text">
-                  Our mission is to eliminate procedural discrepancies, document omissions and compliance bottlenecks that can cause technically qualified contractors to be declared non-responsive. From registration and qualification mapping to BOQ review and secure e-GP submission, we work as your dedicated procurement team.
+                  {t.aboutPage.missionBody}
                 </p>
 
                 <div className="about-check-list">
@@ -138,7 +138,7 @@ export default function AboutPage() {
                     >
                       <path d="M20 6 9 17l-5-5" />
                     </svg>
-                    <span>Strict adherence to PPR and STD tender requirements</span>
+                    <span>{t.aboutPage.checkItem1}</span>
                   </div>
 
                   <div className="about-check-row">
@@ -155,7 +155,7 @@ export default function AboutPage() {
                     >
                       <path d="M20 6 9 17l-5-5" />
                     </svg>
-                    <span>End-to-end technical &amp; financial proposal verification</span>
+                    <span>{t.aboutPage.checkItem2}</span>
                   </div>
 
                   <div className="about-check-row">
@@ -172,7 +172,7 @@ export default function AboutPage() {
                     >
                       <path d="M20 6 9 17l-5-5" />
                     </svg>
-                    <span>Proactive post-award project management intelligence</span>
+                    <span>{t.aboutPage.checkItem3}</span>
                   </div>
                 </div>
               </div>
@@ -187,15 +187,15 @@ export default function AboutPage() {
           <div className="about-wrap-container">
             <div className="about-leadership-grid">
               <div style={{ maxWidth: '380px' }}>
-                <span className="about-eyebrow">Leadership</span>
+                <span className="about-eyebrow">{t.aboutPage.leadershipEyebrow}</span>
 
                 <h2 className="about-section-heading" style={{ margin: '20px 0 16px' }}>
-                  The people behind every{' '}
-                  <span style={{ color: '#12A672' }}>submission.</span>
+                  {t.aboutPage.leadershipHeading1}{' '}
+                  <span style={{ color: '#12A672' }}>{t.aboutPage.leadershipHeading2}</span>
                 </h2>
 
                 <p style={{ fontSize: '16px', lineHeight: 1.65, color: '#4A5F56', margin: '0 0 28px' }}>
-                  Seasoned procurement practitioners committed to institutional excellence and contractor success.
+                  {t.aboutPage.leadershipSub}
                 </p>
 
                 <button
@@ -203,7 +203,7 @@ export default function AboutPage() {
                   className="about-btn"
                   id="about-leadership-talk-btn"
                 >
-                  Talk to Our Team
+                  {t.aboutPage.leadershipCta}
                 </button>
               </div>
 
@@ -225,11 +225,11 @@ export default function AboutPage() {
                   <div className="about-leader-content">
                     <h3 className="about-leader-name">
                       Shawon Alamin
-                      <span className="about-founder-badge">Founder</span>
+                      <span className="about-founder-badge">{t.aboutPage.leader1Badge}</span>
                     </h3>
-                    <span className="about-leader-role">Chairman</span>
+                    <span className="about-leader-role">{t.aboutPage.leader1Role}</span>
                     <p className="about-leader-desc">
-                      Leads strategic vision, institutional partnerships and service governance, setting reliable standards for tender advisory, technical compliance and digital cost management.
+                      {t.aboutPage.leader1Desc}
                     </p>
                   </div>
                 </div>
@@ -238,10 +238,10 @@ export default function AboutPage() {
                 <div className="about-leader-row">
                   <div className="about-leader-avatar muted">MD</div>
                   <div className="about-leader-content">
-                    <h3 className="about-leader-name">Managing Director</h3>
-                    <span className="about-leader-role">Office of the Managing Director</span>
+                    <h3 className="about-leader-name">{t.aboutPage.leader2Title}</h3>
+                    <span className="about-leader-role">{t.aboutPage.leader2Role}</span>
                     <p className="about-leader-desc">
-                      Directs procurement advisory operations, quality control and multi-sector client delivery across major procuring entities.
+                      {t.aboutPage.leader2Desc}
                     </p>
                   </div>
                 </div>
@@ -250,10 +250,10 @@ export default function AboutPage() {
                 <div className="about-leader-row">
                   <div className="about-leader-avatar muted">DIR</div>
                   <div className="about-leader-content">
-                    <h3 className="about-leader-name">Director</h3>
-                    <span className="about-leader-role">Operations &amp; Advisory</span>
+                    <h3 className="about-leader-name">{t.aboutPage.leader3Title}</h3>
+                    <span className="about-leader-role">{t.aboutPage.leader3Role}</span>
                     <p className="about-leader-desc">
-                      Oversees technical and financial proposal reviews, tender documentation audits and regulatory compliance.
+                      {t.aboutPage.leader3Desc}
                     </p>
                   </div>
                 </div>
@@ -274,10 +274,10 @@ export default function AboutPage() {
                 className="about-eyebrow"
                 style={{ background: '#123B2E', color: '#6EE0B2' }}
               >
-                Core Pillars
+                {t.aboutPage.pillarsEyebrow}
               </span>
               <h2 className="about-section-heading" style={{ color: '#FFFFFF' }}>
-                Principles That Drive Every Submission
+                {t.aboutPage.pillarsHeading}
               </h2>
             </div>
 

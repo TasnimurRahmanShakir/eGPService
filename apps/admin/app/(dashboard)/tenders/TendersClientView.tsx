@@ -128,9 +128,9 @@ export function TendersClientView({
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', width: '100%' }}>
       {/* Financial Metric Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
+      <div className="kpi-cards-grid">
         <div
           style={{
             padding: '1.25rem',
@@ -205,16 +205,8 @@ export function TendersClientView({
       </div>
 
       {/* Control bar: Search + Action */}
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '1rem',
-        }}
-      >
-        <div style={{ position: 'relative', minWidth: '320px', flex: '1', maxWidth: '480px' }}>
+      <div className="tenders-control-bar">
+        <div className="tenders-control-search" style={{ position: 'relative', minWidth: '260px', flex: '1', maxWidth: '480px' }}>
           <Search
             size={16}
             style={{
@@ -248,9 +240,14 @@ export function TendersClientView({
           variant="primary"
           icon={<Plus size={16} />}
           onClick={() => setIsCreateOpen(true)}
+          className="tenders-control-btn"
         >
           New Tender
         </Button>
+      </div>
+
+      <div className="mobile-scroll-hint">
+        <span>⇄ Swipe horizontally to inspect all spreadsheet matrix columns</span>
       </div>
 
       {/* Read-Only Excel Spreadsheet Matrix Table (Separated from form logic) */}

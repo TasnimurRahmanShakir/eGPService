@@ -3,7 +3,7 @@ import './globals.css';
 import { Toaster } from 'sonner';
 
 export const metadata: Metadata = {
-  title: 'eGP Admin Command Portal',
+  title: 'eGP Tender BD Admin Portal',
   description: 'Enterprise Administrative Portal for eGP Client & Tender Operations',
 };
 

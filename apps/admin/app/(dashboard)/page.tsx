@@ -39,16 +39,13 @@ export default async function AdminDashboardOverview() {
   const recentTenders = tenders.slice(0, 5);
 
   return (
-    <div style={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+    <div className="admin-page-container">
       {/* Top Banner */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
+      <div className="page-header-banner">
         <div>
           <h1 style={{ fontSize: '1.85rem', fontWeight: 800, color: '#1F2937', letterSpacing: '-0.02em' }}>
-            Procurement Command Center
+            Procurement Dashboard
           </h1>
-          <p style={{ color: '#64748B', fontSize: '0.875rem', marginTop: '0.25rem' }}>
-            Connected to .NET Clean Architecture CQRS Backend with automated transaction pipelines and audit logs.
-          </p>
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -59,7 +56,7 @@ export default async function AdminDashboardOverview() {
       </div>
 
       {/* KPI Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem' }}>
+      <div className="kpi-cards-grid">
         <div style={{ padding: '1.5rem', backgroundColor: '#FFFFFF', borderRadius: '10px', border: '1px solid #E2E8F0', boxShadow: 'var(--shadow-sm)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span style={{ fontSize: '0.875rem', color: '#64748B', fontWeight: 600 }}>Active Clients</span>
@@ -114,7 +111,7 @@ export default async function AdminDashboardOverview() {
       </div>
 
       {/* Quick Access & Recent Section */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1.8fr 1fr', gap: '1.5rem', alignItems: 'start' }}>
+      <div className="dashboard-quick-grid">
         {/* Recent Tenders Table */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

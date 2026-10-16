@@ -5,8 +5,20 @@ export const TenderCreateSchema = z.object({
   closingDateTimeUtc: z.string().min(1, 'Closing date & time is required'),
   department: z.string().min(1, 'Department is required').max(200),
   clientId: z.number().int().positive().nullable().optional(),
-  liquidAssetAmount: z.number().min(0).default(20000000),
-  appCode: z.string().max(100).optional().default(''),
+  liquidAssetAmount: z
+    .preprocess(
+      (val) => (val === '' || val === null || val === undefined ? null : Number(val)),
+      z.number().min(0, 'Liquid assets must be 0 or positive').nullable().optional()
+    )
+    .nullable()
+    .optional(),
+  appCode: z
+    .preprocess(
+      (val) => (val === null || val === undefined ? '' : String(val)),
+      z.string().max(100).nullable().optional()
+    )
+    .nullable()
+    .optional(),
 });
 
 export const TenderUpdateSchema = z.object({
@@ -15,8 +27,20 @@ export const TenderUpdateSchema = z.object({
   closingDateTimeUtc: z.string().min(1, 'Closing date & time is required'),
   department: z.string().min(1, 'Department is required').max(200),
   clientId: z.number().int().positive().nullable().optional(),
-  liquidAssetAmount: z.number().min(0).default(20000000),
-  appCode: z.string().max(100).optional().default(''),
+  liquidAssetAmount: z
+    .preprocess(
+      (val) => (val === '' || val === null || val === undefined ? null : Number(val)),
+      z.number().min(0, 'Liquid assets must be 0 or positive').nullable().optional()
+    )
+    .nullable()
+    .optional(),
+  appCode: z
+    .preprocess(
+      (val) => (val === null || val === undefined ? '' : String(val)),
+      z.string().max(100).nullable().optional()
+    )
+    .nullable()
+    .optional(),
 });
 
 export const TendererAddToTenderSchema = z.object({

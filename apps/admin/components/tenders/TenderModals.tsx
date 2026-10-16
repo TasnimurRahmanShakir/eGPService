@@ -58,7 +58,7 @@ export function CreateTenderModal({ isOpen, onClose, clients }: CreateTenderModa
       closingDateTimeUtc: closingDefault,
       department: '',
       clientId: null,
-      liquidAssetAmount: 20000000,
+      liquidAssetAmount: null,
       appCode: '',
     },
   });
@@ -105,7 +105,7 @@ export function CreateTenderModal({ isOpen, onClose, clients }: CreateTenderModa
           </div>
         )}
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '1rem' }}>
+        <div className="modal-form-grid-2">
           <Input
             label="Tender ID / Ref Number (Mandatory & Unique)"
             placeholder="e.g. 1325138"
@@ -120,7 +120,7 @@ export function CreateTenderModal({ isOpen, onClose, clients }: CreateTenderModa
           />
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '1rem' }}>
+        <div className="modal-form-grid-2">
           <Input
             label="Department"
             placeholder="e.g. EED, Jessore"
@@ -138,24 +138,28 @@ export function CreateTenderModal({ isOpen, onClose, clients }: CreateTenderModa
           />
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '1rem' }}>
+        <div className="modal-form-grid-2">
           <Input
-            label="Liquid Assets (৳)"
+            label="Liquid Assets (৳) (Optional)"
             type="number"
             step="any"
-            placeholder="20000000"
-            {...register('liquidAssetAmount', { valueAsNumber: true })}
+            placeholder="e.g. 20000000 (Defaults to 0 if empty)"
+            {...register('liquidAssetAmount', {
+              setValueAs: (v) => (!v || v === '' || isNaN(Number(v)) ? null : Number(v)),
+            })}
             error={errors.liquidAssetAmount?.message}
           />
           <Input
             label="APP Code (Optional)"
             placeholder="e.g. 127023000"
-            {...register('appCode')}
+            {...register('appCode', {
+              setValueAs: (v) => (!v ? '' : v),
+            })}
             error={errors.appCode?.message}
           />
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '0.5rem' }}>
+        <div className="modal-form-actions">
           <Button type="button" variant="secondary" onClick={onClose} disabled={isPending}>
             Cancel
           </Button>
@@ -197,7 +201,7 @@ export function EditTenderModal({ isOpen, onClose, tender, clients }: EditTender
       closingDateTimeUtc: tender?.closingDateTimeUtc ? tender.closingDateTimeUtc.slice(0, 16) : '',
       department: tender?.department || '',
       clientId: tender?.clientId || null,
-      liquidAssetAmount: tender?.liquidAssetAmount || 20000000,
+      liquidAssetAmount: tender?.liquidAssetAmount ?? null,
       appCode: tender?.appCode || '',
     },
   });
@@ -212,7 +216,7 @@ export function EditTenderModal({ isOpen, onClose, tender, clients }: EditTender
         closingDateTimeUtc: tender.closingDateTimeUtc ? tender.closingDateTimeUtc.slice(0, 16) : '',
         department: tender.department,
         clientId: tender.clientId || null,
-        liquidAssetAmount: tender.liquidAssetAmount,
+        liquidAssetAmount: tender.liquidAssetAmount ?? null,
         appCode: tender.appCode || '',
       });
       setServerError(null);
@@ -268,7 +272,7 @@ export function EditTenderModal({ isOpen, onClose, tender, clients }: EditTender
           </div>
         )}
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '1rem' }}>
+        <div className="modal-form-grid-2">
           <Input
             label="Tender ID (Unique)"
             {...register('tenderId')}
@@ -282,7 +286,7 @@ export function EditTenderModal({ isOpen, onClose, tender, clients }: EditTender
           />
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '1rem' }}>
+        <div className="modal-form-grid-2">
           <Input
             label="Department"
             {...register('department')}
@@ -303,22 +307,28 @@ export function EditTenderModal({ isOpen, onClose, tender, clients }: EditTender
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '1rem' }}>
+        <div className="modal-form-grid-2">
           <Input
-            label="Liquid Assets (৳)"
+            label="Liquid Assets (৳) (Optional)"
             type="number"
             step="any"
-            {...register('liquidAssetAmount', { valueAsNumber: true })}
+            placeholder="e.g. 20000000 (Defaults to 0 if empty)"
+            {...register('liquidAssetAmount', {
+              setValueAs: (v) => (!v || v === '' || isNaN(Number(v)) ? null : Number(v)),
+            })}
             error={errors.liquidAssetAmount?.message}
           />
           <Input
-            label="APP Code"
-            {...register('appCode')}
+            label="APP Code (Optional)"
+            placeholder="e.g. 127023000"
+            {...register('appCode', {
+              setValueAs: (v) => (!v ? '' : v),
+            })}
             error={errors.appCode?.message}
           />
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '0.5rem' }}>
+        <div className="modal-form-actions">
           <Button type="button" variant="secondary" onClick={onClose} disabled={isPending}>
             Cancel
           </Button>
@@ -441,7 +451,7 @@ export function AddTendererModal({ isOpen, onClose, tender }: AddTendererModalPr
           </div>
         )}
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1.3fr 1fr', gap: '1rem' }}>
+        <div className="modal-form-grid-2">
           <Combobox
             label="Select eGP License (Searchable)"
             placeholder="Search or select license..."
@@ -511,7 +521,7 @@ export function AddTendererModal({ isOpen, onClose, tender }: AddTendererModalPr
           </div>
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '0.5rem' }}>
+        <div className="modal-form-actions">
           <Button type="button" variant="secondary" onClick={onClose} disabled={isPending}>
             Cancel
           </Button>
@@ -626,7 +636,7 @@ export function EditTendererModal({ isOpen, onClose, tenderId, mapping }: EditTe
           </div>
         )}
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '1rem' }}>
+        <div className="modal-form-grid-2">
           <Input
             label="Charge (৳) - Adjusts client balance automatically"
             type="number"
@@ -691,7 +701,7 @@ export function EditTendererModal({ isOpen, onClose, tenderId, mapping }: EditTe
           </div>
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '0.5rem' }}>
+        <div className="modal-form-actions">
           <Button type="button" variant="secondary" onClick={onClose} disabled={isPending}>
             Cancel
           </Button>
@@ -817,7 +827,7 @@ export function RecordPaymentModal({
           <MoneyDisplay amount={dueAmount} type="due" size="lg" />
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '1rem' }}>
+        <div className="modal-form-grid-2">
           <Input
             label="Payment Amount (৳)"
             type="number"
@@ -852,7 +862,7 @@ export function RecordPaymentModal({
           error={errors.remarks?.message}
         />
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '0.75rem' }}>
+        <div className="modal-form-actions">
           <Button type="button" variant="secondary" onClick={onClose} disabled={isPending}>
             Cancel
           </Button>

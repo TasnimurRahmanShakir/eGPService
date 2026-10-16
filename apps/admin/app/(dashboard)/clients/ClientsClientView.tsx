@@ -129,7 +129,7 @@ export function ClientsClientView({ initialClients }: { initialClients: ClientDt
   return (
     <>
       {/* Metric Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
+      <div className="kpi-cards-grid">
         <div style={{ padding: '1.25rem', backgroundColor: '#FFFFFF', borderRadius: '10px', border: '1px solid #E2E8F0', boxShadow: 'var(--shadow-sm)' }}>
           <span style={{ fontSize: '0.875rem', color: '#64748B', fontWeight: 500 }}>Total Registered Clients</span>
           <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#1F2937', marginTop: '0.25rem', fontVariantNumeric: 'tabular-nums' }}>{totalClients}</div>

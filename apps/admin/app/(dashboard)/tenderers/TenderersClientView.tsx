@@ -24,7 +24,7 @@ export function TenderersClientView({ initialTenderers }: { initialTenderers: Te
       cell: (t) => <span style={{ fontFamily: 'monospace', color: '#0F766E', fontWeight: 600 }}>#{t.id}</span>,
     },
     {
-      header: 'Tenderer Name (Bidder)',
+      header: 'License Name (Bidder)',
       accessorKey: 'name',
       cell: (t) => (
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -77,16 +77,16 @@ export function TenderersClientView({ initialTenderers }: { initialTenderers: Te
       <DataTable
         data={filtered}
         columns={columns}
-        searchPlaceholder="Search tenderers by name or username..."
+        searchPlaceholder="Search licenses by name or username..."
         searchValue={search}
         onSearchChange={setSearch}
         headerActions={
           <Button variant="primary" icon={<Plus size={16} />} onClick={() => setIsCreateOpen(true)}>
-            Add Tenderer
+            Add License
           </Button>
         }
-        emptyTitle="No tenderers registered"
-        emptySubtitle="Register tenderer accounts to map to tender matrix records."
+        emptyTitle="No licenses registered"
+        emptySubtitle="Register license accounts to map to tender matrix records."
       />
 
       <CreateTendererModal isOpen={isCreateOpen} onClose={() => setIsCreateOpen(false)} />

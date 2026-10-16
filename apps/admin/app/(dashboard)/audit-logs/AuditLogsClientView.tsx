@@ -216,7 +216,7 @@ export function AuditLogsClientView({ initialLogs }: { initialLogs: AuditLogDto[
         }}
       >
         {/* Module filter chips */}
-        <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', alignItems: 'center' }}>
+        <div className="audit-chips-container">
           <span style={{ fontSize: '0.8rem', color: 'var(--muted-foreground, #64748B)', fontWeight: 600, marginRight: '0.25rem' }}>
             Module:
           </span>
@@ -237,7 +237,7 @@ export function AuditLogsClientView({ initialLogs }: { initialLogs: AuditLogDto[
                 transition: 'all 0.15s ease',
               }}
             >
-              {mod}
+              {mod === 'TendererMappings' ? 'Licenses' : mod}
             </button>
           ))}
         </div>

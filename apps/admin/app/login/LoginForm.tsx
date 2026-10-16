@@ -43,7 +43,7 @@ export default function LoginForm() {
       try {
         const res = await loginAction(formData);
         if (res.success) {
-          toast.success('Authentication successful! Welcome to eGP Command.');
+          toast.success('Authentication successful! Welcome to eGP Tender BD.');
           router.push(redirectUrl);
           router.refresh();
         } else {
@@ -67,7 +67,7 @@ export default function LoginForm() {
           <div className="login-brand-badge">
             <ShieldCheck size={28} strokeWidth={2.3} />
           </div>
-          <h1 className="login-brand-title">eGP Command</h1>
+          <h1 className="login-brand-title">eGP Tender BD</h1>
           <p className="login-brand-subtitle">
             Enterprise Administrative Portal &amp; Procurement Management
           </p>
@@ -158,7 +158,7 @@ export default function LoginForm() {
               </>
             ) : (
               <>
-                <span>Sign In to Command</span>
+                <span>Sign In to eGP Tender BD</span>
                 <ArrowRight size={17} strokeWidth={2.3} />
               </>
             )}

@@ -204,6 +204,8 @@ export interface Translations {
     title1: string;
     title2: string;
     subtitle: string;
+    heroBadge1: string;
+    heroBadge2: string;
     missionTitle: string;
     missionDesc: string;
     visionTitle: string;
@@ -214,6 +216,30 @@ export interface Translations {
     statsClients: string;
     statsSubmissions: string;
     statsRate: string;
+    missionEyebrow: string;
+    missionHeading1: string;
+    missionHeading2: string;
+    missionLead: string;
+    missionBody: string;
+    checkItem1: string;
+    checkItem2: string;
+    checkItem3: string;
+    leadershipEyebrow: string;
+    leadershipHeading1: string;
+    leadershipHeading2: string;
+    leadershipSub: string;
+    leadershipCta: string;
+    leader1Badge: string;
+    leader1Role: string;
+    leader1Desc: string;
+    leader2Title: string;
+    leader2Role: string;
+    leader2Desc: string;
+    leader3Title: string;
+    leader3Role: string;
+    leader3Desc: string;
+    pillarsEyebrow: string;
+    pillarsHeading: string;
   };
   contactPage: {
     eyebrow: string;
@@ -454,6 +480,8 @@ export const translations: Record<Language, Translations> = {
       title1: 'Empowering Contractors & Businesses',
       title2: 'Across Bangladesh.',
       subtitle: 'From initial registration to tender winning and project tracking, we stand by your side.',
+      heroBadge1: 'Integrity, Compliance',
+      heroBadge2: '& Precision',
       missionTitle: 'Our Mission',
       missionDesc: 'To simplify the government e-GP procurement workflow for Bangladeshi businesses through technical accuracy, deep regulatory understanding and dedicated support.',
       visionTitle: 'Our Vision',
@@ -464,6 +492,30 @@ export const translations: Record<Language, Translations> = {
       statsClients: 'Contractors Served',
       statsSubmissions: 'Bids Processed',
       statsRate: 'Satisfaction Rating',
+      missionEyebrow: 'Our Mission',
+      missionHeading1: 'From Opportunity to Award.',
+      missionHeading2: 'We Make Procurement Reliable.',
+      missionLead: 'Electronic public procurement in Bangladesh has modernized how tenders are published and evaluated, but procedural precision remains paramount.',
+      missionBody: 'Our mission is to eliminate procedural discrepancies, document omissions and compliance bottlenecks that can cause technically qualified contractors to be declared non-responsive. From registration and qualification mapping to BOQ review and secure e-GP submission, we work as your dedicated procurement team.',
+      checkItem1: 'Strict adherence to PPR and STD tender requirements',
+      checkItem2: 'End-to-end technical & financial proposal verification',
+      checkItem3: 'Proactive post-award project management intelligence',
+      leadershipEyebrow: 'Leadership',
+      leadershipHeading1: 'The people behind every',
+      leadershipHeading2: 'submission.',
+      leadershipSub: 'Seasoned procurement practitioners committed to institutional excellence and contractor success.',
+      leadershipCta: 'Talk to Our Team',
+      leader1Badge: 'Founder',
+      leader1Role: 'Chairman',
+      leader1Desc: 'Leads strategic vision, institutional partnerships and service governance, setting reliable standards for tender advisory, technical compliance and digital cost management.',
+      leader2Title: 'Managing Director',
+      leader2Role: 'Office of the Managing Director',
+      leader2Desc: 'Directs procurement advisory operations, quality control and multi-sector client delivery across major procuring entities.',
+      leader3Title: 'Director',
+      leader3Role: 'Operations & Advisory',
+      leader3Desc: 'Oversees technical and financial proposal reviews, tender documentation audits and regulatory compliance.',
+      pillarsEyebrow: 'Core Pillars',
+      pillarsHeading: 'Principles That Drive Every Submission',
     },
     contactPage: {
       eyebrow: 'GET IN TOUCH',
@@ -713,6 +765,8 @@ export const translations: Record<Language, Translations> = {
       title1: 'ঠিকাদার ও ব্যবসায়ীদের ক্ষমতায়নে',
       title2: 'সারাদেশে বিশ্বস্ত সঙ্গী।',
       subtitle: 'ই-জিপি রেজিস্ট্রেশন থেকে শুরু করে টেন্ডার জয় এবং প্রজেক্ট ট্র্যাকিং—আমরা সবসময় আপনার পাশে।',
+      heroBadge1: 'সততা, নিয়মনিষ্ঠতা',
+      heroBadge2: 'ও নিখুঁত মান',
       missionTitle: 'আমাদের লক্ষ্য',
       missionDesc: 'কারিগরি নির্ভুলতা, সরকারি প্রকিউরমেন্ট আইনের গভীর জ্ঞান ও পেশাদার সেবার মাধ্যমে বাংলাদেশের ঠিকাদারদের জন্য ই-জিপি প্রক্রিয়াকে সহজ ও সফল করা।',
       visionTitle: 'আমাদের রূপকল্প',
@@ -723,6 +777,30 @@ export const translations: Record<Language, Translations> = {
       statsClients: 'সেবাপ্রাপ্ত ঠিকাদার',
       statsSubmissions: 'দাখিলকৃত টেন্ডার',
       statsRate: 'সন্তুষ্টির রেটিং',
+      missionEyebrow: 'আমাদের মিশন',
+      missionHeading1: 'সুযোগ থেকে টেন্ডার প্রাপ্তি।',
+      missionHeading2: 'আমরা প্রকিউরমেন্টকে করি নির্ভরযোগ্য।',
+      missionLead: 'বাংলাদেশে ইলেকট্রনিক সরকারি ক্রয় প্রক্রিয়া (e-GP) টেন্ডার প্রকাশ ও মূল্যায়নকে আধুনিক করেছে, তবে প্রক্রিয়ার নির্ভুলতা এখনও সবচেয়ে গুরুত্বপূর্ণ বিষয়।',
+      missionBody: 'আমাদের লক্ষ্য হলো পদ্ধতিগত ত্রুটি, প্রয়োজনীয় নথিপত্র বাদ পড়া এবং কমপ্লায়েন্সের জটিলতা দূর করা—যার কারণে কারিগরিভাবে যোগ্য হওয়া সত্ত্বেও ঠিকাদাররা নন-রেসপনসিভ হতে পারেন। রেজিস্ট্রেশন ও যোগ্যতা যাচাই থেকে শুরু করে BOQ রিভিউ এবং নিরাপদ ই-জিপি সাবমিশন পর্যন্ত আমরা আপনার নিবেদিত প্রকিউরমেন্ট টিম হিসেবে কাজ করি।',
+      checkItem1: 'পিপিআর (PPR) এবং এসটিডি (STD) টেন্ডারের নিয়মাবলির কঠোর অনুসরণ',
+      checkItem2: 'কারিগরি ও আর্থিক প্রস্তাবের নিখুঁত যাচাই-বাছাই',
+      checkItem3: 'টেন্ডার প্রাপ্তির পরবর্তী প্রকল্প ব্যবস্থাপনায় ধারাবাহিক সহায়তা',
+      leadershipEyebrow: 'নেতৃত্ব',
+      leadershipHeading1: 'প্রতিটি সফল সাবমিশনের পেছনের',
+      leadershipHeading2: 'নেতৃত্ব।',
+      leadershipSub: 'অভিজ্ঞ প্রকিউরমেন্ট বিশেষজ্ঞ, যারা প্রাতিষ্ঠানিক উৎকর্ষতা এবং ঠিকাদারদের সাফল্যে নিবেদিতপ্রাণ।',
+      leadershipCta: 'আমাদের টিমের সাথে কথা বলুন',
+      leader1Badge: 'প্রতিষ্ঠাতা',
+      leader1Role: 'চেয়ারম্যান',
+      leader1Desc: 'কৌশলগত পরিকল্পনা, প্রাতিষ্ঠানিক অংশীদারিত্ব ও সেবামূলক সুশাসন পরিচালনা করেন এবং টেন্ডার পরামর্শ, টেকনিক্যাল কমপ্লায়েন্স ও ডিজিটাল খরচ ব্যবস্থাপনায় নির্ভরযোগ্য মানদণ্ড প্রতিষ্ঠা করছেন।',
+      leader2Title: 'ব্যবস্থাপনা পরিচালক',
+      leader2Role: 'ব্যবস্থাপনা পরিচালকের কার্যালয়',
+      leader2Desc: 'দেশের প্রধান ক্রয়কারী সংস্থাগুলোর অধীনে প্রকিউরমেন্ট কার্যক্রম, মান নিয়ন্ত্রণ এবং বিভিন্ন খাতের ক্লায়েন্ট সার্ভিস তত্ত্বাবধান করেন।',
+      leader3Title: 'পরিচালক',
+      leader3Role: 'অপারেশন্স ও অ্যাডভাইজরি',
+      leader3Desc: 'টেকনিক্যাল ও আর্থিক প্রস্তাবনা মূল্যায়ন, টেন্ডার নথিপত্র অডিট এবং সরকারি আইনগত নিয়মাবলি বাস্তবায়নে নেতৃত্ব দেন।',
+      pillarsEyebrow: 'মূল স্তম্ভসমূহ',
+      pillarsHeading: 'যে মূলনীতিগুলো আমাদের প্রতিটি সাবমিশন পরিচালনা করে',
     },
     contactPage: {
       eyebrow: 'যোগাযোগ করুন',

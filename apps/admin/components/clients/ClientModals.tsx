@@ -66,7 +66,7 @@ export function CreateClientModal({ isOpen, onClose }: CreateClientModalProps) {
           error={errors.name?.message}
         />
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+        <div className="modal-form-grid-even">
           <Input
             label="Phone Number"
             placeholder="e.g. +8801700000000"
@@ -81,7 +81,7 @@ export function CreateClientModal({ isOpen, onClose }: CreateClientModalProps) {
           />
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '1rem' }}>
+        <div className="modal-form-grid-2">
           <Input
             label="Opening Balance (Amount)"
             type="number"
@@ -101,7 +101,7 @@ export function CreateClientModal({ isOpen, onClose }: CreateClientModalProps) {
           />
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '0.75rem' }}>
+        <div className="modal-form-actions">
           <Button type="button" variant="secondary" onClick={onClose} disabled={isPending}>
             Cancel
           </Button>
@@ -179,7 +179,7 @@ export function AddSubscriptionModal({ isOpen, onClose, clientId, clientName }: 
           error={errors.solutionName?.message}
         />
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+        <div className="modal-form-grid-even">
           <Input
             label="Start Date"
             type="date"
@@ -194,7 +194,7 @@ export function AddSubscriptionModal({ isOpen, onClose, clientId, clientName }: 
           />
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '1rem' }}>
+        <div className="modal-form-grid-2">
           <Input
             label="Invoice Amount (৳)"
             type="number"
@@ -214,7 +214,7 @@ export function AddSubscriptionModal({ isOpen, onClose, clientId, clientName }: 
           />
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '0.75rem' }}>
+        <div className="modal-form-actions">
           <Button type="button" variant="secondary" onClick={onClose} disabled={isPending}>
             Cancel
           </Button>

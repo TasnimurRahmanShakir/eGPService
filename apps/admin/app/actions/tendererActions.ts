@@ -21,11 +21,11 @@ export async function createTendererAction(formData: unknown): Promise<ActionRes
     const id = await apiClient.tenderers.create(result.data);
     revalidateTag('tenderers');
     revalidatePath('/tenderers');
-    return { success: true, message: 'Tenderer account created successfully', data: { id } };
+    return { success: true, message: 'License account created successfully', data: { id } };
   } catch (error: any) {
     return {
       success: false,
-      message: error.message || 'Failed to create tenderer account',
+      message: error.message || 'Failed to create license account',
       errors: error.problemDetails?.errors
     };
   }

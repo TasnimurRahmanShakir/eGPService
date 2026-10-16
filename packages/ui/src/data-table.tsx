@@ -63,6 +63,7 @@ export function DataTable<T>({
       {/* Table Toolbar */}
       {(onSearchChange || headerActions) && (
         <div
+          className="egp-data-table-toolbar"
           style={{
             padding: '1rem 1.25rem',
             display: 'flex',
@@ -74,7 +75,7 @@ export function DataTable<T>({
           }}
         >
           {onSearchChange ? (
-            <div style={{ position: 'relative', width: '320px', maxWidth: '100%' }}>
+            <div className="egp-data-table-search" style={{ position: 'relative', width: '320px', maxWidth: '100%' }}>
               <input
                 type="text"
                 placeholder={searchPlaceholder}
@@ -103,7 +104,7 @@ export function DataTable<T>({
             </div>
           ) : <div />}
 
-          {headerActions && <div>{headerActions}</div>}
+          {headerActions && <div className="egp-data-table-actions">{headerActions}</div>}
         </div>
       )}
 
