@@ -10,7 +10,8 @@ import {
   TenderPaymentCreateSchema,
   type TenderPaymentCreateInput
 } from '@egp/schema';
-import { type ActionResult, formatErrorMessage } from './clientActions';
+import type { ActionResult } from './clientActions';
+import { formatErrorMessage } from '@/lib/format-error';
 
 export type PaymentSchemaType = TenderPaymentCreateInput;
 

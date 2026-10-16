@@ -3,7 +3,8 @@
 import { revalidatePath, revalidateTag } from 'next/cache';
 import { apiClient } from '@egp/api-client';
 import { TendererCreateSchema } from '@egp/schema';
-import { type ActionResult, formatErrorMessage } from './clientActions';
+import type { ActionResult } from './clientActions';
+import { formatErrorMessage } from '@/lib/format-error';
 
 export async function createTendererAction(formData: unknown): Promise<ActionResult> {
   const result = TendererCreateSchema.safeParse(formData);
