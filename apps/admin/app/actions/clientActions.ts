@@ -11,6 +11,20 @@ export interface ActionResult {
   errors?: Record<string, string[]>;
 }
 
+export function formatErrorMessage(error: any, fallback: string): string {
+  if (error?.problemDetails?.errors && Object.keys(error.problemDetails.errors).length > 0) {
+    return Object.entries(error.problemDetails.errors)
+      .map(([f, errs]: [string, any]) => `${f}: ${Array.isArray(errs) ? errs.join(', ') : errs}`)
+      .join('; ');
+  }
+  return (
+    error?.problemDetails?.detail ||
+    error?.problemDetails?.title ||
+    error?.message ||
+    fallback
+  );
+}
+
 export async function createClientAction(formData: unknown): Promise<ActionResult> {
   const result = ClientCreateSchema.safeParse(formData);
   if (!result.success) {
@@ -32,7 +46,7 @@ export async function createClientAction(formData: unknown): Promise<ActionResul
   } catch (error: any) {
     return {
       success: false,
-      message: error.message || 'Failed to create client',
+      message: formatErrorMessage(error, 'Failed to create client'),
       errors: error.problemDetails?.errors
     };
   }
@@ -59,7 +73,7 @@ export async function addSubscriptionAction(formData: unknown): Promise<ActionRe
   } catch (error: any) {
     return {
       success: false,
-      message: error.message || 'Failed to add subscription',
+      message: formatErrorMessage(error, 'Failed to add subscription'),
       errors: error.problemDetails?.errors
     };
   }

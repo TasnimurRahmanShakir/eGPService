@@ -10,7 +10,7 @@ import {
   TenderPaymentCreateSchema,
   type TenderPaymentCreateInput
 } from '@egp/schema';
-import type { ActionResult } from './clientActions';
+import { type ActionResult, formatErrorMessage } from './clientActions';
 
 export type PaymentSchemaType = TenderPaymentCreateInput;
 
@@ -37,7 +37,7 @@ export async function createTenderAction(formData: unknown): Promise<ActionResul
   } catch (error: any) {
     return {
       success: false,
-      message: error.problemDetails?.detail || error.problemDetails?.title || error.message || 'Failed to create tender',
+      message: formatErrorMessage(error, 'Failed to create tender'),
       errors: error.problemDetails?.errors
     };
   }
@@ -66,7 +66,7 @@ export async function updateTenderAction(formData: unknown): Promise<ActionResul
   } catch (error: any) {
     return {
       success: false,
-      message: error.problemDetails?.detail || error.problemDetails?.title || error.message || 'Failed to update tender',
+      message: formatErrorMessage(error, 'Failed to update tender'),
       errors: error.problemDetails?.errors
     };
   }
@@ -95,7 +95,7 @@ export async function addTendererToTenderAction(formData: unknown): Promise<Acti
   } catch (error: any) {
     return {
       success: false,
-      message: error.problemDetails?.detail || error.problemDetails?.title || error.message || 'Failed to add license',
+      message: formatErrorMessage(error, 'Failed to add license'),
       errors: error.problemDetails?.errors
     };
   }
@@ -124,7 +124,7 @@ export async function updateTendererAction(formData: unknown): Promise<ActionRes
   } catch (error: any) {
     return {
       success: false,
-      message: error.problemDetails?.detail || error.problemDetails?.title || error.message || 'Failed to update license',
+      message: formatErrorMessage(error, 'Failed to update license'),
       errors: error.problemDetails?.errors
     };
   }
@@ -142,7 +142,7 @@ export async function removeTendererAction(tenderId: number, tendererId: number)
   } catch (error: any) {
     return {
       success: false,
-      message: error.problemDetails?.detail || error.problemDetails?.title || error.message || 'Failed to remove license',
+      message: formatErrorMessage(error, 'Failed to remove license'),
       errors: error.problemDetails?.errors
     };
   }
@@ -183,7 +183,7 @@ export async function recordPaymentAction(formData: PaymentSchemaType | unknown)
   } catch (error: any) {
     return {
       success: false,
-      message: error.problemDetails?.detail || error.problemDetails?.title || error.message || 'Network error occurred.',
+      message: formatErrorMessage(error, 'Network error occurred.'),
       errors: error.problemDetails?.errors
     };
   }

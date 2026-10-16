@@ -89,7 +89,13 @@ export function createApiClient(customBaseUrl?: string) {
         const data = await res.json();
         if (data && (data.title || data.detail || data.errors)) {
           problemDetails = data as ProblemDetails;
-          errorMessage = problemDetails.detail || problemDetails.title || errorMessage;
+          if (problemDetails.errors && Object.keys(problemDetails.errors).length > 0) {
+            errorMessage = Object.entries(problemDetails.errors)
+              .map(([f, errs]) => `${f}: ${Array.isArray(errs) ? errs.join(', ') : errs}`)
+              .join('; ');
+          } else {
+            errorMessage = problemDetails.detail || problemDetails.title || errorMessage;
+          }
         } else if (data && data.message) {
           errorMessage = data.message;
         }

@@ -3,7 +3,7 @@
 import { revalidatePath, revalidateTag } from 'next/cache';
 import { apiClient } from '@egp/api-client';
 import { TendererCreateSchema } from '@egp/schema';
-import type { ActionResult } from './clientActions';
+import { type ActionResult, formatErrorMessage } from './clientActions';
 
 export async function createTendererAction(formData: unknown): Promise<ActionResult> {
   const result = TendererCreateSchema.safeParse(formData);
@@ -25,7 +25,7 @@ export async function createTendererAction(formData: unknown): Promise<ActionRes
   } catch (error: any) {
     return {
       success: false,
-      message: error.message || 'Failed to create license account',
+      message: formatErrorMessage(error, 'Failed to create license account'),
       errors: error.problemDetails?.errors
     };
   }
