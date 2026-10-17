@@ -1,5 +1,4 @@
-# syntax=docker/dockerfile:1
-ARG NODE_VERSION=20-alpine
+ARG NODE_VERSION=22-alpine
 
 # ==========================================
 # Stage 1: Turbo Pruner
@@ -23,6 +22,7 @@ RUN turbo prune --scope=web --docker
 FROM node:${NODE_VERSION} AS builder
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
+
 
 # Enable pnpm via corepack
 ENV PNPM_HOME="/pnpm"

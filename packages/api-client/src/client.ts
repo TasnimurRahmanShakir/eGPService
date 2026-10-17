@@ -35,15 +35,28 @@ export interface RequestOptions extends RequestInit {
 }
 
 export const getBaseUrl = (): string => {
-  if (typeof window === 'undefined') {
-    // Node.js server theke call korle (Server Actions, Server Components, SSR)
-    return process.env.INTERNAL_API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://backend:8080/api';
+  const internalUrl = typeof window === 'undefined' ? process.env.INTERNAL_API_URL : undefined;
+
+  const publicUrl = process.env.NEXT_PUBLIC_API_URL;
+
+  const resolved = (internalUrl || publicUrl)?.trim();
+  if (resolved) {
+    return resolved.replace(/\/+$/, '');
   }
-  // Browser theke call korle (Client Components)
-  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
+
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error(
+      '[api-client] Configuration Error: Neither INTERNAL_API_URL nor NEXT_PUBLIC_API_URL is defined. ' +
+      'Please configure NEXT_PUBLIC_API_URL in your environment (.env.production or server environment variables).'
+    );
+  }
+
+  // 4. Development local default
+  return 'http://localhost:5000/api';
 };
 
-export const API_BASE_URL = getBaseUrl();
+export const getApiBaseUrl = getBaseUrl;
+export const API_BASE_URL = typeof process !== 'undefined' && process.env?.NEXT_PUBLIC_API_URL ? process.env.NEXT_PUBLIC_API_URL : '';
 
 export function createApiClient(customBaseUrl?: string) {
   const resolveBaseUrl = () => customBaseUrl || getBaseUrl();
@@ -73,13 +86,23 @@ export function createApiClient(customBaseUrl?: string) {
       Authorization: 'Bearer mock-admin-token'
     };
 
-    const res = await fetch(url, {
-      ...rest,
-      headers: {
-        ...defaultHeaders,
-        ...headers
-      }
-    });
+    let res: Response;
+    try {
+      res = await fetch(url, {
+        ...rest,
+        headers: {
+          ...defaultHeaders,
+          ...headers
+        }
+      });
+    } catch (err: any) {
+      const cause = err?.cause?.message || err?.cause?.code || err?.message || 'Network error';
+      console.error(`[ApiClient Error] Failed to fetch ${url}:`, err);
+      throw new ApiError(
+        0,
+        `Cannot connect to Backend API at ${baseUrl} (${cause})`
+      );
+    }
 
     if (!res.ok) {
       let problemDetails: ProblemDetails | undefined;

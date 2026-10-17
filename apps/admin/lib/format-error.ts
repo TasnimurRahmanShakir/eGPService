@@ -4,10 +4,16 @@ export function formatErrorMessage(error: any, fallback: string): string {
       .map(([f, errs]: [string, any]) => `${f}: ${Array.isArray(errs) ? errs.join(', ') : errs}`)
       .join('; ');
   }
-  return (
+
+  const rawMessage =
     error?.problemDetails?.detail ||
     error?.problemDetails?.title ||
-    error?.message ||
-    fallback
-  );
+    error?.message;
+
+  if (rawMessage === 'fetch failed' || rawMessage?.toLowerCase().includes('fetch failed')) {
+    const cause = error?.cause?.message || error?.cause?.code || '';
+    return `Cannot connect to Backend API${cause ? ` (${cause})` : ''}. Please check your API URL configuration.`;
+  }
+
+  return rawMessage || fallback;
 }

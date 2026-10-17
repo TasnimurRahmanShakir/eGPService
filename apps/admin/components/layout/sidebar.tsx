@@ -105,16 +105,8 @@ export function AdminSidebar({
         })}
       </nav>
 
-      {/* Footer Info & Sign Out */}
+      {/* Footer / Sign Out */}
       <div className="sidebar-footer">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', color: 'var(--success, #047857)', fontWeight: 600, fontSize: '0.75rem', justifyContent: isCollapsed ? 'center' : 'flex-start' }}>
-          <span style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: 'var(--success, #047857)', boxShadow: '0 0 6px rgba(4, 120, 87, 0.4)', flexShrink: 0 }} />
-          <span className="sidebar-text-hide">API Connected</span>
-        </div>
-        <div className="sidebar-text-hide" style={{ marginTop: '0.25rem', fontSize: '0.7rem', color: 'var(--muted-foreground, #64748B)' }}>
-          Identity: Administrator
-        </div>
-
         {/* Sign Out Button */}
         <button
           type="button"

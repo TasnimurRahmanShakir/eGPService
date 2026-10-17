@@ -21,15 +21,14 @@ async function getDashboardData() {
       apiClient.tenders.getAll(undefined, { next: { tags: ['tenders'], revalidate: 0 } }).catch(() => []),
       apiClient.auditLogs.getLogs({ pageSize: 5 }, { next: { revalidate: 0 } }).catch(() => []),
     ]);
-    const isConnected = clients.length > 0 || tenders.length > 0 || auditLogs.length > 0;
-    return { clients, tenders, auditLogs, isConnected };
+    return { clients, tenders, auditLogs };
   } catch {
-    return { clients: [], tenders: [], auditLogs: [], isConnected: false };
+    return { clients: [], tenders: [], auditLogs: [] };
   }
 }
 
 export default async function AdminDashboardOverview() {
-  const { clients, tenders, auditLogs, isConnected } = await getDashboardData();
+  const { clients, tenders, auditLogs } = await getDashboardData();
 
   const totalClients = clients.length;
   const solutionSubscribers = clients.filter((c) => c.hasPurchasedSolution).length;
@@ -47,12 +46,6 @@ export default async function AdminDashboardOverview() {
           <h1 style={{ fontSize: '1.85rem', fontWeight: 800, color: '#1F2937', letterSpacing: '-0.02em' }}>
             Procurement Dashboard
           </h1>
-        </div>
-
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <Badge variant={isConnected ? 'emerald' : 'rose'} dot size="md">
-            {isConnected ? 'Backend Online (Port 5000)' : 'Backend Offline'}
-          </Badge>
         </div>
       </div>
 
