@@ -8,11 +8,13 @@ import { Button, Modal, Input, Select, Combobox, MoneyDisplay } from '@egp/ui';
 import {
   TenderCreateSchema,
   TenderUpdateSchema,
+  TenderClientAddSchema,
   TendererAddToTenderSchema,
   TendererMappingUpdateSchema,
   TenderPaymentCreateSchema,
   type TenderCreateInput,
   type TenderUpdateInput,
+  type TenderClientAddInput,
   type TendererAddToTenderInput,
   type TendererMappingUpdateInput,
   type TenderPaymentCreateInput,
@@ -21,6 +23,7 @@ import type { ClientDto, TendererDto, TenderDto, TendererMappingDto } from '@egp
 import {
   createTenderAction,
   updateTenderAction,
+  addClientToTenderAction,
   addTendererToTenderAction,
   updateTendererAction,
   recordPaymentAction,
@@ -30,7 +33,7 @@ import { fetchClientOptionsAction } from '../../app/actions/clientActions';
 import { toLocalDatetimeInput, localInputToUtcIso } from '@/lib/date-utils';
 
 // -------------------------------------------------------------
-// 1. CREATE TENDER MODAL (Lightweight, Step-1 Creation)
+// 1. CREATE TENDER MODAL
 // -------------------------------------------------------------
 interface CreateTenderModalProps {
   isOpen: boolean;
@@ -91,7 +94,7 @@ export function CreateTenderModal({ isOpen, onClose, clients }: CreateTenderModa
       isOpen={isOpen}
       onClose={onClose}
       title="Create New Tender"
-      subtitle="Enter tender schedule, department, and optional client assignment"
+      subtitle="Enter tender schedule, department, and optional initial client assignment"
       maxWidth="680px"
     >
       <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
@@ -118,7 +121,7 @@ export function CreateTenderModal({ isOpen, onClose, clients }: CreateTenderModa
             error={errors.tenderId?.message}
           />
           <Input
-            label="Closing Date & Time (Manual Input)"
+            label="Closing Date & Time"
             type="datetime-local"
             {...register('closingDateTimeUtc')}
             error={errors.closingDateTimeUtc?.message}
@@ -133,7 +136,7 @@ export function CreateTenderModal({ isOpen, onClose, clients }: CreateTenderModa
             error={errors.department?.message}
           />
           <Combobox
-            label="Client (Optional - Can assign later)"
+            label="Initial Client (Optional - Can add multiple later)"
             placeholder="Search or select client..."
             searchPlaceholder="Type client name or phone..."
             value={clientId}
@@ -148,7 +151,7 @@ export function CreateTenderModal({ isOpen, onClose, clients }: CreateTenderModa
             label="Liquid Assets (৳) (Optional)"
             type="number"
             step="any"
-            placeholder="e.g. 20000000 (Defaults to 0 if empty)"
+            placeholder="e.g. 20000000"
             {...register('liquidAssetAmount', {
               setValueAs: (v) => (!v || v === '' || isNaN(Number(v)) ? null : Number(v)),
             })}
@@ -178,7 +181,7 @@ export function CreateTenderModal({ isOpen, onClose, clients }: CreateTenderModa
 }
 
 // -------------------------------------------------------------
-// 2. EDIT TENDER MODAL (Tender-level details + Client Transfer)
+// 2. EDIT TENDER MODAL (Tender general details)
 // -------------------------------------------------------------
 interface EditTenderModalProps {
   isOpen: boolean;
@@ -187,7 +190,7 @@ interface EditTenderModalProps {
   clients?: ClientDto[];
 }
 
-export function EditTenderModal({ isOpen, onClose, tender, clients }: EditTenderModalProps) {
+export function EditTenderModal({ isOpen, onClose, tender }: EditTenderModalProps) {
   const [isPending, startTransition] = useTransition();
   const [serverError, setServerError] = useState<string | null>(null);
 
@@ -195,8 +198,6 @@ export function EditTenderModal({ isOpen, onClose, tender, clients }: EditTender
     register,
     handleSubmit,
     reset,
-    watch,
-    setValue,
     formState: { errors },
   } = useForm<TenderUpdateInput>({
     resolver: zodResolver(TenderUpdateSchema),
@@ -210,8 +211,6 @@ export function EditTenderModal({ isOpen, onClose, tender, clients }: EditTender
       appCode: tender?.appCode || '',
     },
   });
-
-  const clientId = watch('clientId');
 
   useEffect(() => {
     if (tender && isOpen) {
@@ -228,16 +227,8 @@ export function EditTenderModal({ isOpen, onClose, tender, clients }: EditTender
     }
   }, [tender, isOpen, reset]);
 
-  const hasRecordedPayments = !!tender && ((tender.totalPaid || tender.totalPaidAmount || 0) > 0);
-
   const onSubmit = (data: TenderUpdateInput) => {
     setServerError(null);
-
-    if (hasRecordedPayments && data.clientId !== tender?.clientId) {
-      toast.error('Client cannot be changed because payments have already been recorded.');
-      setServerError('Client cannot be changed because payments have already been recorded.');
-      return;
-    }
 
     startTransition(async () => {
       const payload = {
@@ -262,7 +253,7 @@ export function EditTenderModal({ isOpen, onClose, tender, clients }: EditTender
       isOpen={isOpen}
       onClose={onClose}
       title={`Edit Tender #${tender.tenderId}`}
-      subtitle="Modify tender details. Changing client automatically adjusts ledger balances."
+      subtitle="Modify tender schedule, department, liquid asset, or APP code"
       maxWidth="680px"
     >
       <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
@@ -283,7 +274,7 @@ export function EditTenderModal({ isOpen, onClose, tender, clients }: EditTender
 
         <div className="modal-form-grid-2">
           <Input
-            label="Tender ID (Unique)"
+            label="Tender ID / Ref Number"
             {...register('tenderId')}
             error={errors.tenderId?.message}
           />
@@ -301,32 +292,6 @@ export function EditTenderModal({ isOpen, onClose, tender, clients }: EditTender
             {...register('department')}
             error={errors.department?.message}
           />
-          <div>
-            <Combobox
-              label={hasRecordedPayments ? "Assigned Client (Locked)" : "Assigned Client"}
-              disabled={hasRecordedPayments}
-              placeholder="Search or select client..."
-              searchPlaceholder="Type client name or phone..."
-              value={clientId}
-              onChange={(val) => setValue('clientId', val ? Number(val) : null)}
-              onOpenFetch={fetchClientOptionsAction}
-              error={errors.clientId?.message}
-              helperText={hasRecordedPayments ? `Client locked: Payments (৳${(tender.totalPaid || tender.totalPaidAmount || 0).toLocaleString()}) recorded.` : undefined}
-            />
-          </div>
-        </div>
-
-        <div className="modal-form-grid-2">
-          <Input
-            label="Liquid Assets (৳) (Optional)"
-            type="number"
-            step="any"
-            placeholder="e.g. 20000000 (Defaults to 0 if empty)"
-            {...register('liquidAssetAmount', {
-              setValueAs: (v) => (!v || v === '' || isNaN(Number(v)) ? null : Number(v)),
-            })}
-            error={errors.liquidAssetAmount?.message}
-          />
           <Input
             label="APP Code (Optional)"
             placeholder="e.g. 127023000"
@@ -334,6 +299,19 @@ export function EditTenderModal({ isOpen, onClose, tender, clients }: EditTender
               setValueAs: (v) => (!v ? '' : v),
             })}
             error={errors.appCode?.message}
+          />
+        </div>
+
+        <div className="modal-form-grid-2">
+          <Input
+            label="Liquid Assets (৳) (Optional)"
+            type="number"
+            step="any"
+            placeholder="e.g. 20000000"
+            {...register('liquidAssetAmount', {
+              setValueAs: (v) => (!v || v === '' || isNaN(Number(v)) ? null : Number(v)),
+            })}
+            error={errors.liquidAssetAmount?.message}
           />
         </div>
 
@@ -351,18 +329,130 @@ export function EditTenderModal({ isOpen, onClose, tender, clients }: EditTender
 }
 
 // -------------------------------------------------------------
-// 3. ADD TENDERER MODAL (Step 2: Add tenderer with unchecked defaults)
+// 3. ADD CLIENT TO TENDER MODAL (Multiple Clients per Tender)
+// -------------------------------------------------------------
+interface AddClientToTenderModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  tender: TenderDto | null;
+}
+
+export function AddClientToTenderModal({ isOpen, onClose, tender }: AddClientToTenderModalProps) {
+  const [isPending, startTransition] = useTransition();
+  const [serverError, setServerError] = useState<string | null>(null);
+
+  const {
+    handleSubmit,
+    reset,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useForm<TenderClientAddInput>({
+    resolver: zodResolver(TenderClientAddSchema),
+    defaultValues: {
+      tenderId: tender?.id || 0,
+      clientId: 0,
+    },
+  });
+
+  const clientId = watch('clientId');
+
+  useEffect(() => {
+    if (tender && isOpen) {
+      reset({
+        tenderId: tender.id,
+        clientId: 0,
+      });
+      setServerError(null);
+    }
+  }, [tender, isOpen, reset]);
+
+  const fetchAvailableClients = async () => {
+    const all = await fetchClientOptionsAction();
+    const assignedIds = (tender?.clients || []).map((c) => c.clientId);
+    return all.filter((c) => !assignedIds.includes(Number(c.value)));
+  };
+
+  const onSubmit = (data: TenderClientAddInput) => {
+    setServerError(null);
+
+    startTransition(async () => {
+      const res = await addClientToTenderAction(data);
+      if (res.success) {
+        toast.success(res.message || 'Client added to tender successfully.');
+        onClose();
+      } else {
+        toast.error(res.message || 'Failed to add client.');
+        setServerError(res.message);
+      }
+    });
+  };
+
+  if (!tender) return null;
+
+  return (
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={`Add Client to Tender #${tender.tenderId}`}
+      subtitle="Select a client to participate in this tender"
+      maxWidth="540px"
+    >
+      <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+        {serverError && (
+          <div
+            style={{
+              padding: '0.65rem 0.85rem',
+              backgroundColor: 'var(--danger-bg, #FFF1F2)',
+              border: '1px solid var(--danger-border, #FECDD3)',
+              borderRadius: '8px',
+              color: 'var(--danger, #BE123C)',
+              fontSize: '0.825rem',
+            }}
+          >
+            {serverError}
+          </div>
+        )}
+
+        <Combobox
+          label="Select Client *"
+          placeholder="Search and select client..."
+          searchPlaceholder="Type client name or phone..."
+          value={clientId || null}
+          onChange={(val) => setValue('clientId', Number(val))}
+          onOpenFetch={fetchAvailableClients}
+          error={errors.clientId?.message}
+        />
+
+        <div className="modal-form-actions">
+          <Button type="button" variant="secondary" onClick={onClose} disabled={isPending}>
+            Cancel
+          </Button>
+          <Button type="submit" variant="primary" isLoading={isPending} disabled={!clientId}>
+            Assign Client
+          </Button>
+        </div>
+      </form>
+    </Modal>
+  );
+}
+
+// -------------------------------------------------------------
+// 4. ADD TENDERER MODAL (Multiple Licenses per Client)
 // -------------------------------------------------------------
 interface AddTendererModalProps {
   isOpen: boolean;
   onClose: () => void;
   tender: TenderDto | null;
+  defaultClientId?: number | null;
   tenderers?: TendererDto[];
 }
 
-export function AddTendererModal({ isOpen, onClose, tender }: AddTendererModalProps) {
+export function AddTendererModal({ isOpen, onClose, tender, defaultClientId }: AddTendererModalProps) {
   const [isPending, startTransition] = useTransition();
   const [serverError, setServerError] = useState<string | null>(null);
+
+  const initialClientId = defaultClientId || tender?.clients?.[0]?.clientId || (tender?.clientId ?? 0);
 
   const {
     register,
@@ -375,6 +465,7 @@ export function AddTendererModal({ isOpen, onClose, tender }: AddTendererModalPr
     resolver: zodResolver(TendererAddToTenderSchema),
     defaultValues: {
       tenderId: tender?.id || 0,
+      clientId: initialClientId,
       tendererId: 0,
       mailId: '',
       chargeAmount: 2000,
@@ -390,6 +481,7 @@ export function AddTendererModal({ isOpen, onClose, tender }: AddTendererModalPr
     },
   });
 
+  const clientId = watch('clientId');
   const tendererId = watch('tendererId');
 
   const fetchAvailableTenderers = async () => {
@@ -400,8 +492,10 @@ export function AddTendererModal({ isOpen, onClose, tender }: AddTendererModalPr
 
   useEffect(() => {
     if (tender && isOpen) {
+      const cId = defaultClientId || tender.clients?.[0]?.clientId || (tender.clientId ?? 0);
       reset({
         tenderId: tender.id,
+        clientId: cId,
         tendererId: 0,
         mailId: '',
         chargeAmount: 2000,
@@ -417,7 +511,7 @@ export function AddTendererModal({ isOpen, onClose, tender }: AddTendererModalPr
       });
       setServerError(null);
     }
-  }, [tender, isOpen, reset]);
+  }, [tender, defaultClientId, isOpen, reset]);
 
   const onSubmit = (data: TendererAddToTenderInput) => {
     setServerError(null);
@@ -425,7 +519,7 @@ export function AddTendererModal({ isOpen, onClose, tender }: AddTendererModalPr
     startTransition(async () => {
       const res = await addTendererToTenderAction(data);
       if (res.success) {
-        toast.success(res.message || 'License added to tender successfully.');
+        toast.success(res.message || 'License added to client successfully.');
         onClose();
       } else {
         toast.error(res.message || 'Failed to add license.');
@@ -436,12 +530,18 @@ export function AddTendererModal({ isOpen, onClose, tender }: AddTendererModalPr
 
   if (!tender) return null;
 
+  const clientOptions = (tender.clients || []).map((c) => ({
+    value: c.clientId,
+    label: c.clientName,
+    subLabel: c.phone ? `Phone: ${c.phone}` : undefined,
+  }));
+
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={`Add eGP License to Tender #${tender.tenderId}`}
-      subtitle="Search and select a license. All checklist checkboxes start unchecked by default."
+      title={`Add eGP License | Tender #${tender.tenderId}`}
+      subtitle="Select the participating client and assign an eGP license"
       maxWidth="680px"
     >
       <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
@@ -461,80 +561,117 @@ export function AddTendererModal({ isOpen, onClose, tender }: AddTendererModalPr
         )}
 
         <div className="modal-form-grid-2">
+          {clientOptions.length > 1 ? (
+            <Select
+              label="Assigned Client *"
+              value={clientId ? String(clientId) : ''}
+              onChange={(e) => setValue('clientId', Number(e.target.value))}
+              error={errors.clientId?.message}
+              placeholder="-- Choose Client --"
+              options={clientOptions.map((c) => ({ value: c.value, label: c.label }))}
+            />
+          ) : (
+            <Input
+              label="Assigned Client"
+              disabled
+              value={tender.clients?.[0]?.clientName || tender.clientName || 'Assigned Client'}
+            />
+          )}
+
           <Combobox
-            label="Select eGP License (Searchable)"
-            placeholder="Search or select license..."
-            searchPlaceholder="Type license name or email..."
-            value={tendererId}
-            onChange={(val) => setValue('tendererId', val ? Number(val) : 0)}
+            label="eGP License / Tenderer *"
+            placeholder="Search license..."
+            searchPlaceholder="Type name or username..."
+            value={tendererId || null}
+            onChange={(val) => setValue('tendererId', Number(val))}
             onOpenFetch={fetchAvailableTenderers}
             error={errors.tendererId?.message}
           />
+        </div>
+
+        <div className="modal-form-grid-2">
           <Input
-            label="License Charge (৳)"
+            label="Service Charge (৳) *"
             type="number"
             step="any"
+            placeholder="2000"
             {...register('chargeAmount', { valueAsNumber: true })}
             error={errors.chargeAmount?.message}
           />
-        </div>
-
-        <div>
           <Input
-            label="Less % (Optional)"
-            type="number"
-            step="0.001"
-            placeholder="e.g. 9.272"
-            {...register('lessPercentage', {
-              setValueAs: (v) => (!v || v === '' ? null : Number(v)),
-            })}
-            error={errors.lessPercentage?.message}
+            label="e-GP Mail ID (Optional)"
+            placeholder="e.g. tender@company.com"
+            {...register('mailId')}
+            error={errors.mailId?.message}
           />
         </div>
 
-        {/* Status Checkboxes - ALL UNCHECKED by default */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '0.75rem' }}>
-          <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#94a3b8' }}>
-            Checklist Flags (Unchecked by default):
-          </span>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
-            {[
-              { id: 'liquid1Status', label: 'Liquid 1' },
-              { id: 'liquid2Status', label: 'Liquid 2' },
-              { id: 'liquid3Status', label: 'Liquid 3' },
-              { id: 'jvcaStatus', label: 'JVCA' },
-              { id: 'fillStatus', label: 'Fill' },
-              { id: 'mapStatus', label: 'Map' },
-              { id: 'rateStatus', label: 'Rate' },
-              { id: 'submitStatus', label: 'Submit' },
-            ].map((f) => (
-              <label
-                key={f.id}
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.35rem',
-                  fontSize: '0.8rem',
-                  color: '#0F172A',
-                  cursor: 'pointer',
-                }}
-              >
-                <input
-                  type="checkbox"
-                  {...register(f.id as any)}
-                  style={{ accentColor: '#059669' }}
-                />
-                {f.label}
-              </label>
-            ))}
+        {/* 3 Fixed Liquid Columns */}
+        <div>
+          <label style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--foreground, #1F2937)', marginBottom: '0.5rem', display: 'block' }}>
+            Liquid Verification Status
+          </label>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', backgroundColor: 'var(--surface-subtle, #F8FAFC)', padding: '0.85rem', borderRadius: '8px', border: '1px solid var(--border, #E2E8F0)' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.825rem', cursor: 'pointer', fontWeight: 500 }}>
+              <input type="checkbox" {...register('liquid1Status')} style={{ width: '16px', height: '16px', accentColor: 'var(--primary, #2563EB)' }} />
+              Liquid 1
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.825rem', cursor: 'pointer', fontWeight: 500 }}>
+              <input type="checkbox" {...register('liquid2Status')} style={{ width: '16px', height: '16px', accentColor: 'var(--primary, #2563EB)' }} />
+              Liquid 2
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.825rem', cursor: 'pointer', fontWeight: 500 }}>
+              <input type="checkbox" {...register('liquid3Status')} style={{ width: '16px', height: '16px', accentColor: 'var(--primary, #2563EB)' }} />
+              Liquid 3
+            </label>
           </div>
         </div>
+
+        {/* Task Checklist */}
+        <div>
+          <label style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--foreground, #1F2937)', marginBottom: '0.5rem', display: 'block' }}>
+            Checklist Items
+          </label>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.85rem', backgroundColor: 'var(--surface-subtle, #F8FAFC)', padding: '0.85rem', borderRadius: '8px', border: '1px solid var(--border, #E2E8F0)' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.825rem', cursor: 'pointer', fontWeight: 500 }}>
+              <input type="checkbox" {...register('jvcaStatus')} style={{ width: '16px', height: '16px', accentColor: 'var(--primary, #2563EB)' }} />
+              JVCA
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.825rem', cursor: 'pointer', fontWeight: 500 }}>
+              <input type="checkbox" {...register('fillStatus')} style={{ width: '16px', height: '16px', accentColor: 'var(--primary, #2563EB)' }} />
+              Fill
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.825rem', cursor: 'pointer', fontWeight: 500 }}>
+              <input type="checkbox" {...register('mapStatus')} style={{ width: '16px', height: '16px', accentColor: 'var(--primary, #2563EB)' }} />
+              Map
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.825rem', cursor: 'pointer', fontWeight: 500 }}>
+              <input type="checkbox" {...register('rateStatus')} style={{ width: '16px', height: '16px', accentColor: 'var(--primary, #2563EB)' }} />
+              Rate
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.825rem', cursor: 'pointer', fontWeight: 500 }}>
+              <input type="checkbox" {...register('submitStatus')} style={{ width: '16px', height: '16px', accentColor: 'var(--primary, #2563EB)' }} />
+              Submit
+            </label>
+          </div>
+        </div>
+
+        <Input
+          label="Less Percentage (%) (Optional)"
+          type="number"
+          step="any"
+          placeholder="e.g. 10.5"
+          {...register('lessPercentage', {
+            setValueAs: (v) => (!v || v === '' || isNaN(Number(v)) ? null : Number(v)),
+          })}
+          error={errors.lessPercentage?.message}
+        />
 
         <div className="modal-form-actions">
           <Button type="button" variant="secondary" onClick={onClose} disabled={isPending}>
             Cancel
           </Button>
-          <Button type="submit" variant="primary" isLoading={isPending}>
+          <Button type="submit" variant="primary" isLoading={isPending} disabled={!tendererId}>
             Add License
           </Button>
         </div>
@@ -544,7 +681,7 @@ export function AddTendererModal({ isOpen, onClose, tender }: AddTendererModalPr
 }
 
 // -------------------------------------------------------------
-// 4. EDIT TENDERER MODAL (Modify checkboxes, rate %, charge)
+// 5. EDIT TENDERER MODAL
 // -------------------------------------------------------------
 interface EditTendererModalProps {
   isOpen: boolean;
@@ -567,18 +704,19 @@ export function EditTendererModal({ isOpen, onClose, tenderId, mapping }: EditTe
     defaultValues: {
       tenderId,
       tendererId: mapping?.tendererId || 0,
-      mailId: '',
+      clientId: mapping?.clientId,
+      mailId: mapping?.mailId || '',
       passwordStatus: mapping?.passwordStatus || 'OK',
       chargeAmount: mapping?.chargeAmount || 2000,
       lessPercentage: mapping?.lessPercentage ?? null,
-      liquid1Status: mapping?.liquid1Status ?? false,
-      liquid2Status: mapping?.liquid2Status ?? false,
-      liquid3Status: mapping?.liquid3Status ?? false,
-      jvcaStatus: mapping?.jvcaStatus ?? false,
-      submitStatus: mapping?.submitStatus ?? false,
-      fillStatus: mapping?.fillStatus ?? false,
-      mapStatus: mapping?.mapStatus ?? false,
-      rateStatus: mapping?.rateStatus ?? false,
+      liquid1Status: mapping?.liquid1Status || false,
+      liquid2Status: mapping?.liquid2Status || false,
+      liquid3Status: mapping?.liquid3Status || false,
+      jvcaStatus: mapping?.jvcaStatus || false,
+      submitStatus: mapping?.submitStatus || false,
+      fillStatus: mapping?.fillStatus || false,
+      mapStatus: mapping?.mapStatus || false,
+      rateStatus: mapping?.rateStatus || false,
     },
   });
 
@@ -587,22 +725,23 @@ export function EditTendererModal({ isOpen, onClose, tenderId, mapping }: EditTe
       reset({
         tenderId,
         tendererId: mapping.tendererId,
-        mailId: '',
+        clientId: mapping.clientId,
+        mailId: mapping.mailId || '',
         passwordStatus: mapping.passwordStatus || 'OK',
-        chargeAmount: mapping.chargeAmount || 2000,
-        lessPercentage: mapping.lessPercentage ?? null,
-        liquid1Status: mapping.liquid1Status ?? false,
-        liquid2Status: mapping.liquid2Status ?? false,
-        liquid3Status: mapping.liquid3Status ?? false,
-        jvcaStatus: mapping.jvcaStatus ?? false,
-        submitStatus: mapping.submitStatus ?? false,
-        fillStatus: mapping.fillStatus ?? false,
-        mapStatus: mapping.mapStatus ?? false,
-        rateStatus: mapping.rateStatus ?? false,
+        chargeAmount: mapping.chargeAmount,
+        lessPercentage: mapping.lessPercentage,
+        liquid1Status: !!mapping.liquid1Status,
+        liquid2Status: !!mapping.liquid2Status,
+        liquid3Status: !!mapping.liquid3Status,
+        jvcaStatus: !!mapping.jvcaStatus,
+        submitStatus: !!mapping.submitStatus,
+        fillStatus: !!mapping.fillStatus,
+        mapStatus: !!mapping.mapStatus,
+        rateStatus: !!mapping.rateStatus,
       });
       setServerError(null);
     }
-  }, [mapping, isOpen, tenderId, reset]);
+  }, [mapping, tenderId, isOpen, reset]);
 
   const onSubmit = (data: TendererMappingUpdateInput) => {
     setServerError(null);
@@ -625,8 +764,8 @@ export function EditTendererModal({ isOpen, onClose, tenderId, mapping }: EditTe
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={`Edit License Settings for ${mapping.tendererName}`}
-      subtitle={`Username: ${mapping.username} | Password: ${mapping.password || '—'}`}
+      title={`Edit License: ${mapping.tendererName}`}
+      subtitle={`Username: ${mapping.username}${mapping.clientName ? ` | Client: ${mapping.clientName}` : ''}`}
       maxWidth="680px"
     >
       <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
@@ -647,66 +786,86 @@ export function EditTendererModal({ isOpen, onClose, tenderId, mapping }: EditTe
 
         <div className="modal-form-grid-2">
           <Input
-            label="Charge (৳) - Adjusts client balance automatically"
+            label="Service Charge (৳) *"
             type="number"
             step="any"
             {...register('chargeAmount', { valueAsNumber: true })}
             error={errors.chargeAmount?.message}
           />
           <Input
-            label="Less %"
+            label="Password Status Override"
+            placeholder="OK / NA / Custom note"
+            {...register('passwordStatus')}
+            error={errors.passwordStatus?.message}
+          />
+        </div>
+
+        <div className="modal-form-grid-2">
+          <Input
+            label="e-GP Mail ID"
+            placeholder="e.g. tender@company.com"
+            {...register('mailId')}
+            error={errors.mailId?.message}
+          />
+          <Input
+            label="Less Percentage (%)"
             type="number"
-            step="0.001"
-            placeholder="e.g. 9.272"
+            step="any"
+            placeholder="e.g. 10.5"
             {...register('lessPercentage', {
-              setValueAs: (v) => (!v || v === '' ? null : Number(v)),
+              setValueAs: (v) => (!v || v === '' || isNaN(Number(v)) ? null : Number(v)),
             })}
             error={errors.lessPercentage?.message}
           />
         </div>
 
-        <Input
-          label="Password Status (or Custom Text)"
-          placeholder="OK"
-          {...register('passwordStatus')}
-          error={errors.passwordStatus?.message}
-        />
+        {/* 3 Fixed Liquid Columns */}
+        <div>
+          <label style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--foreground, #1F2937)', marginBottom: '0.5rem', display: 'block' }}>
+            Liquid Verification Status
+          </label>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', backgroundColor: 'var(--surface-subtle, #F8FAFC)', padding: '0.85rem', borderRadius: '8px', border: '1px solid var(--border, #E2E8F0)' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.825rem', cursor: 'pointer', fontWeight: 500 }}>
+              <input type="checkbox" {...register('liquid1Status')} style={{ width: '16px', height: '16px', accentColor: 'var(--primary, #2563EB)' }} />
+              Liquid 1
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.825rem', cursor: 'pointer', fontWeight: 500 }}>
+              <input type="checkbox" {...register('liquid2Status')} style={{ width: '16px', height: '16px', accentColor: 'var(--primary, #2563EB)' }} />
+              Liquid 2
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.825rem', cursor: 'pointer', fontWeight: 500 }}>
+              <input type="checkbox" {...register('liquid3Status')} style={{ width: '16px', height: '16px', accentColor: 'var(--primary, #2563EB)' }} />
+              Liquid 3
+            </label>
+          </div>
+        </div>
 
-        {/* Checkbox toggles */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '0.75rem' }}>
-          <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#94a3b8' }}>
-            Checklist Flags (Tick or Untick):
-          </span>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
-            {[
-              { id: 'liquid1Status', label: 'Liquid 1' },
-              { id: 'liquid2Status', label: 'Liquid 2' },
-              { id: 'liquid3Status', label: 'Liquid 3' },
-              { id: 'jvcaStatus', label: 'JVCA' },
-              { id: 'fillStatus', label: 'Fill' },
-              { id: 'mapStatus', label: 'Map' },
-              { id: 'rateStatus', label: 'Rate' },
-              { id: 'submitStatus', label: 'Submit' },
-            ].map((f) => (
-              <label
-                key={f.id}
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.35rem',
-                  fontSize: '0.8rem',
-                  color: '#0F172A',
-                  cursor: 'pointer',
-                }}
-              >
-                <input
-                  type="checkbox"
-                  {...register(f.id as any)}
-                  style={{ accentColor: '#059669' }}
-                />
-                {f.label}
-              </label>
-            ))}
+        {/* Task Checklist */}
+        <div>
+          <label style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--foreground, #1F2937)', marginBottom: '0.5rem', display: 'block' }}>
+            Checklist Status
+          </label>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.85rem', backgroundColor: 'var(--surface-subtle, #F8FAFC)', padding: '0.85rem', borderRadius: '8px', border: '1px solid var(--border, #E2E8F0)' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.825rem', cursor: 'pointer', fontWeight: 500 }}>
+              <input type="checkbox" {...register('jvcaStatus')} style={{ width: '16px', height: '16px', accentColor: 'var(--primary, #2563EB)' }} />
+              JVCA
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.825rem', cursor: 'pointer', fontWeight: 500 }}>
+              <input type="checkbox" {...register('fillStatus')} style={{ width: '16px', height: '16px', accentColor: 'var(--primary, #2563EB)' }} />
+              Fill
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.825rem', cursor: 'pointer', fontWeight: 500 }}>
+              <input type="checkbox" {...register('mapStatus')} style={{ width: '16px', height: '16px', accentColor: 'var(--primary, #2563EB)' }} />
+              Map
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.825rem', cursor: 'pointer', fontWeight: 500 }}>
+              <input type="checkbox" {...register('rateStatus')} style={{ width: '16px', height: '16px', accentColor: 'var(--primary, #2563EB)' }} />
+              Rate
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.825rem', cursor: 'pointer', fontWeight: 500 }}>
+              <input type="checkbox" {...register('submitStatus')} style={{ width: '16px', height: '16px', accentColor: 'var(--primary, #2563EB)' }} />
+              Submit
+            </label>
           </div>
         </div>
 
@@ -715,7 +874,7 @@ export function EditTendererModal({ isOpen, onClose, tenderId, mapping }: EditTe
             Cancel
           </Button>
           <Button type="submit" variant="primary" isLoading={isPending}>
-            Save License Settings
+            Update License
           </Button>
         </div>
       </form>
@@ -724,16 +883,19 @@ export function EditTendererModal({ isOpen, onClose, tenderId, mapping }: EditTe
 }
 
 // -------------------------------------------------------------
-// 5. RECORD PAYMENT MODAL (Per Tenderer Payment)
+// 6. RECORD PAYMENT MODAL (Client & License Specific Payment)
 // -------------------------------------------------------------
 interface RecordPaymentModalProps {
   isOpen: boolean;
   onClose: () => void;
   tenderId: number;
   tenderRef: string;
+  clientId?: number | null;
+  clientName?: string;
   tendererId?: number | null;
   tendererName?: string;
   dueAmount: number;
+  clients?: { clientId: number; clientName: string }[];
 }
 
 export function RecordPaymentModal({
@@ -741,9 +903,12 @@ export function RecordPaymentModal({
   onClose,
   tenderId,
   tenderRef,
+  clientId,
+  clientName,
   tendererId,
   tendererName,
   dueAmount,
+  clients,
 }: RecordPaymentModalProps) {
   const [isPending, startTransition] = useTransition();
   const [serverError, setServerError] = useState<string | null>(null);
@@ -752,15 +917,20 @@ export function RecordPaymentModal({
   const now = new Date();
   const today = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
 
+  const defaultClient = clientId || clients?.[0]?.clientId || 0;
+
   const {
     register,
     handleSubmit,
     reset,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm<TenderPaymentCreateInput>({
     resolver: zodResolver(TenderPaymentCreateSchema),
     defaultValues: {
       tenderId,
+      clientId: defaultClient,
       tendererId: tendererId || null,
       amountPaid: dueAmount > 0 ? dueAmount : 2000,
       paymentDateUtc: today,
@@ -769,10 +939,14 @@ export function RecordPaymentModal({
     },
   });
 
+  const selectedClientId = watch('clientId');
+
   useEffect(() => {
     if (isOpen) {
+      const cId = clientId || clients?.[0]?.clientId || 0;
       reset({
         tenderId,
+        clientId: cId,
         tendererId: tendererId || null,
         amountPaid: dueAmount > 0 ? dueAmount : 2000,
         paymentDateUtc: today,
@@ -781,7 +955,7 @@ export function RecordPaymentModal({
       });
       setServerError(null);
     }
-  }, [isOpen, tenderId, tendererId, dueAmount, reset, today]);
+  }, [isOpen, tenderId, clientId, tendererId, dueAmount, reset, today, clients]);
 
   const onSubmit = (data: TenderPaymentCreateInput) => {
     setServerError(null);
@@ -806,8 +980,8 @@ export function RecordPaymentModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Record License Payment"
-      subtitle={`Tender #${tenderRef}${tendererName ? ` | License: ${tendererName}` : ''}`}
+      title="Record Payment"
+      subtitle={`Tender #${tenderRef}${clientName ? ` | Client: ${clientName}` : ''}${tendererName ? ` (${tendererName})` : ''}`}
     >
       <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         {serverError && (
@@ -825,6 +999,17 @@ export function RecordPaymentModal({
           </div>
         )}
 
+        {clients && clients.length > 1 && !clientId && (
+          <Select
+            label="Select Client *"
+            value={selectedClientId ? String(selectedClientId) : ''}
+            onChange={(e) => setValue('clientId', Number(e.target.value))}
+            error={errors.clientId?.message}
+            placeholder="-- Choose Client --"
+            options={clients.map((c) => ({ value: c.clientId, label: c.clientName }))}
+          />
+        )}
+
         <div
           style={{
             padding: '0.85rem 1rem',
@@ -837,51 +1022,54 @@ export function RecordPaymentModal({
           }}
         >
           <span style={{ fontSize: '0.875rem', color: 'var(--muted-foreground, #64748B)', fontWeight: 500 }}>
-            Outstanding Due for License:
+            Outstanding Due:
           </span>
           <MoneyDisplay amount={dueAmount} type="due" size="lg" />
         </div>
 
         <div className="modal-form-grid-2">
           <Input
-            label="Payment Amount (৳)"
+            label="Payment Amount (৳) *"
             type="number"
             step="any"
             {...register('amountPaid', { valueAsNumber: true })}
             error={errors.amountPaid?.message}
           />
-          <Select
-            label="Payment Method"
-            options={[
-              { value: 'Cash', label: 'Cash (নগদ)' },
-              { value: 'Bank Transfer', label: 'Bank Transfer' },
-              { value: 'bKash/Nagad', label: 'bKash / Nagad' },
-              { value: 'Cheque', label: 'Cheque' },
-            ]}
-            {...register('paymentMethod')}
-            error={errors.paymentMethod?.message}
+          <Input
+            label="Payment Date *"
+            type="date"
+            {...register('paymentDateUtc')}
+            error={errors.paymentDateUtc?.message}
           />
         </div>
 
-        <Input
-          label="Payment Date"
-          type="date"
-          {...register('paymentDateUtc')}
-          error={errors.paymentDateUtc?.message}
-        />
-
-        <Input
-          label="Remarks"
-          placeholder="e.g. Paid in full"
-          {...register('remarks')}
-          error={errors.remarks?.message}
-        />
+        <div className="modal-form-grid-2">
+          <Select
+            label="Payment Method *"
+            {...register('paymentMethod')}
+            error={errors.paymentMethod?.message}
+            options={[
+              { value: 'Cash', label: 'Cash' },
+              { value: 'bKash', label: 'bKash' },
+              { value: 'Nagad', label: 'Nagad' },
+              { value: 'Rocket', label: 'Rocket' },
+              { value: 'Bank Transfer', label: 'Bank Transfer' },
+              { value: 'Cheque', label: 'Cheque' },
+            ]}
+          />
+          <Input
+            label="Remarks / Reference Note"
+            placeholder="e.g. TrxID / Chq # / Cash received"
+            {...register('remarks')}
+            error={errors.remarks?.message}
+          />
+        </div>
 
         <div className="modal-form-actions">
           <Button type="button" variant="secondary" onClick={onClose} disabled={isPending}>
             Cancel
           </Button>
-          <Button type="submit" variant="emerald" isLoading={isPending}>
+          <Button type="submit" variant="primary" isLoading={isPending}>
             Confirm Payment
           </Button>
         </div>
@@ -890,4 +1078,4 @@ export function RecordPaymentModal({
   );
 }
 
-export { RecordPaymentModal as TenderPaymentModal };
+export const TenderPaymentModal = RecordPaymentModal;

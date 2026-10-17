@@ -178,6 +178,15 @@ export function createApiClient(customBaseUrl?: string) {
           method: 'PUT',
           body: JSON.stringify(data)
         }),
+      addClient: (id: number, clientId: number) =>
+        request<{ tenderClientId: number; message: string; ok: boolean }>(`/tenders/${id}/clients`, {
+          method: 'POST',
+          body: JSON.stringify({ clientId })
+        }),
+      removeClient: (id: number, clientId: number) =>
+        request<{ message: string; ok: boolean }>(`/tenders/${id}/clients/${clientId}`, {
+          method: 'DELETE'
+        }),
       addPayment: (
         idOrData: number | TenderPaymentCreateInput,
         maybeData?: Omit<TenderPaymentCreateInput, 'tenderId'>

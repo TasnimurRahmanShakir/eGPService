@@ -59,6 +59,8 @@ export interface ClientDetailDto extends ClientDto {
 
 export interface TendererMappingDto {
   tendererId: number;
+  clientId?: number;
+  clientName?: string;
   tendererName: string;
   username: string;
   mailId: string;
@@ -79,6 +81,18 @@ export interface TendererMappingDto {
   dueAmount: number;
 }
 
+export interface TenderClientDto {
+  id: number;
+  tenderId: number;
+  clientId: number;
+  clientName: string;
+  phone?: string | null;
+  totalChargeAmount: number;
+  totalPaidAmount: number;
+  totalDueAmount: number;
+  tenderers: TendererMappingDto[];
+}
+
 export interface TenderDto {
   id: number;
   clientId: number | null;
@@ -95,19 +109,24 @@ export interface TenderDto {
   totalPaid: number;
   dueAmount: number;
   createdAtUtc: string;
+  clients?: TenderClientDto[];
   tenderers: TendererMappingDto[];
 }
 
 export interface TenderPaymentDto {
   id: number;
+  clientId: number;
+  clientName?: string;
   amountPaid: number;
   paymentDateUtc: string;
   paymentMethod: string;
   remarks: string;
   tendererId?: number | null;
+  tendererName?: string;
 }
 
 export interface TenderDetailDto extends TenderDto {
+  clients?: TenderClientDto[];
   tenderers: TendererMappingDto[];
   payments: TenderPaymentDto[];
 }

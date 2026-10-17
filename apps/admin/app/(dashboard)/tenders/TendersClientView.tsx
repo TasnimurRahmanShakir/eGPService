@@ -8,12 +8,13 @@ import { toast } from 'sonner';
 import {
   CreateTenderModal,
   EditTenderModal,
+  AddClientToTenderModal,
   AddTendererModal,
   EditTendererModal,
   RecordPaymentModal,
 } from '@/components/tenders/TenderModals';
 import { TenderExcelMatrix } from '@/components/tenders/TenderExcelMatrix';
-import { removeTendererAction } from '@/app/actions/tenderActions';
+import { removeTendererAction, removeClientFromTenderAction } from '@/app/actions/tenderActions';
 
 export function TendersClientView({
   initialTenders,
@@ -27,13 +28,19 @@ export function TendersClientView({
   const [search, setSearch] = useState('');
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [editingTender, setEditingTender] = useState<TenderDto | null>(null);
-  const [addingTendererFor, setAddingTendererFor] = useState<TenderDto | null>(null);
+  const [addingClientFor, setAddingClientFor] = useState<TenderDto | null>(null);
+  const [addingTendererFor, setAddingTendererFor] = useState<{
+    tender: TenderDto;
+    clientId?: number;
+  } | null>(null);
   const [editingTenderer, setEditingTenderer] = useState<{
     tenderId: number;
     mapping: TendererMappingDto;
   } | null>(null);
   const [paymentData, setPaymentData] = useState<{
     tender: TenderDto;
+    clientId?: number;
+    clientName?: string;
     tendererId?: number;
     tendererName?: string;
     dueAmount: number;
@@ -43,9 +50,32 @@ export function TendersClientView({
 
   const [optimisticTenders] = useOptimistic(
     initialTenders,
-    (state, update: { tenderId: number; tendererId?: number; amountPaid: number }) =>
+    (state, update: { tenderId: number; clientId?: number; tendererId?: number; amountPaid: number }) =>
       state.map((t) => {
         if (t.id !== update.tenderId) return t;
+
+        const updatedClients = (t.clients || []).map((c) => {
+          if (update.clientId && c.clientId === update.clientId) {
+            const updatedClientTenderers = (c.tenderers || []).map((m) => {
+              if (update.tendererId && m.tendererId === update.tendererId) {
+                return {
+                  ...m,
+                  totalPaid: m.totalPaid + update.amountPaid,
+                  dueAmount: Math.max(0, m.dueAmount - update.amountPaid),
+                };
+              }
+              return m;
+            });
+
+            return {
+              ...c,
+              totalPaidAmount: c.totalPaidAmount + update.amountPaid,
+              totalDueAmount: Math.max(0, c.totalDueAmount - update.amountPaid),
+              tenderers: updatedClientTenderers,
+            };
+          }
+          return c;
+        });
 
         const updatedTenderers = (t.tenderers || []).map((m) => {
           if (update.tendererId && m.tendererId === update.tendererId) {
@@ -62,6 +92,7 @@ export function TendersClientView({
           ...t,
           totalPaid: t.totalPaid + update.amountPaid,
           dueAmount: Math.max(0, t.dueAmount - update.amountPaid),
+          clients: updatedClients,
           tenderers: updatedTenderers,
         };
       })
@@ -78,13 +109,17 @@ export function TendersClientView({
         (t.department || '').toLowerCase().includes(q) ||
         (t.appCode || '').toLowerCase().includes(q);
 
+      const matchClients = (t.clients || []).some((c) =>
+        (c.clientName || '').toLowerCase().includes(q)
+      );
+
       const matchTenderer = (t.tenderers || []).some(
         (m) =>
           (m.tendererName || '').toLowerCase().includes(q) ||
           (m.username || '').toLowerCase().includes(q)
       );
 
-      return matchTender || matchTenderer;
+      return matchTender || matchClients || matchTenderer;
     });
   }, [optimisticTenders, search]);
 
@@ -92,16 +127,56 @@ export function TendersClientView({
   const totalPaid = optimisticTenders.reduce((sum, t) => sum + t.totalPaid, 0);
   const totalDue = optimisticTenders.reduce((sum, t) => sum + t.dueAmount, 0);
 
-  const handleOpenPayment = (tender: TenderDto, tendererId?: number, specificDue?: number, tendererName?: string) => {
+  const handleOpenPayment = (
+    tender: TenderDto,
+    clientId?: number,
+    tendererId?: number,
+    specificDue?: number,
+    tendererName?: string,
+    clientName?: string
+  ) => {
     setPaymentData({
       tender,
+      clientId,
+      clientName,
       tendererId,
       tendererName,
       dueAmount: specificDue !== undefined ? specificDue : tender.dueAmount,
     });
   };
 
-  const handleRemoveTenderer = (tenderId: number, tendererId: number, tendererName: string) => {
+  const handleRemoveClient = (tenderId: number, clientId: number, clientName: string) => {
+    const targetTender = optimisticTenders.find((t) => t.id === tenderId);
+    const client = targetTender?.clients?.find((c) => c.clientId === clientId);
+    if (client && client.totalPaidAmount > 0) {
+      toast.error(`Cannot remove client "${clientName}" because payments (৳${client.totalPaidAmount.toLocaleString()}) have already been recorded.`);
+      return;
+    }
+
+    if (
+      !window.confirm(
+        `Are you sure you want to remove client "${clientName}" from this tender? Any uncollected license charges will be reversed from the client ledger.`
+      )
+    ) {
+      return;
+    }
+
+    startTransition(async () => {
+      const res = await removeClientFromTenderAction(tenderId, clientId);
+      if (res.success) {
+        toast.success(res.message || 'Client removed successfully.');
+      } else {
+        toast.error(res.message || 'Failed to remove client.');
+      }
+    });
+  };
+
+  const handleRemoveTenderer = (
+    tenderId: number,
+    tendererId: number,
+    tendererName: string,
+    clientId?: number
+  ) => {
     const targetTender = optimisticTenders.find((t) => t.id === tenderId);
     const mapping = targetTender?.tenderers?.find((m) => m.tendererId === tendererId);
     if (mapping && (mapping.totalPaid > 0 || mapping.chargeAmount !== mapping.dueAmount)) {
@@ -118,7 +193,7 @@ export function TendersClientView({
     }
 
     startTransition(async () => {
-      const res = await removeTendererAction(tenderId, tendererId);
+      const res = await removeTendererAction(tenderId, tendererId, clientId);
       if (res.success) {
         toast.success(res.message || 'License removed successfully.');
       } else {
@@ -199,40 +274,21 @@ export function TendersClientView({
             <MoneyDisplay amount={totalDue} type="due" size="lg" />
           </div>
           <div style={{ fontSize: '0.75rem', color: 'var(--danger, #BE123C)', marginTop: '0.25rem', fontWeight: 500 }}>
-            Remaining amount
+            Receivable balance
           </div>
         </div>
       </div>
 
-      {/* Control bar: Search + Action */}
+      {/* Control Bar: Search & Action Buttons */}
       <div className="tenders-control-bar">
-        <div className="tenders-control-search" style={{ position: 'relative', minWidth: '260px', flex: '1', maxWidth: '480px' }}>
-          <Search
-            size={16}
-            style={{
-              position: 'absolute',
-              left: '0.85rem',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              color: 'var(--muted-foreground, #64748B)',
-            }}
-          />
+        <div className="tenders-search-container">
+          <Search size={18} className="search-icon" />
           <input
             type="text"
-            placeholder="Search tenders by ID, Client, License (KB, BA), Department..."
+            placeholder="Search tenders by Ref ID, Client name, Department, or License..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            style={{
-              width: '100%',
-              padding: '0.65rem 0.85rem 0.65rem 2.4rem',
-              backgroundColor: 'var(--input-bg, #FFFFFF)',
-              border: '1px solid var(--input-border, #CBD5E1)',
-              borderRadius: 'var(--radius-control, 8px)',
-              color: 'var(--foreground, #1F2937)',
-              fontSize: '0.875rem',
-              outline: 'none',
-            }}
-            className="egp-input"
+            className="search-input"
           />
         </div>
 
@@ -250,12 +306,14 @@ export function TendersClientView({
         <span>⇄ Swipe horizontally to inspect all spreadsheet matrix columns</span>
       </div>
 
-      {/* Read-Only Excel Spreadsheet Matrix Table (Separated from form logic) */}
+      {/* Read-Only Excel Spreadsheet Matrix Table with Multiple Clients & Licenses */}
       <TenderExcelMatrix
         tenders={filtered}
         onRecordPayment={handleOpenPayment}
         onEditTender={(t) => setEditingTender(t)}
-        onAddTenderer={(t) => setAddingTendererFor(t)}
+        onAddClient={(t) => setAddingClientFor(t)}
+        onRemoveClient={handleRemoveClient}
+        onAddTenderer={(t, clientId) => setAddingTendererFor({ tender: t, clientId })}
         onEditTenderer={(tenderId, mapping) => setEditingTenderer({ tenderId, mapping })}
         onRemoveTenderer={handleRemoveTenderer}
       />
@@ -272,10 +330,17 @@ export function TendersClientView({
         tender={editingTender}
       />
 
+      <AddClientToTenderModal
+        isOpen={!!addingClientFor}
+        onClose={() => setAddingClientFor(null)}
+        tender={addingClientFor}
+      />
+
       <AddTendererModal
         isOpen={!!addingTendererFor}
         onClose={() => setAddingTendererFor(null)}
-        tender={addingTendererFor}
+        tender={addingTendererFor?.tender ?? null}
+        defaultClientId={addingTendererFor?.clientId}
       />
 
       {editingTenderer && (
@@ -293,9 +358,15 @@ export function TendersClientView({
           onClose={() => setPaymentData(null)}
           tenderId={paymentData.tender.id}
           tenderRef={paymentData.tender.tenderId}
+          clientId={paymentData.clientId}
+          clientName={paymentData.clientName}
           tendererId={paymentData.tendererId}
           tendererName={paymentData.tendererName}
           dueAmount={paymentData.dueAmount}
+          clients={paymentData.tender.clients?.map((c) => ({
+            clientId: c.clientId,
+            clientName: c.clientName,
+          }))}
         />
       )}
     </div>

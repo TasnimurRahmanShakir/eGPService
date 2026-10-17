@@ -5,6 +5,7 @@ import { apiClient } from '@egp/api-client';
 import {
   TenderCreateSchema,
   TenderUpdateSchema,
+  TenderClientAddSchema,
   TendererAddToTenderSchema,
   TendererMappingUpdateSchema,
   TenderPaymentCreateSchema,
@@ -73,6 +74,53 @@ export async function updateTenderAction(formData: unknown): Promise<ActionResul
   }
 }
 
+export async function addClientToTenderAction(formData: unknown): Promise<ActionResult> {
+  const result = TenderClientAddSchema.safeParse(formData);
+  if (!result.success) {
+    const errors: Record<string, string[]> = {};
+    result.error.errors.forEach((err) => {
+      const field = err.path.join('.');
+      if (!errors[field]) errors[field] = [];
+      errors[field].push(err.message);
+    });
+    return { success: false, message: 'Validation failed', errors };
+  }
+
+  try {
+    const res = await apiClient.tenders.addClient(result.data.tenderId, result.data.clientId);
+    revalidateTag('tenders');
+    revalidateTag('clients');
+    revalidatePath('/tenders');
+    revalidatePath('/clients');
+    revalidatePath('/');
+    return { success: true, message: res.message || 'Client added to tender successfully' };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: formatErrorMessage(error, 'Failed to add client to tender'),
+      errors: error.problemDetails?.errors
+    };
+  }
+}
+
+export async function removeClientFromTenderAction(tenderId: number, clientId: number): Promise<ActionResult> {
+  try {
+    const res = await apiClient.tenders.removeClient(tenderId, clientId);
+    revalidateTag('tenders');
+    revalidateTag('clients');
+    revalidatePath('/tenders');
+    revalidatePath('/clients');
+    revalidatePath('/');
+    return { success: true, message: res.message || 'Client removed from tender successfully' };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: formatErrorMessage(error, 'Failed to remove client from tender'),
+      errors: error.problemDetails?.errors
+    };
+  }
+}
+
 export async function addTendererToTenderAction(formData: unknown): Promise<ActionResult> {
   const result = TendererAddToTenderSchema.safeParse(formData);
   if (!result.success) {
@@ -131,7 +179,7 @@ export async function updateTendererAction(formData: unknown): Promise<ActionRes
   }
 }
 
-export async function removeTendererAction(tenderId: number, tendererId: number): Promise<ActionResult> {
+export async function removeTendererAction(tenderId: number, tendererId: number, clientId?: number): Promise<ActionResult> {
   try {
     const res = await apiClient.tenders.removeTenderer(tenderId, tendererId);
     revalidateTag('tenders');

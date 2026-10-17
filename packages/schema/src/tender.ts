@@ -43,8 +43,14 @@ export const TenderUpdateSchema = z.object({
     .optional(),
 });
 
+export const TenderClientAddSchema = z.object({
+  tenderId: z.number().int().positive(),
+  clientId: z.number().int().positive('Please select a client'),
+});
+
 export const TendererAddToTenderSchema = z.object({
   tenderId: z.number().int().positive(),
+  clientId: z.number().int().positive('Please select a client'),
   tendererId: z.number().int().positive('Please select an eGP tenderer'),
   mailId: z.string().optional().default(''),
   chargeAmount: z.number().min(0, 'Charge must be 0 or positive').default(2000),
@@ -62,6 +68,7 @@ export const TendererAddToTenderSchema = z.object({
 export const TendererMappingUpdateSchema = z.object({
   tenderId: z.number().int().positive(),
   tendererId: z.number().int().positive(),
+  clientId: z.number().int().positive().optional().nullable(),
   mailId: z.string().optional().default(''),
   passwordStatus: z.string().optional().default('OK'),
   chargeAmount: z.number().min(0, 'Charge must be 0 or positive'),
@@ -78,6 +85,7 @@ export const TendererMappingUpdateSchema = z.object({
 
 export const TenderPaymentCreateSchema = z.object({
   tenderId: z.number().int().positive(),
+  clientId: z.number().int().positive('Please select a client'),
   tendererId: z.number().int().positive().optional().nullable(),
   amountPaid: z.number().positive('Payment amount must be greater than 0'),
   paymentDateUtc: z.string().min(1, 'Payment date is required'),
@@ -87,6 +95,7 @@ export const TenderPaymentCreateSchema = z.object({
 
 export type TenderCreateInput = z.infer<typeof TenderCreateSchema>;
 export type TenderUpdateInput = z.infer<typeof TenderUpdateSchema>;
+export type TenderClientAddInput = z.infer<typeof TenderClientAddSchema>;
 export type TendererAddToTenderInput = z.infer<typeof TendererAddToTenderSchema>;
 export type TendererAssignInput = TendererAddToTenderInput;
 export type TendererMappingUpdateInput = z.infer<typeof TendererMappingUpdateSchema>;
