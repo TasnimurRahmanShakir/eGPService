@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useOptimistic, useMemo, useTransition } from 'react';
-import { Plus, Search } from 'lucide-react';
+import { Plus, Search, X } from 'lucide-react';
 import { Button, MoneyDisplay } from '@egp/ui';
 import type { TenderDto, ClientDto, TendererDto, TendererMappingDto } from '@egp/api-client';
 import { toast } from 'sonner';
@@ -290,6 +290,17 @@ export function TendersClientView({
             onChange={(e) => setSearch(e.target.value)}
             className="search-input"
           />
+          {search && (
+            <button
+              type="button"
+              onClick={() => setSearch('')}
+              className="search-clear-btn"
+              title="Clear search"
+              aria-label="Clear search"
+            >
+              <X size={13} />
+            </button>
+          )}
         </div>
 
         <Button
