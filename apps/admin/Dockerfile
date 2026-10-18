@@ -32,7 +32,7 @@ RUN corepack enable && corepack prepare pnpm@11.23.0 --activate
 
 # Step 1: Install dependencies first (layer caching)
 COPY --from=pruner /app/out/json/ .
-RUN pnpm install --frozen-lockfile
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 # Step 2: Copy source code and build
 COPY --from=pruner /app/out/full/ .

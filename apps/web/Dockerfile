@@ -31,12 +31,14 @@ RUN corepack enable && corepack prepare pnpm@11.23.0 --activate
 
 # Step 1: Install dependencies first (layer caching)
 COPY --from=pruner /app/out/json/ .
-RUN pnpm install --frozen-lockfile
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 # Step 2: Copy source code and build
 COPY --from=pruner /app/out/full/ .
 
 # Build web application with Next.js standalone mode
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 ENV NODE_ENV=production
 RUN pnpm turbo run build --filter=web
 

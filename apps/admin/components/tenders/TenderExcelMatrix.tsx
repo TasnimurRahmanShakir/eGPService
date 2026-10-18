@@ -161,9 +161,9 @@ export function TenderExcelMatrix({
                 position: 'sticky',
                 left: 0,
                 zIndex: 35,
-                width: '358px',
-                minWidth: '358px',
-                maxWidth: '358px',
+                width: '378px',
+                minWidth: '378px',
+                maxWidth: '378px',
                 backgroundColor: '#F1F5F9',
                 textAlign: 'center',
                 color: '#475569',
@@ -238,9 +238,9 @@ export function TenderExcelMatrix({
                 position: 'sticky',
                 left: '198px',
                 zIndex: 30,
-                width: '160px',
-                minWidth: '160px',
-                maxWidth: '160px',
+                width: '180px',
+                minWidth: '180px',
+                maxWidth: '180px',
                 backgroundColor: '#F8FAFC',
                 color: '#334155',
                 borderRight: '2px solid #CBD5E1',
@@ -249,8 +249,8 @@ export function TenderExcelMatrix({
             >
               Participating Client
             </th>
-            <th style={{ ...headerCellStyle, minWidth: '130px', backgroundColor: '#F8FAFC', color: '#334155' }}>Closing Date & Time</th>
-            <th style={{ ...headerCellStyle, minWidth: '130px', backgroundColor: '#F8FAFC', color: '#334155' }}>Department</th>
+            <th style={{ ...headerCellStyle, width: '140px', minWidth: '140px', backgroundColor: '#F8FAFC', color: '#334155' }}>Closing Date & Time</th>
+            <th style={{ ...headerCellStyle, width: '140px', minWidth: '140px', backgroundColor: '#F8FAFC', color: '#334155' }}>Department</th>
 
             {/* License specific headers */}
             <th style={{ ...headerCellStyle, minWidth: '160px', backgroundColor: '#F8FAFC', color: '#334155' }}>eGP License</th>
@@ -476,12 +476,13 @@ export function TenderExcelMatrix({
                         rowSpan={clientRowCount}
                         style={{
                           ...cellStyle,
+                          whiteSpace: 'normal',
                           position: 'sticky',
                           left: '198px',
                           zIndex: 20,
-                          width: '160px',
-                          minWidth: '160px',
-                          maxWidth: '160px',
+                          width: '180px',
+                          minWidth: '180px',
+                          maxWidth: '180px',
                           verticalAlign: 'middle',
                           fontWeight: 600,
                           backgroundColor: rowBg,
@@ -495,7 +496,11 @@ export function TenderExcelMatrix({
                               fontSize: '0.825rem',
                               fontWeight: 700,
                               color: cg.clientId > 0 ? '#0F172A' : '#94A3B8',
-                              lineHeight: 1.25,
+                              lineHeight: 1.3,
+                              whiteSpace: 'normal',
+                              wordBreak: 'break-word',
+                              overflowWrap: 'break-word',
+                              display: 'block',
                             }}
                           >
                             {cg.clientName}
@@ -573,6 +578,8 @@ export function TenderExcelMatrix({
                           rowSpan={totalTenderRows}
                           style={{
                             ...cellStyle,
+                            width: '140px',
+                            minWidth: '140px',
                             verticalAlign: 'middle',
                             fontSize: '0.78rem',
                           }}
@@ -590,8 +597,13 @@ export function TenderExcelMatrix({
                           rowSpan={totalTenderRows}
                           style={{
                             ...cellStyle,
+                            width: '140px',
+                            minWidth: '140px',
                             verticalAlign: 'middle',
                             color: '#475569',
+                            whiteSpace: 'normal',
+                            wordBreak: 'break-word',
+                            overflowWrap: 'break-word',
                           }}
                         >
                           {tender.department}
