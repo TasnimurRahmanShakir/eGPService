@@ -4,9 +4,11 @@ import { TendersClientView } from './TendersClientView';
 
 export const dynamic = 'force-dynamic';
 
+const BD_TZ_OFFSET_MINUTES = 360;
+
 async function getInitialClosingIndex(): Promise<TenderClosingIndexDto[]> {
   try {
-    return await apiClient.tenders.getClosingIndex(30, { cache: 'no-store' });
+    return await apiClient.tenders.getClosingIndex(30, BD_TZ_OFFSET_MINUTES, { cache: 'no-store' });
   } catch (err) {
     console.warn('[TendersPage] Failed to load closing index from backend.');
     return [];
@@ -15,7 +17,7 @@ async function getInitialClosingIndex(): Promise<TenderClosingIndexDto[]> {
 
 async function getInitialTenders(dateStr: string): Promise<TenderDto[]> {
   try {
-    return await apiClient.tenders.getAll(undefined, dateStr, { cache: 'no-store' });
+    return await apiClient.tenders.getAll(undefined, dateStr, { cache: 'no-store' }, BD_TZ_OFFSET_MINUTES);
   } catch (err) {
     console.warn('[TendersPage] Backend API is unreachable for date tenders.');
     return [];
@@ -23,8 +25,8 @@ async function getInitialTenders(dateStr: string): Promise<TenderDto[]> {
 }
 
 export default async function TendersPage() {
-  const now = new Date();
-  const todayStr = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().split('T')[0];
+  const bdNow = new Date(Date.now() + BD_TZ_OFFSET_MINUTES * 60 * 1000);
+  const todayStr = bdNow.toISOString().split('T')[0];
 
   // Zero full-pre-fetch: only fetch 30-day lightweight summary (~1.5KB) and today's tenders
   const [closingIndex, initialTenders] = await Promise.all([

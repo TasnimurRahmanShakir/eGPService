@@ -170,7 +170,8 @@ export function createApiClient(customBaseUrl?: string) {
       getAll: (
         clientId?: number,
         closingDateOrOptions?: string | RequestOptions,
-        options?: RequestOptions
+        options?: RequestOptions,
+        utcOffsetMinutes?: number
       ) => {
         let closingDate: string | undefined;
         let opt: RequestOptions | undefined = options;
@@ -181,13 +182,13 @@ export function createApiClient(customBaseUrl?: string) {
         }
         return request<TenderDto[]>('/tenders', {
           ...opt,
-          params: { ...opt?.params, clientId, closingDate }
+          params: { ...opt?.params, clientId, closingDate, utcOffsetMinutes }
         });
       },
-      getClosingIndex: (days: number = 30, options?: RequestOptions) =>
+      getClosingIndex: (days: number = 30, utcOffsetMinutes?: number, options?: RequestOptions) =>
         request<TenderClosingIndexDto[]>('/tenders/closing-index', {
           ...options,
-          params: { ...options?.params, days }
+          params: { ...options?.params, days, utcOffsetMinutes }
         }),
       getById: (id: number, options?: RequestOptions) => request<TenderDetailDto>(`/tenders/${id}`, options),
       create: (data: TenderCreateInput) =>

@@ -104,11 +104,13 @@ export function TendersClientView({
       })
   );
 
+  const getBrowserTzOffset = () => -new Date().getTimezoneOffset();
+
   // On-demand fetch when user clicks a date in the dictionary index
   const handleSelectDate = (date: string | null) => {
     setSelectedDate(date);
     startTransition(async () => {
-      const data = await fetchTendersByDateAction(date ?? undefined);
+      const data = await fetchTendersByDateAction(date ?? undefined, getBrowserTzOffset());
       setTenders(data);
     });
   };
@@ -117,8 +119,8 @@ export function TendersClientView({
   const refreshData = () => {
     startTransition(async () => {
       const [newIndex, newTenders] = await Promise.all([
-        fetchTenderClosingIndexAction(30),
-        fetchTendersByDateAction(selectedDate ?? undefined),
+        fetchTenderClosingIndexAction(30, getBrowserTzOffset()),
+        fetchTendersByDateAction(selectedDate ?? undefined, getBrowserTzOffset()),
       ]);
       setClosingIndex(newIndex);
       setTenders(newTenders);
