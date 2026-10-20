@@ -1,21 +1,13 @@
 'use client';
 
 import React, { useState } from 'react';
-import { CreditCard, Eye, EyeOff, Pencil, Plus, Trash2, UserPlus, Users } from 'lucide-react';
+import { Eye, EyeOff, Pencil, Plus, Trash2, UserPlus, Users } from 'lucide-react';
 import { Button, MoneyDisplay } from '@egp/ui';
 import type { TenderDto, TendererMappingDto, TenderClientDto } from '@egp/api-client';
 import { formatLocalDate, formatLocalTime } from '@/lib/date-utils';
 
 interface TenderExcelMatrixProps {
   tenders: TenderDto[];
-  onRecordPayment: (
-    tender: TenderDto,
-    clientId?: number,
-    tendererId?: number,
-    dueAmount?: number,
-    tendererName?: string,
-    clientName?: string
-  ) => void;
   onEditTender?: (tender: TenderDto) => void;
   onAddClient?: (tender: TenderDto) => void;
   onRemoveClient?: (tenderId: number, clientId: number, clientName: string) => void;
@@ -26,7 +18,6 @@ interface TenderExcelMatrixProps {
 
 export function TenderExcelMatrix({
   tenders,
-  onRecordPayment,
   onEditTender,
   onAddClient,
   onRemoveClient,
@@ -791,24 +782,6 @@ export function TenderExcelMatrix({
                                 <Pencil size={11} /> Edit
                               </button>
                             )}
-
-                            <Button
-                              size="sm"
-                              variant={m.dueAmount > 0 ? 'primary' : 'secondary'}
-                              icon={<CreditCard size={11} />}
-                              onClick={() =>
-                                onRecordPayment(
-                                  tender,
-                                  cg.clientId,
-                                  m.tendererId,
-                                  m.dueAmount,
-                                  m.tendererName,
-                                  cg.clientName
-                                )
-                              }
-                            >
-                              {m.dueAmount > 0 ? 'Pay' : 'Paid'}
-                            </Button>
 
                             {onRemoveTenderer && (() => {
                               const hasPayments = m.totalPaid > 0 || m.chargeAmount !== m.dueAmount;

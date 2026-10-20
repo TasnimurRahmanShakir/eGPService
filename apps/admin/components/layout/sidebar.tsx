@@ -15,6 +15,7 @@ import {
   Menu,
   X,
   LogOut,
+  WalletCards,
 } from 'lucide-react';
 import { setSidebarCookie } from '../../app/actions/sidebarActions';
 import { logoutAction } from '../../app/actions/authActions';
@@ -22,6 +23,7 @@ import { logoutAction } from '../../app/actions/authActions';
 const NAV_ITEMS = [
   { label: 'Overview', href: '/', icon: LayoutDashboard },
   { label: 'Clients', href: '/clients', icon: Users },
+  { label: 'Cash Collection', href: '/cash-collection', icon: WalletCards },
   { label: 'Tenders (Excel)', href: '/tenders', icon: FileSpreadsheet },
   { label: 'e-GP Licenses', href: '/tenderers', icon: KeyRound },
   { label: 'Audit Trail', href: '/audit-logs', icon: History },

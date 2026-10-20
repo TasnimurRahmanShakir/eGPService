@@ -11,7 +11,6 @@ import {
   AddClientToTenderModal,
   AddTendererModal,
   EditTendererModal,
-  RecordPaymentModal,
 } from '@/components/tenders/TenderModals';
 import { TenderExcelMatrix } from '@/components/tenders/TenderExcelMatrix';
 import { TenderDateDictionaryList } from '@/components/tenders/TenderDateDictionaryList';
@@ -50,14 +49,6 @@ export function TendersClientView({
   const [editingTenderer, setEditingTenderer] = useState<{
     tenderId: number;
     mapping: TendererMappingDto;
-  } | null>(null);
-  const [paymentData, setPaymentData] = useState<{
-    tender: TenderDto;
-    clientId?: number;
-    clientName?: string;
-    tendererId?: number;
-    tendererName?: string;
-    dueAmount: number;
   } | null>(null);
 
   const [isPending, startTransition] = useTransition();
@@ -175,23 +166,6 @@ export function TendersClientView({
     });
   }, [selectedDate]);
 
-  const handleOpenPayment = (
-    tender: TenderDto,
-    clientId?: number,
-    tendererId?: number,
-    specificDue?: number,
-    tendererName?: string,
-    clientName?: string
-  ) => {
-    setPaymentData({
-      tender,
-      clientId,
-      clientName,
-      tendererId,
-      tendererName,
-      dueAmount: specificDue !== undefined ? specificDue : tender.dueAmount,
-    });
-  };
 
   const handleRemoveClient = (tenderId: number, clientId: number, clientName: string) => {
     const targetTender = optimisticTenders.find((t) => t.id === tenderId);
@@ -493,7 +467,6 @@ export function TendersClientView({
         ) : (
           <TenderExcelMatrix
             tenders={filtered}
-            onRecordPayment={handleOpenPayment}
             onEditTender={(t) => setEditingTender(t)}
             onAddClient={(t) => setAddingClientFor(t)}
             onRemoveClient={handleRemoveClient}
@@ -552,26 +525,6 @@ export function TendersClientView({
           />
         )}
 
-        {paymentData && (
-          <RecordPaymentModal
-            isOpen={true}
-            onClose={() => {
-              setPaymentData(null);
-              refreshData();
-            }}
-            tenderId={paymentData.tender.id}
-            tenderRef={paymentData.tender.tenderId}
-            clientId={paymentData.clientId}
-            clientName={paymentData.clientName}
-            tendererId={paymentData.tendererId}
-            tendererName={paymentData.tendererName}
-            dueAmount={paymentData.dueAmount}
-            clients={paymentData.tender.clients?.map((c) => ({
-              clientId: c.clientId,
-              clientName: c.clientName,
-            }))}
-          />
-        )}
       </div>
     </div>
   );

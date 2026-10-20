@@ -161,3 +161,38 @@ export interface AuditLogDto {
   timestampUtc: string;
   performedBy: string;
 }
+
+export interface CashCollectionDto {
+  id: number;
+  voucherNo: string;
+  clientId: number;
+  clientName: string;
+  clientPhone?: string | null;
+  totalDueBefore: number;
+  amountCollected: number;
+  discountAmount: number;
+  totalDueAfter: number;
+  paymentMethod: string;
+  trxId?: string | null;
+  senderPhone?: string | null;
+  bankName?: string | null;
+  branchName?: string | null;
+  bankAccountNo?: string | null;
+  chequeNo?: string | null;
+  chequeDate?: string | null;
+  referenceNo?: string | null;
+  remarks: string;
+  collectionDateUtc: string;
+  collectedById: string;
+  collectedByName: string;
+  createdAtUtc: string;
+}
+
+export interface CashCollectionSummaryDto {
+  totalCollectedToday: number;
+  totalCollectedThisMonth: number;
+  totalCollectedAllTime: number;
+  totalMarketDue: number;
+  totalVouchersCount: number;
+}
+

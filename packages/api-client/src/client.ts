@@ -6,7 +6,9 @@ import {
   TenderDetailDto,
   TendererDto,
   AuditLogDto,
-  TenderClosingIndexDto
+  TenderClosingIndexDto,
+  CashCollectionDto,
+  CashCollectionSummaryDto
 } from './types';
 import type {
   ClientCreateInput,
@@ -17,7 +19,8 @@ import type {
   TenderPaymentCreateInput,
   TendererAssignInput,
   TendererCreateInput,
-  TendererUpdateInput
+  TendererUpdateInput,
+  CashCollectionCreateInput
 } from '@egp/schema';
 
 export class ApiError extends Error {
@@ -253,6 +256,31 @@ export function createApiClient(customBaseUrl?: string) {
       update: (id: number, data: TendererUpdateInput) =>
         request<void>(`/tenderers/${id}`, {
           method: 'PUT',
+          body: JSON.stringify(data)
+        })
+    },
+
+    cashCollections: {
+      getAll: (
+        params?: {
+          clientId?: number;
+          fromDate?: string;
+          toDate?: string;
+          search?: string;
+          page?: number;
+          pageSize?: number;
+        },
+        options?: RequestOptions
+      ) =>
+        request<CashCollectionDto[]>('/cashcollections', {
+          ...options,
+          params: { ...options?.params, ...params }
+        }),
+      getSummary: (options?: RequestOptions) =>
+        request<CashCollectionSummaryDto>('/cashcollections/summary', options),
+      create: (data: CashCollectionCreateInput) =>
+        request<{ id: number; message: string; ok: boolean }>('/cashcollections', {
+          method: 'POST',
           body: JSON.stringify(data)
         })
     },
