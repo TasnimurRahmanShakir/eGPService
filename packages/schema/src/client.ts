@@ -12,7 +12,9 @@ export const ClientUpdateSchema = z.object({
   id: z.number().int().positive(),
   name: z.string().min(1, 'Client name is required').max(150),
   phone: z.string().max(50).optional().default(''),
-  email: z.string().email('Invalid email address').or(z.literal('')).optional().default('')
+  email: z.string().email('Invalid email address').or(z.literal('')).optional().default(''),
+  openingBalance: z.number().min(0, 'Opening balance must be 0 or greater').optional(),
+  openingBalanceType: z.number().int().min(0).max(1).optional()
 });
 
 export const ClientSubscriptionCreateSchema = z.object({

@@ -22,6 +22,7 @@ export interface ClientDto {
   solutionValidUptoUtc: string | null;
   createdAtUtc: string;
   createdBy: string;
+  canEditOpeningBalance?: boolean;
 }
 
 export interface SubscriptionDto {
@@ -111,6 +112,14 @@ export interface TenderDto {
   createdAtUtc: string;
   clients?: TenderClientDto[];
   tenderers: TendererMappingDto[];
+}
+
+export interface TenderClosingIndexDto {
+  date: string;
+  dateUtc: string;
+  tenderCount: number;
+  clientCount: number;
+  totalChargeAmount: number;
 }
 
 export interface TenderPaymentDto {

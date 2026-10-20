@@ -5,7 +5,8 @@ import {
   TenderDto,
   TenderDetailDto,
   TendererDto,
-  AuditLogDto
+  AuditLogDto,
+  TenderClosingIndexDto
 } from './types';
 import type {
   ClientCreateInput,
@@ -15,7 +16,8 @@ import type {
   TenderUpdateInput,
   TenderPaymentCreateInput,
   TendererAssignInput,
-  TendererCreateInput
+  TendererCreateInput,
+  TendererUpdateInput
 } from '@egp/schema';
 
 export class ApiError extends Error {
@@ -162,10 +164,27 @@ export function createApiClient(customBaseUrl?: string) {
     },
 
     tenders: {
-      getAll: (clientId?: number, options?: RequestOptions) =>
-        request<TenderDto[]>('/tenders', {
+      getAll: (
+        clientId?: number,
+        closingDateOrOptions?: string | RequestOptions,
+        options?: RequestOptions
+      ) => {
+        let closingDate: string | undefined;
+        let opt: RequestOptions | undefined = options;
+        if (typeof closingDateOrOptions === 'string') {
+          closingDate = closingDateOrOptions;
+        } else if (typeof closingDateOrOptions === 'object') {
+          opt = closingDateOrOptions;
+        }
+        return request<TenderDto[]>('/tenders', {
+          ...opt,
+          params: { ...opt?.params, clientId, closingDate }
+        });
+      },
+      getClosingIndex: (days: number = 30, options?: RequestOptions) =>
+        request<TenderClosingIndexDto[]>('/tenders/closing-index', {
           ...options,
-          params: { ...options?.params, clientId }
+          params: { ...options?.params, days }
         }),
       getById: (id: number, options?: RequestOptions) => request<TenderDetailDto>(`/tenders/${id}`, options),
       create: (data: TenderCreateInput) =>
@@ -229,6 +248,11 @@ export function createApiClient(customBaseUrl?: string) {
       create: (data: TendererCreateInput) =>
         request<number>('/tenderers', {
           method: 'POST',
+          body: JSON.stringify(data)
+        }),
+      update: (id: number, data: TendererUpdateInput) =>
+        request<void>(`/tenderers/${id}`, {
+          method: 'PUT',
           body: JSON.stringify(data)
         })
     },

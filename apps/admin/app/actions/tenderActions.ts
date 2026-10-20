@@ -251,3 +251,22 @@ export async function fetchTendererOptionsAction() {
     return [];
   }
 }
+
+export async function fetchTenderClosingIndexAction(days: number = 30) {
+  try {
+    return await apiClient.tenders.getClosingIndex(days, { cache: 'no-store' });
+  } catch (error) {
+    console.error('Failed to fetch closing index:', error);
+    return [];
+  }
+}
+
+export async function fetchTendersByDateAction(closingDate?: string) {
+  try {
+    return await apiClient.tenders.getAll(undefined, closingDate, { cache: 'no-store' });
+  } catch (error) {
+    console.error(`Failed to fetch tenders for date ${closingDate}:`, error);
+    return [];
+  }
+}
+

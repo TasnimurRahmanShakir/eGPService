@@ -2,7 +2,7 @@
 
 import { revalidatePath, revalidateTag } from 'next/cache';
 import { apiClient } from '@egp/api-client';
-import { ClientCreateSchema, ClientSubscriptionCreateSchema } from '@egp/schema';
+import { ClientCreateSchema, ClientUpdateSchema, ClientSubscriptionCreateSchema } from '@egp/schema';
 import { formatErrorMessage } from '@/lib/format-error';
 
 export interface ActionResult {
@@ -34,6 +34,34 @@ export async function createClientAction(formData: unknown): Promise<ActionResul
     return {
       success: false,
       message: formatErrorMessage(error, 'Failed to create client'),
+      errors: error.problemDetails?.errors
+    };
+  }
+}
+
+export async function updateClientAction(formData: unknown): Promise<ActionResult> {
+  const result = ClientUpdateSchema.safeParse(formData);
+  if (!result.success) {
+    const errors: Record<string, string[]> = {};
+    result.error.errors.forEach((err) => {
+      const field = err.path.join('.');
+      if (!errors[field]) errors[field] = [];
+      errors[field].push(err.message);
+    });
+    return { success: false, message: 'Validation failed', errors };
+  }
+
+  try {
+    await apiClient.clients.update(result.data.id, result.data);
+    revalidateTag('clients');
+    revalidatePath('/clients');
+    revalidatePath('/tenders');
+    revalidatePath('/');
+    return { success: true, message: 'Client updated successfully' };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: formatErrorMessage(error, 'Failed to update client'),
       errors: error.problemDetails?.errors
     };
   }

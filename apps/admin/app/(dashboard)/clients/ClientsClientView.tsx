@@ -1,15 +1,16 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Plus, Sparkles, CheckCircle2, XCircle, AlertCircle, ShieldCheck } from 'lucide-react';
+import { Plus, Sparkles, CheckCircle2, XCircle, AlertCircle, ShieldCheck, Pencil } from 'lucide-react';
 import { Button, Badge, DataTable, MoneyDisplay, type Column } from '@egp/ui';
 import type { ClientDto } from '@egp/api-client';
-import { CreateClientModal, AddSubscriptionModal } from '@/components/clients/ClientModals';
+import { CreateClientModal, EditClientModal, AddSubscriptionModal } from '@/components/clients/ClientModals';
 import { formatLocalDate } from '@/lib/date-utils';
 
 export function ClientsClientView({ initialClients }: { initialClients: ClientDto[] }) {
   const [search, setSearch] = useState('');
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [editingClient, setEditingClient] = useState<ClientDto | null>(null);
   const [selectedSubClient, setSelectedSubClient] = useState<{ id: number; name: string } | null>(null);
 
   const filtered = initialClients.filter((c) =>
@@ -115,14 +116,25 @@ export function ClientsClientView({ initialClients }: { initialClients: ClientDt
       header: 'Actions',
       align: 'right',
       cell: (c) => (
-        <Button
-          size="sm"
-          variant="outline"
-          icon={<Sparkles size={14} />}
-          onClick={() => setSelectedSubClient({ id: c.id, name: c.name })}
-        >
-          {c.hasPurchasedSolution ? 'Renew Solution' : 'Add Solution'}
-        </Button>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
+          <Button
+            size="sm"
+            variant="ghost"
+            icon={<Pencil size={14} />}
+            onClick={() => setEditingClient(c)}
+            title="Edit Client Information"
+          >
+            Edit
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            icon={<Sparkles size={14} />}
+            onClick={() => setSelectedSubClient({ id: c.id, name: c.name })}
+          >
+            {c.hasPurchasedSolution ? 'Renew Solution' : 'Add Solution'}
+          </Button>
+        </div>
       ),
     },
   ];
@@ -178,6 +190,11 @@ export function ClientsClientView({ initialClients }: { initialClients: ClientDt
 
       {/* Modals */}
       <CreateClientModal isOpen={isCreateOpen} onClose={() => setIsCreateOpen(false)} />
+      <EditClientModal
+        isOpen={!!editingClient}
+        onClose={() => setEditingClient(null)}
+        client={editingClient}
+      />
 
       {selectedSubClient && (
         <AddSubscriptionModal

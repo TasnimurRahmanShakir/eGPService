@@ -508,20 +508,6 @@ export function TenderExcelMatrix({
 
                           {cg.clientId > 0 && (
                             <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
-                              <span
-                                style={{
-                                  fontSize: '0.7rem',
-                                  padding: '1px 5px',
-                                  borderRadius: '3px',
-                                  backgroundColor: cg.totalDue > 0 ? '#FEF2F2' : '#F0FDF4',
-                                  color: cg.totalDue > 0 ? '#B91C1C' : '#15803D',
-                                  border: `1px solid ${cg.totalDue > 0 ? '#FECDD3' : '#BBF7D0'}`,
-                                  fontWeight: 700,
-                                }}
-                              >
-                                Due: ৳{cg.totalDue.toLocaleString()}
-                              </span>
-
                               {onAddTenderer && (
                                 <button
                                   type="button"
