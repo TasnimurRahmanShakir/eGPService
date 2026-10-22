@@ -1,16 +1,16 @@
 'use client';
 
 import React, { useState } from 'react';
-import { 
-  Eye, 
-  EyeOff, 
-  Pencil, 
-  Plus, 
-  Trash2, 
-  UserPlus, 
-  Users, 
-  Building2, 
-  Clock, 
+import {
+  Eye,
+  EyeOff,
+  Pencil,
+  Plus,
+  Trash2,
+  UserPlus,
+  Users,
+  Building2,
+  Clock,
   Calendar,
   Layers,
   FileText
@@ -142,8 +142,6 @@ export function TenderExcelMatrix({
           clientName: string;
           phone?: string | null;
           totalCharge: number;
-          totalPaid: number;
-          totalDue: number;
           tenderers: TendererMappingDto[];
         }[] = [];
 
@@ -151,15 +149,11 @@ export function TenderExcelMatrix({
           clientGroups = tender.clients.map((c) => {
             const list = c.tenderers || [];
             const sumCharge = list.reduce((s, x) => s + (x.chargeAmount || 0), 0);
-            const sumPaid = list.reduce((s, x) => s + (x.totalPaid || 0), 0);
-            const sumDue = list.reduce((s, x) => s + (x.dueAmount || 0), 0);
             return {
               clientId: c.clientId,
               clientName: c.clientName,
               phone: c.phone,
               totalCharge: c.totalChargeAmount > 0 ? c.totalChargeAmount : sumCharge,
-              totalPaid: c.totalPaidAmount > 0 ? c.totalPaidAmount : sumPaid,
-              totalDue: c.totalDueAmount > 0 ? c.totalDueAmount : sumDue,
               tenderers: list,
             };
           });
@@ -174,8 +168,6 @@ export function TenderExcelMatrix({
             clientId: cId,
             clientName: list[0]?.clientName || tender.clientName || 'Assigned Client',
             totalCharge: list.reduce((s, x) => s + x.chargeAmount, 0),
-            totalPaid: list.reduce((s, x) => s + x.totalPaid, 0),
-            totalDue: list.reduce((s, x) => s + x.dueAmount, 0),
             tenderers: list,
           }));
         } else if (tender.clientId) {
@@ -185,8 +177,6 @@ export function TenderExcelMatrix({
               clientName: tender.clientName || `Client #${tender.clientId}`,
               phone: null,
               totalCharge: tender.chargeAmount || 0,
-              totalPaid: tender.totalPaid || 0,
-              totalDue: tender.dueAmount || 0,
               tenderers: [],
             },
           ];
@@ -268,7 +258,7 @@ export function TenderExcelMatrix({
                   <span>{tender.department}</span>
                 </div>
 
-                <div
+                {/* <div
                   style={{
                     display: 'inline-flex',
                     alignItems: 'center',
@@ -288,7 +278,7 @@ export function TenderExcelMatrix({
                   <span>
                     Closing: {formatLocalDate(tender.closingDateTimeUtc)} {formatLocalTime(tender.closingDateTimeUtc, { hour: '2-digit', minute: '2-digit' })}
                   </span>
-                </div>
+                </div> */}
 
                 {tender.liquidAssetAmount > 0 && (
                   <div
@@ -522,36 +512,27 @@ export function TenderExcelMatrix({
                           </button>
                         )}
 
-                        {onRemoveClient && cg.clientId > 0 && (() => {
-                          const hasPaid = cg.totalPaid > 0;
-                          return (
-                            <button
-                              type="button"
-                              disabled={hasPaid}
-                              onClick={() => onRemoveClient(tender.id, cg.clientId, cg.clientName)}
-                              title={
-                                hasPaid
-                                  ? 'Cannot remove client with existing payments'
-                                  : 'Remove client from this tender'
-                              }
-                              style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: '3px',
-                                padding: '4px 8px',
-                                borderRadius: '5px',
-                                border: hasPaid ? '1px solid #E2E8F0' : '1px solid #FECDD3',
-                                backgroundColor: hasPaid ? '#F1F5F9' : '#FFF1F2',
-                                color: hasPaid ? '#94A3B8' : '#BE123C',
-                                fontSize: '0.72rem',
-                                cursor: hasPaid ? 'not-allowed' : 'pointer',
-                                opacity: hasPaid ? 0.5 : 1,
-                              }}
-                            >
-                              <Trash2 size={11} /> Remove Client
-                            </button>
-                          );
-                        })()}
+                        {onRemoveClient && cg.clientId > 0 && (
+                          <button
+                            type="button"
+                            onClick={() => onRemoveClient(tender.id, cg.clientId, cg.clientName)}
+                            title="Remove client from this tender"
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '3px',
+                              padding: '4px 8px',
+                              borderRadius: '5px',
+                              border: '1px solid #FECDD3',
+                              backgroundColor: '#FFF1F2',
+                              color: '#BE123C',
+                              fontSize: '0.72rem',
+                              cursor: 'pointer',
+                            }}
+                          >
+                            <Trash2 size={11} /> Remove Client
+                          </button>
+                        )}
                       </div>
                     </div>
 
@@ -579,8 +560,6 @@ export function TenderExcelMatrix({
                             <th style={{ ...subHeaderStyle, minWidth: '75px', textAlign: 'center' }}>Less %</th>
                             <th style={{ ...subHeaderStyle, minWidth: '65px', textAlign: 'center' }}>Submit</th>
                             <th style={{ ...subHeaderStyle, minWidth: '95px', textAlign: 'right' }}>Charge (৳)</th>
-                            <th style={{ ...subHeaderStyle, minWidth: '95px', textAlign: 'right' }}>Paid (৳)</th>
-                            <th style={{ ...subHeaderStyle, minWidth: '95px', textAlign: 'right' }}>Due (৳)</th>
                             <th style={{ ...subHeaderStyle, minWidth: '100px', textAlign: 'center' }}>Actions</th>
                           </tr>
                         </thead>
@@ -589,7 +568,7 @@ export function TenderExcelMatrix({
                           {cg.tenderers.length === 0 ? (
                             <tr>
                               <td
-                                colSpan={15}
+                                colSpan={13}
                                 style={{
                                   padding: '1rem',
                                   textAlign: 'center',
@@ -735,20 +714,6 @@ export function TenderExcelMatrix({
                                   <td style={{ ...subCellStyle, textAlign: 'right', fontFamily: 'monospace' }}>
                                     <MoneyDisplay amount={m.chargeAmount} size="sm" />
                                   </td>
-                                  <td style={{ ...subCellStyle, textAlign: 'right', fontFamily: 'monospace' }}>
-                                    {m.totalPaid > 0 ? (
-                                      <MoneyDisplay amount={m.totalPaid} type="advance" size="sm" />
-                                    ) : (
-                                      <span style={{ color: '#94A3B8' }}>—</span>
-                                    )}
-                                  </td>
-                                  <td style={{ ...subCellStyle, textAlign: 'right', fontFamily: 'monospace' }}>
-                                    <MoneyDisplay
-                                      amount={m.dueAmount}
-                                      type={m.dueAmount > 0 ? 'due' : 'neutral'}
-                                      size="sm"
-                                    />
-                                  </td>
 
                                   {/* Actions */}
                                   <td style={{ ...subCellStyle, textAlign: 'center' }}>
@@ -775,39 +740,26 @@ export function TenderExcelMatrix({
                                         </button>
                                       )}
 
-                                      {onRemoveTenderer && (() => {
-                                        const hasPayments = m.totalPaid > 0 || m.chargeAmount !== m.dueAmount;
-                                        return (
-                                          <button
-                                            type="button"
-                                            disabled={hasPayments}
-                                            onClick={() => {
-                                              if (!hasPayments) {
-                                                onRemoveTenderer(tender.id, m.tendererId, m.tendererName, cg.clientId);
-                                              }
-                                            }}
-                                            title={
-                                              hasPayments
-                                                ? `Cannot remove license because payments have already been recorded.`
-                                                : 'Remove license from this tender'
-                                            }
-                                            style={{
-                                              padding: '3px 6px',
-                                              borderRadius: '4px',
-                                              border: hasPayments ? '1px solid #E2E8F0' : '1px solid #FECDD3',
-                                              backgroundColor: hasPayments ? '#F1F5F9' : '#FFF1F2',
-                                              color: hasPayments ? '#94A3B8' : '#BE123C',
-                                              cursor: hasPayments ? 'not-allowed' : 'pointer',
-                                              fontSize: '0.72rem',
-                                              display: 'inline-flex',
-                                              alignItems: 'center',
-                                              opacity: hasPayments ? 0.45 : 1,
-                                            }}
-                                          >
-                                            <Trash2 size={11} />
-                                          </button>
-                                        );
-                                      })()}
+                                      {onRemoveTenderer && (
+                                        <button
+                                          type="button"
+                                          onClick={() => onRemoveTenderer(tender.id, m.tendererId, m.tendererName, cg.clientId)}
+                                          title="Remove license from this tender"
+                                          style={{
+                                            padding: '3px 6px',
+                                            borderRadius: '4px',
+                                            border: '1px solid #FECDD3',
+                                            backgroundColor: '#FFF1F2',
+                                            color: '#BE123C',
+                                            cursor: 'pointer',
+                                            fontSize: '0.72rem',
+                                            display: 'inline-flex',
+                                            alignItems: 'center',
+                                          }}
+                                        >
+                                          <Trash2 size={11} />
+                                        </button>
+                                      )}
                                     </div>
                                   </td>
                                 </tr>

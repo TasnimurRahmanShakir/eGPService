@@ -33,8 +33,8 @@ export default async function AdminDashboardOverview() {
   const totalClients = clients.length;
   const solutionSubscribers = clients.filter((c) => c.hasPurchasedSolution).length;
   const totalCharge = tenders.reduce((sum, t) => sum + t.chargeAmount, 0);
-  const totalPaid = tenders.reduce((sum, t) => sum + t.totalPaid, 0);
-  const totalDue = tenders.reduce((sum, t) => sum + t.dueAmount, 0);
+  const totalPayment = clients.reduce((sum, c) => sum + (c.totalPayment || 0), 0);
+  const totalDue = clients.reduce((sum, c) => sum + (c.currentDue || 0), 0);
 
   const recentTenders = tenders.slice(0, 5);
 
@@ -83,10 +83,10 @@ export default async function AdminDashboardOverview() {
             <CreditCard size={18} style={{ color: '#0F766E' }} />
           </div>
           <div style={{ marginTop: '0.5rem' }}>
-            <MoneyDisplay amount={totalPaid} type="advance" size="lg" />
+            <MoneyDisplay amount={totalPayment} type="advance" size="lg" />
           </div>
           <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: '0.25rem' }}>
-            From total charge of <MoneyDisplay amount={totalCharge} size="sm" />
+            Total received across clients
           </div>
         </div>
 
@@ -99,7 +99,7 @@ export default async function AdminDashboardOverview() {
             <MoneyDisplay amount={totalDue} type="due" size="lg" />
           </div>
           <div style={{ fontSize: '0.75rem', color: '#BE123C', marginTop: '0.25rem', fontWeight: 500 }}>
-            Pending collection across tenders
+            Receivable across clients
           </div>
         </div>
       </div>

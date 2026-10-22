@@ -52,13 +52,14 @@ export function CollectCashModal({
   }, [clients, selectedClientId]);
 
   const currentDue = selectedClient ? selectedClient.currentDue : 0;
+  const currentAdvance = selectedClient ? (selectedClient.currentAdvance || 0) : 0;
   const numAmount = typeof amount === 'number' ? amount : 0;
   const numDiscount = typeof discountAmount === 'number' ? discountAmount : 0;
   const totalRelief = numAmount + numDiscount;
 
-  // Validation: cannot collect more than current due
-  const exceedsDue = selectedClient ? totalRelief > currentDue : false;
+  const discountExceedsDue = selectedClient ? numDiscount > currentDue : false;
   const remainingDue = selectedClient ? Math.max(0, currentDue - totalRelief) : 0;
+  const excessAdvance = selectedClient && numAmount > currentDue ? numAmount - currentDue : 0;
 
   const handleClientChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const val = e.target.value ? Number(e.target.value) : '';
@@ -89,18 +90,13 @@ export function CollectCashModal({
       return;
     }
 
-    if (currentDue <= 0) {
-      setServerError('This client has zero outstanding due.');
-      return;
-    }
-
     if (numAmount + numDiscount <= 0) {
       setServerError('Please enter a collection amount or discount greater than zero.');
       return;
     }
 
-    if (exceedsDue) {
-      setServerError(`Collection amount + discount (৳${totalRelief.toLocaleString()}) cannot exceed current due (৳${currentDue.toLocaleString()}).`);
+    if (discountExceedsDue) {
+      setServerError(`Discount amount (৳${numDiscount.toLocaleString()}) cannot exceed current outstanding due (৳${currentDue.toLocaleString()}).`);
       return;
     }
 
@@ -232,7 +228,7 @@ export function CollectCashModal({
 
             {currentDue <= 0 && (
               <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.8125rem', color: '#15803D', fontWeight: 600 }}>
-                <CheckCircle2 size={16} /> No Due
+                <CheckCircle2 size={16} /> No Due {currentAdvance > 0 ? `(Avail Advance: ৳${currentAdvance.toLocaleString()})` : ''}
               </span>
             )}
           </div>
@@ -255,7 +251,7 @@ export function CollectCashModal({
                 width: '100%',
                 padding: '0.5rem 0.75rem',
                 borderRadius: '6px',
-                border: exceedsDue ? '1.5px solid #E11D48' : '1px solid #CBD5E1',
+                border: '1px solid #CBD5E1',
                 fontSize: '0.875rem',
                 color: '#0F172A',
                 fontWeight: 600,
@@ -279,7 +275,7 @@ export function CollectCashModal({
                 width: '100%',
                 padding: '0.5rem 0.75rem',
                 borderRadius: '6px',
-                border: exceedsDue ? '1.5px solid #E11D48' : '1px solid #CBD5E1',
+                border: discountExceedsDue ? '1.5px solid #E11D48' : '1px solid #CBD5E1',
                 fontSize: '0.875rem',
                 color: '#0F172A',
                 fontWeight: 600,
@@ -289,8 +285,8 @@ export function CollectCashModal({
           </div>
         </div>
 
-        {/* Due Excess Warning */}
-        {exceedsDue && (
+        {/* Discount Excess Warning */}
+        {discountExceedsDue && (
           <div
             style={{
               padding: '0.5rem 0.75rem',
@@ -306,7 +302,29 @@ export function CollectCashModal({
           >
             <ShieldAlert size={16} />
             <span>
-              Total (৳{totalRelief.toLocaleString()}) exceeds current due (৳{currentDue.toLocaleString()}). Maximum payable is ৳{currentDue.toLocaleString()}.
+              Discount (৳{numDiscount.toLocaleString()}) cannot exceed current outstanding due (৳{currentDue.toLocaleString()}).
+            </span>
+          </div>
+        )}
+
+        {/* Advance Credit Notice */}
+        {excessAdvance > 0 && (
+          <div
+            style={{
+              padding: '0.5rem 0.75rem',
+              backgroundColor: '#ECFDF5',
+              borderRadius: '6px',
+              border: '1px solid #A7F3D0',
+              color: '#065F46',
+              fontSize: '0.8125rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+            }}
+          >
+            <CheckCircle2 size={16} />
+            <span>
+              Advance Deposit: ৳{excessAdvance.toLocaleString()} will be credited to Available Advance (Total Avail: ৳{(currentAdvance + excessAdvance).toLocaleString()}).
             </span>
           </div>
         )}
@@ -500,7 +518,7 @@ export function CollectCashModal({
           <Button variant="secondary" onClick={onClose} disabled={isPending} type="button">
             Cancel
           </Button>
-          <Button variant="primary" type="submit" disabled={isPending || exceedsDue || (!!selectedClient && currentDue <= 0)}>
+          <Button variant="primary" type="submit" disabled={isPending || discountExceedsDue || numAmount + numDiscount <= 0}>
             {isPending ? 'Recording Collection...' : 'Confirm Cash Collection'}
           </Button>
         </div>

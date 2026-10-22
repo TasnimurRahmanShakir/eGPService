@@ -1,10 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Plus, Sparkles, CheckCircle2, XCircle, AlertCircle, ShieldCheck, Pencil } from 'lucide-react';
+import { Plus, Sparkles, CheckCircle2, XCircle, AlertCircle, ShieldCheck, Pencil, FileText } from 'lucide-react';
 import { Button, Badge, DataTable, MoneyDisplay, type Column } from '@egp/ui';
-import type { ClientDto } from '@egp/api-client';
+import type { ClientDto, ClientDetailDto } from '@egp/api-client';
 import { CreateClientModal, EditClientModal, AddSubscriptionModal } from '@/components/clients/ClientModals';
+import { ClientLedgerModal } from '@/components/clients/ClientLedgerModal';
+import { getClientDetailAction } from '@/app/actions/clientActions';
 import { formatLocalDate } from '@/lib/date-utils';
 
 export function ClientsClientView({ initialClients }: { initialClients: ClientDto[] }) {
@@ -12,6 +14,8 @@ export function ClientsClientView({ initialClients }: { initialClients: ClientDt
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [editingClient, setEditingClient] = useState<ClientDto | null>(null);
   const [selectedSubClient, setSelectedSubClient] = useState<{ id: number; name: string } | null>(null);
+  const [selectedLedgerClient, setSelectedLedgerClient] = useState<ClientDetailDto | null>(null);
+  const [loadingLedgerId, setLoadingLedgerId] = useState<number | null>(null);
 
   const filtered = initialClients.filter((c) =>
     c.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -21,8 +25,10 @@ export function ClientsClientView({ initialClients }: { initialClients: ClientDt
 
   const totalClients = initialClients.length;
   const purchasedCount = initialClients.filter((c) => c.hasPurchasedSolution).length;
-  const totalDueSum = initialClients.reduce((sum, c) => sum + (c.currentDue || 0), 0);
+  const totalChargeSum = initialClients.reduce((sum, c) => sum + (c.totalCharge || 0), 0);
+  const totalPaymentSum = initialClients.reduce((sum, c) => sum + (c.totalPayment || 0), 0);
   const totalAdvanceSum = initialClients.reduce((sum, c) => sum + (c.currentAdvance || 0), 0);
+  const totalDueSum = initialClients.reduce((sum, c) => sum + (c.currentDue || 0), 0);
 
   const columns: Column<ClientDto>[] = [
     {
@@ -49,22 +55,59 @@ export function ClientsClientView({ initialClients }: { initialClients: ClientDt
     {
       header: 'Opening Balance',
       cell: (c) => {
+        if (!c.openingBalance || c.openingBalance <= 0) {
+          return <span style={{ color: '#94A3B8' }}>—</span>;
+        }
         const isAdvance = c.openingBalanceType === 0;
         return (
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
             <Badge variant={isAdvance ? 'emerald' : 'rose'} size="sm">
               {isAdvance ? 'Advance' : 'Due'}
             </Badge>
             <MoneyDisplay
               amount={c.openingBalance}
               type={isAdvance ? 'advance' : 'due'}
+              size="sm"
             />
           </div>
         );
       },
     },
     {
-      header: 'Current Advance',
+      header: 'Charge',
+      align: 'right',
+      cell: (c) => (
+        (c.totalCharge || 0) > 0 ? (
+          <MoneyDisplay amount={c.totalCharge} type="neutral" size="sm" />
+        ) : (
+          <span style={{ color: '#94A3B8' }}>—</span>
+        )
+      ),
+    },
+    {
+      header: 'Payment',
+      align: 'right',
+      cell: (c) => (
+        (c.totalPayment || 0) > 0 ? (
+          <MoneyDisplay amount={c.totalPayment} type="advance" size="sm" />
+        ) : (
+          <span style={{ color: '#94A3B8' }}>—</span>
+        )
+      ),
+    },
+    {
+      header: 'Discount',
+      align: 'right',
+      cell: (c) => (
+        (c.totalDiscount || 0) > 0 ? (
+          <MoneyDisplay amount={c.totalDiscount} type="neutral" size="sm" />
+        ) : (
+          <span style={{ color: '#94A3B8' }}>—</span>
+        )
+      ),
+    },
+    {
+      header: 'Advance',
       align: 'right',
       cell: (c) => (
         c.currentAdvance > 0 ? (
@@ -75,7 +118,7 @@ export function ClientsClientView({ initialClients }: { initialClients: ClientDt
       ),
     },
     {
-      header: 'Current Due',
+      header: 'Due',
       align: 'right',
       cell: (c) => (
         c.currentDue > 0 ? (
@@ -120,6 +163,26 @@ export function ClientsClientView({ initialClients }: { initialClients: ClientDt
           <Button
             size="sm"
             variant="ghost"
+            icon={<FileText size={14} />}
+            isLoading={loadingLedgerId === c.id}
+            onClick={async () => {
+              setLoadingLedgerId(c.id);
+              try {
+                const res = await getClientDetailAction(c.id);
+                if (res.success && res.data) {
+                  setSelectedLedgerClient(res.data);
+                }
+              } finally {
+                setLoadingLedgerId(null);
+              }
+            }}
+            title="View Ledger Statement"
+          >
+            Ledger
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
             icon={<Pencil size={14} />}
             onClick={() => setEditingClient(c)}
             title="Edit Client Information"
@@ -152,22 +215,32 @@ export function ClientsClientView({ initialClients }: { initialClients: ClientDt
         </div>
 
         <div style={{ padding: '1.25rem', backgroundColor: '#FFFFFF', borderRadius: '10px', border: '1px solid #E2E8F0', boxShadow: 'var(--shadow-sm)' }}>
-          <span style={{ fontSize: '0.875rem', color: '#64748B', fontWeight: 500 }}>Total Available Advance (Ledger)</span>
+          <span style={{ fontSize: '0.875rem', color: '#64748B', fontWeight: 500 }}>Total Payments</span>
           <div style={{ marginTop: '0.25rem' }}>
-            <MoneyDisplay amount={totalAdvanceSum} type="advance" size="lg" />
+            <MoneyDisplay amount={totalPaymentSum} type="advance" size="lg" />
           </div>
           <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: '0.25rem' }}>
-            Available balance for upcoming tender charges
+            Total cash collected from clients
           </div>
         </div>
 
         <div style={{ padding: '1.25rem', backgroundColor: '#FFFFFF', borderRadius: '10px', border: '1px solid #E2E8F0', boxShadow: 'var(--shadow-sm)' }}>
-          <span style={{ fontSize: '0.875rem', color: '#64748B', fontWeight: 500 }}>Total Outstanding Due (Ledger)</span>
+          <span style={{ fontSize: '0.875rem', color: '#64748B', fontWeight: 500 }}>Total Available Advance</span>
+          <div style={{ marginTop: '0.25rem' }}>
+            <MoneyDisplay amount={totalAdvanceSum} type="advance" size="lg" />
+          </div>
+          <div style={{ fontSize: '0.75rem', color: '#047857', marginTop: '0.25rem', fontWeight: 500 }}>
+            Remaining advance credit available
+          </div>
+        </div>
+
+        <div style={{ padding: '1.25rem', backgroundColor: '#FFFFFF', borderRadius: '10px', border: '1px solid #E2E8F0', boxShadow: 'var(--shadow-sm)' }}>
+          <span style={{ fontSize: '0.875rem', color: '#64748B', fontWeight: 500 }}>Total Outstanding Due</span>
           <div style={{ marginTop: '0.25rem' }}>
             <MoneyDisplay amount={totalDueSum} type="due" size="lg" />
           </div>
           <div style={{ fontSize: '0.75rem', color: '#BE123C', marginTop: '0.25rem', fontWeight: 500 }}>
-            Accumulated due across all tenders & subscriptions
+            Accumulated due across all clients
           </div>
         </div>
       </div>
@@ -204,6 +277,12 @@ export function ClientsClientView({ initialClients }: { initialClients: ClientDt
           clientName={selectedSubClient.name}
         />
       )}
+
+      <ClientLedgerModal
+        isOpen={!!selectedLedgerClient}
+        client={selectedLedgerClient}
+        onClose={() => setSelectedLedgerClient(null)}
+      />
     </>
   );
 }

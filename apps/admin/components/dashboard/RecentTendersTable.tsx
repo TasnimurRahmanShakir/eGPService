@@ -21,28 +21,9 @@ export function RecentTendersTable({ tenders }: { tenders: TenderDto[] }) {
       accessorKey: 'department',
     },
     {
-      header: 'Charge',
+      header: 'Charge (৳)',
       align: 'right',
       cell: (t) => <MoneyDisplay amount={t.chargeAmount} size="sm" />,
-    },
-    {
-      header: 'Due',
-      align: 'right',
-      cell: (t) => <MoneyDisplay amount={t.dueAmount} type={t.dueAmount > 0 ? 'due' : 'neutral'} size="sm" />,
-    },
-    {
-      header: 'Status',
-      align: 'center',
-      cell: (t) =>
-        t.dueAmount > 0 ? (
-          <Badge variant="rose" size="sm">
-            Due ৳
-          </Badge>
-        ) : (
-          <Badge variant="emerald" size="sm">
-            Cleared
-          </Badge>
-        ),
     },
   ];
 

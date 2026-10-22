@@ -17,6 +17,9 @@ export interface ClientDto {
   openingBalanceTypeName: 'Advance' | 'Due';
   currentAdvance: number;
   currentDue: number;
+  totalCharge: number;
+  totalPayment: number;
+  totalDiscount: number;
   netBalance: number;
   hasPurchasedSolution: boolean;
   solutionValidUptoUtc: string | null;
@@ -78,8 +81,8 @@ export interface TendererMappingDto {
   rateStatus: boolean | null;
   lessPercentage: number | null;
   chargeAmount: number;
-  totalPaid: number;
-  dueAmount: number;
+  totalPaid?: number;
+  dueAmount?: number;
 }
 
 export interface TenderClientDto {
@@ -89,8 +92,8 @@ export interface TenderClientDto {
   clientName: string;
   phone?: string | null;
   totalChargeAmount: number;
-  totalPaidAmount: number;
-  totalDueAmount: number;
+  totalPaidAmount?: number;
+  totalDueAmount?: number;
   tenderers: TendererMappingDto[];
 }
 
@@ -104,11 +107,11 @@ export interface TenderDto {
   liquidAssetAmount: number;
   appCode: string;
   totalChargeAmount: number;
-  totalPaidAmount: number;
-  totalDueAmount: number;
+  totalPaidAmount?: number;
+  totalDueAmount?: number;
   chargeAmount: number;
-  totalPaid: number;
-  dueAmount: number;
+  totalPaid?: number;
+  dueAmount?: number;
   createdAtUtc: string;
   clients?: TenderClientDto[];
   tenderers: TendererMappingDto[];

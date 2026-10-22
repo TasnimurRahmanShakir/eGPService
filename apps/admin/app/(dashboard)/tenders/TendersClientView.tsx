@@ -53,56 +53,7 @@ export function TendersClientView({
 
   const [isPending, startTransition] = useTransition();
 
-  // Optimistic updates for instant UI response on payments
-  const [optimisticTenders, setOptimisticTenders] = useOptimistic(
-    tenders,
-    (state, update: { tenderId: number; clientId?: number; tendererId?: number; amountPaid: number }) =>
-      state.map((t) => {
-        if (t.id !== update.tenderId) return t;
-
-        const updatedClients = (t.clients || []).map((c) => {
-          if (update.clientId && c.clientId === update.clientId) {
-            const updatedClientTenderers = (c.tenderers || []).map((m) => {
-              if (update.tendererId && m.tendererId === update.tendererId) {
-                return {
-                  ...m,
-                  totalPaid: m.totalPaid + update.amountPaid,
-                  dueAmount: Math.max(0, m.dueAmount - update.amountPaid),
-                };
-              }
-              return m;
-            });
-
-            return {
-              ...c,
-              totalPaidAmount: c.totalPaidAmount + update.amountPaid,
-              totalDueAmount: Math.max(0, c.totalDueAmount - update.amountPaid),
-              tenderers: updatedClientTenderers,
-            };
-          }
-          return c;
-        });
-
-        const updatedTenderers = (t.tenderers || []).map((m) => {
-          if (update.tendererId && m.tendererId === update.tendererId) {
-            return {
-              ...m,
-              totalPaid: m.totalPaid + update.amountPaid,
-              dueAmount: Math.max(0, m.dueAmount - update.amountPaid),
-            };
-          }
-          return m;
-        });
-
-        return {
-          ...t,
-          totalPaid: t.totalPaid + update.amountPaid,
-          dueAmount: Math.max(0, t.dueAmount - update.amountPaid),
-          clients: updatedClients,
-          tenderers: updatedTenderers,
-        };
-      })
-  );
+  const optimisticTenders = tenders;
 
   const getBrowserTzOffset = () => -new Date().getTimezoneOffset();
 
@@ -153,8 +104,8 @@ export function TendersClientView({
   }, [optimisticTenders, search]);
 
   const totalCharge = optimisticTenders.reduce((sum, t) => sum + t.chargeAmount, 0);
-  const totalPaid = optimisticTenders.reduce((sum, t) => sum + t.totalPaid, 0);
-  const totalDue = optimisticTenders.reduce((sum, t) => sum + t.dueAmount, 0);
+  const totalLicensesCount = optimisticTenders.reduce((sum, t) => sum + (t.tenderers?.length || 0), 0);
+  const totalClientsCount = optimisticTenders.reduce((sum, t) => sum + (t.clients?.length || 0), 0);
 
   const formattedSelectedDate = useMemo(() => {
     if (!selectedDate) return 'All Active Tenders';
@@ -170,16 +121,9 @@ export function TendersClientView({
 
 
   const handleRemoveClient = (tenderId: number, clientId: number, clientName: string) => {
-    const targetTender = optimisticTenders.find((t) => t.id === tenderId);
-    const client = targetTender?.clients?.find((c) => c.clientId === clientId);
-    if (client && client.totalPaidAmount > 0) {
-      toast.error(`Cannot remove client "${clientName}" because payments (৳${client.totalPaidAmount.toLocaleString()}) have already been recorded.`);
-      return;
-    }
-
     if (
       !window.confirm(
-        `Are you sure you want to remove client "${clientName}" from this tender? Any uncollected license charges will be reversed from the client ledger.`
+        `Are you sure you want to remove client "${clientName}" from this tender? Any mapped license charges will be reversed from the client balance.`
       )
     ) {
       return;
@@ -202,16 +146,9 @@ export function TendersClientView({
     tendererName: string,
     clientId?: number
   ) => {
-    const targetTender = optimisticTenders.find((t) => t.id === tenderId);
-    const mapping = targetTender?.tenderers?.find((m) => m.tendererId === tendererId);
-    if (mapping && (mapping.totalPaid > 0 || mapping.chargeAmount !== mapping.dueAmount)) {
-      toast.error(`Cannot remove license "${tendererName}" because payments (৳${mapping.totalPaid.toLocaleString()}) have already been recorded.`);
-      return;
-    }
-
     if (
       !window.confirm(
-        `Are you sure you want to remove license "${tendererName}" from this tender? Any uncollected charges will be refunded to the client.`
+        `Are you sure you want to remove license "${tendererName}" from this tender? The charge will be reversed from the client balance.`
       )
     ) {
       return;
@@ -378,12 +315,12 @@ export function TendersClientView({
               boxShadow: 'var(--shadow-sm)',
             }}
           >
-            <span style={{ fontSize: '0.875rem', color: 'var(--muted-foreground, #64748B)', fontWeight: 500 }}>Total Collected</span>
-            <div style={{ marginTop: '0.25rem' }}>
-              <MoneyDisplay amount={totalPaid} type="advance" size="lg" />
+            <span style={{ fontSize: '0.875rem', color: 'var(--muted-foreground, #64748B)', fontWeight: 500 }}>Participating Clients</span>
+            <div style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--foreground, #1F2937)', marginTop: '0.25rem', fontVariantNumeric: 'tabular-nums' }}>
+              {totalClientsCount}
             </div>
-            <div style={{ fontSize: '0.75rem', color: 'var(--success, #047857)', marginTop: '0.25rem', fontWeight: 500 }}>
-              Confirmed payments
+            <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground, #64748B)', marginTop: '0.25rem' }}>
+              Linked across tenders
             </div>
           </div>
 
@@ -396,12 +333,12 @@ export function TendersClientView({
               boxShadow: 'var(--shadow-sm)',
             }}
           >
-            <span style={{ fontSize: '0.875rem', color: 'var(--muted-foreground, #64748B)', fontWeight: 500 }}>Outstanding Due</span>
-            <div style={{ marginTop: '0.25rem' }}>
-              <MoneyDisplay amount={totalDue} type="due" size="lg" />
+            <span style={{ fontSize: '0.875rem', color: 'var(--muted-foreground, #64748B)', fontWeight: 500 }}>Assigned Licenses</span>
+            <div style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--foreground, #1F2937)', marginTop: '0.25rem', fontVariantNumeric: 'tabular-nums' }}>
+              {totalLicensesCount}
             </div>
-            <div style={{ fontSize: '0.75rem', color: 'var(--danger, #BE123C)', marginTop: '0.25rem', fontWeight: 500 }}>
-              Receivable balance
+            <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground, #64748B)', marginTop: '0.25rem' }}>
+              Total license mappings
             </div>
           </div>
         </div>

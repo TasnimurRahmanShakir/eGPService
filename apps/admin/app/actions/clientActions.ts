@@ -107,3 +107,12 @@ export async function fetchClientOptionsAction() {
     return [];
   }
 }
+
+export async function getClientDetailAction(id: number) {
+  try {
+    const client = await apiClient.clients.getById(id);
+    return { success: true, data: client };
+  } catch (error: any) {
+    return { success: false, message: formatErrorMessage(error, 'Failed to fetch client details') };
+  }
+}
