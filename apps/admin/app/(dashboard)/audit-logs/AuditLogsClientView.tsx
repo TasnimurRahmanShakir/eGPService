@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useTransition } from 'react';
-import { History, Shield, Monitor, Smartphone, Globe, Eye, ChevronLeft, ChevronRight, RefreshCw, Clock, Laptop } from 'lucide-react';
+import { History, Shield, Monitor, Smartphone, Globe, Eye, ChevronLeft, ChevronRight, Clock, Laptop } from 'lucide-react';
 import { Badge, DataTable, type Column, Modal, Button } from '@egp/ui';
 import type { AuditLogDto } from '@egp/api-client';
 import { fetchAuditLogsAction } from '@/app/actions/auditActions';
@@ -54,10 +54,6 @@ export function AuditLogsClientView({ initialLogs }: { initialLogs: AuditLogDto[
   const handleModuleChange = (mod: string) => {
     setSelectedModule(mod);
     loadPage(undefined, [], mod);
-  };
-
-  const handleRefresh = () => {
-    loadPage(currentCursor, cursorStack, selectedModule);
   };
 
   const hasNext = logs.length === PAGE_SIZE;
@@ -243,28 +239,6 @@ export function AuditLogsClientView({ initialLogs }: { initialLogs: AuditLogDto[
             </button>
           ))}
         </div>
-
-        {/* Refresh button */}
-        <button
-          onClick={handleRefresh}
-          disabled={isPending}
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '0.4rem',
-            padding: '0.35rem 0.75rem',
-            borderRadius: '6px',
-            fontSize: '0.8rem',
-            fontWeight: 500,
-            cursor: isPending ? 'not-allowed' : 'pointer',
-            border: '1px solid #E2E8F0',
-            backgroundColor: '#FFFFFF',
-            color: '#475569',
-          }}
-        >
-          <RefreshCw size={13} className={isPending ? 'animate-spin' : ''} />
-          Refresh
-        </button>
       </div>
 
       {/* Main Table */}

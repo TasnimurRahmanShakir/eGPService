@@ -193,7 +193,8 @@ export function ClientsClientView({ initialClients }: { initialClients: ClientDt
             size="sm"
             variant="outline"
             icon={<Sparkles size={14} />}
-            onClick={() => setSelectedSubClient({ id: c.id, name: c.name })}
+            onClick={() => {}}
+            title="Solution (Disabled)"
           >
             {c.hasPurchasedSolution ? 'Renew Solution' : 'Add Solution'}
           </Button>
