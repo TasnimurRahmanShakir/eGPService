@@ -107,6 +107,8 @@ export function Button({
         justifyContent: 'center',
         gap: '0.5rem',
         fontWeight: 600,
+        whiteSpace: 'nowrap',
+        flexShrink: 0,
         cursor: disabled || isLoading ? 'not-allowed' : 'pointer',
         opacity: disabled || isLoading ? 0.65 : 1,
         transition: 'all 0.15s ease',

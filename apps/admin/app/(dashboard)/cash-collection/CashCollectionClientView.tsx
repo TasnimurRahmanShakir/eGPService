@@ -2,17 +2,17 @@
 
 import React, { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { 
-  Plus, 
-  Receipt, 
-  WalletCards, 
-  Search, 
-  Building2, 
-  Smartphone, 
-  CreditCard, 
-  ArrowRight, 
-  Printer, 
-  UserCheck, 
+import {
+  Plus,
+  Receipt,
+  WalletCards,
+  Search,
+  Building2,
+  Smartphone,
+  CreditCard,
+  ArrowRight,
+  Printer,
+  UserCheck,
   Calendar,
   DollarSign,
   TrendingUp,
@@ -144,7 +144,7 @@ export function CashCollectionClientView({
       },
     },
     {
-      header: 'Client / Firm Name',
+      header: 'Client',
       accessorKey: 'clientName',
       cell: (c) => (
         <div>
@@ -194,7 +194,7 @@ export function CashCollectionClientView({
       ),
     },
     {
-      header: 'Discount / ছাড়',
+      header: 'Discount',
       align: 'right',
       cell: (c) => (
         c.discountAmount > 0 ? (
@@ -350,7 +350,7 @@ export function CashCollectionClientView({
           onClick={() => setIsCollectOpen(true)}
           style={{ backgroundColor: '#047857' }}
         >
-          Receive Cash Collection / অর্থ আদায়
+          Receive Cash Collection
         </Button>
       </div>
 

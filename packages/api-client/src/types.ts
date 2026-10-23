@@ -53,6 +53,11 @@ export interface ClientLedgerTransactionDto {
   description: string;
   transactionDateUtc: string;
   referenceId: number | null;
+  debitAmount?: number;
+  creditAmount?: number;
+  transactionCategory?: string;
+  paymentChannel?: string;
+  referenceDocumentNo?: string;
 }
 
 export interface ClientDetailDto extends ClientDto {

@@ -438,6 +438,104 @@ export function AddClientToTenderModal({ isOpen, onClose, tender }: AddClientToT
 }
 
 // -------------------------------------------------------------
+// TRI-STATE SEGMENTED TOGGLE (OK / NO / N/A)
+// -------------------------------------------------------------
+interface TriStateToggleProps {
+  label: string;
+  value: boolean | null | undefined;
+  onChange: (val: boolean | null) => void;
+}
+
+function TriStateToggle({ label, value, onChange }: TriStateToggleProps) {
+  const isOk = value === true;
+  const isNo = value === false;
+  const isNa = value === null || value === undefined;
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+      <span style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--foreground, #1F2937)' }}>
+        {label}
+      </span>
+      <div
+        style={{
+          display: 'inline-flex',
+          backgroundColor: '#E2E8F0',
+          padding: '3px',
+          borderRadius: '8px',
+          border: '1px solid #CBD5E1',
+          width: 'fit-content',
+          boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.05)',
+        }}
+      >
+        <button
+          type="button"
+          onClick={() => onChange(true)}
+          style={{
+            padding: '4px 11px',
+            fontSize: '0.75rem',
+            fontWeight: 800,
+            borderRadius: '6px',
+            border: 'none',
+            backgroundColor: isOk ? '#059669' : 'transparent',
+            color: isOk ? '#FFFFFF' : '#64748B',
+            boxShadow: isOk ? '0 2px 4px rgba(5, 150, 105, 0.35)' : 'none',
+            cursor: 'pointer',
+            transition: 'all 0.15s ease',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '3px',
+          }}
+        >
+          {isOk && <span style={{ fontSize: '0.8rem' }}>✓</span>} OK
+        </button>
+        <button
+          type="button"
+          onClick={() => onChange(false)}
+          style={{
+            padding: '4px 11px',
+            fontSize: '0.75rem',
+            fontWeight: 800,
+            borderRadius: '6px',
+            border: 'none',
+            backgroundColor: isNo ? '#DC2626' : 'transparent',
+            color: isNo ? '#FFFFFF' : '#64748B',
+            boxShadow: isNo ? '0 2px 4px rgba(220, 38, 38, 0.35)' : 'none',
+            cursor: 'pointer',
+            transition: 'all 0.15s ease',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '3px',
+          }}
+        >
+          {isNo && <span style={{ fontSize: '0.8rem' }}>✕</span>} NO
+        </button>
+        <button
+          type="button"
+          onClick={() => onChange(null)}
+          style={{
+            padding: '4px 11px',
+            fontSize: '0.75rem',
+            fontWeight: 800,
+            borderRadius: '6px',
+            border: 'none',
+            backgroundColor: isNa ? '#475569' : 'transparent',
+            color: isNa ? '#FFFFFF' : '#64748B',
+            boxShadow: isNa ? '0 2px 4px rgba(71, 85, 105, 0.35)' : 'none',
+            cursor: 'pointer',
+            transition: 'all 0.15s ease',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '3px',
+          }}
+        >
+          {isNa && <span style={{ fontSize: '0.8rem' }}>—</span>} N/A
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// -------------------------------------------------------------
 // 4. ADD TENDERER MODAL (Multiple Licenses per Client)
 // -------------------------------------------------------------
 interface AddTendererModalProps {
@@ -468,16 +566,16 @@ export function AddTendererModal({ isOpen, onClose, tender, defaultClientId }: A
       clientId: initialClientId,
       tendererId: 0,
       mailId: '',
-      chargeAmount: 2000,
+      chargeAmount: 3000,
       lessPercentage: null,
-      liquid1Status: false,
-      liquid2Status: false,
-      liquid3Status: false,
-      jvcaStatus: false,
-      submitStatus: false,
-      fillStatus: false,
-      mapStatus: false,
-      rateStatus: false,
+      liquid1Status: null,
+      liquid2Status: null,
+      liquid3Status: null,
+      jvcaStatus: null,
+      submitStatus: null,
+      fillStatus: null,
+      mapStatus: null,
+      rateStatus: null,
     },
   });
 
@@ -498,16 +596,16 @@ export function AddTendererModal({ isOpen, onClose, tender, defaultClientId }: A
         clientId: cId,
         tendererId: 0,
         mailId: '',
-        chargeAmount: 2000,
+        chargeAmount: 3000,
         lessPercentage: null,
-        liquid1Status: false,
-        liquid2Status: false,
-        liquid3Status: false,
-        jvcaStatus: false,
-        submitStatus: false,
-        fillStatus: false,
-        mapStatus: false,
-        rateStatus: false,
+        liquid1Status: null,
+        liquid2Status: null,
+        liquid3Status: null,
+        jvcaStatus: null,
+        submitStatus: null,
+        fillStatus: null,
+        mapStatus: null,
+        rateStatus: null,
       });
       setServerError(null);
     }
@@ -540,6 +638,7 @@ export function AddTendererModal({ isOpen, onClose, tender, defaultClientId }: A
     <Modal
       isOpen={isOpen}
       onClose={onClose}
+      closeOnBackdropClick={false}
       title={`Add eGP License | Tender #${tender.tenderId}`}
       subtitle="Select the participating client and assign an eGP license"
       maxWidth="680px"
@@ -611,48 +710,56 @@ export function AddTendererModal({ isOpen, onClose, tender, defaultClientId }: A
           <label style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--foreground, #1F2937)', marginBottom: '0.5rem', display: 'block' }}>
             Liquid Verification Status
           </label>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', backgroundColor: 'var(--surface-subtle, #F8FAFC)', padding: '0.85rem', borderRadius: '8px', border: '1px solid var(--border, #E2E8F0)' }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.825rem', cursor: 'pointer', fontWeight: 500 }}>
-              <input type="checkbox" {...register('liquid1Status')} style={{ width: '16px', height: '16px', accentColor: 'var(--primary, #2563EB)' }} />
-              Liquid 1
-            </label>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.825rem', cursor: 'pointer', fontWeight: 500 }}>
-              <input type="checkbox" {...register('liquid2Status')} style={{ width: '16px', height: '16px', accentColor: 'var(--primary, #2563EB)' }} />
-              Liquid 2
-            </label>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.825rem', cursor: 'pointer', fontWeight: 500 }}>
-              <input type="checkbox" {...register('liquid3Status')} style={{ width: '16px', height: '16px', accentColor: 'var(--primary, #2563EB)' }} />
-              Liquid 3
-            </label>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.85rem', backgroundColor: 'var(--surface-subtle, #F8FAFC)', padding: '0.85rem', borderRadius: '8px', border: '1px solid var(--border, #E2E8F0)' }}>
+            <TriStateToggle
+              label="Liquid 1"
+              value={watch('liquid1Status')}
+              onChange={(val) => setValue('liquid1Status', val, { shouldDirty: true })}
+            />
+            <TriStateToggle
+              label="Liquid 2"
+              value={watch('liquid2Status')}
+              onChange={(val) => setValue('liquid2Status', val, { shouldDirty: true })}
+            />
+            <TriStateToggle
+              label="Liquid 3"
+              value={watch('liquid3Status')}
+              onChange={(val) => setValue('liquid3Status', val, { shouldDirty: true })}
+            />
           </div>
         </div>
 
         {/* Task Checklist */}
         <div>
           <label style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--foreground, #1F2937)', marginBottom: '0.5rem', display: 'block' }}>
-            Checklist Items
+            Checklist Status
           </label>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.85rem', backgroundColor: 'var(--surface-subtle, #F8FAFC)', padding: '0.85rem', borderRadius: '8px', border: '1px solid var(--border, #E2E8F0)' }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.825rem', cursor: 'pointer', fontWeight: 500 }}>
-              <input type="checkbox" {...register('jvcaStatus')} style={{ width: '16px', height: '16px', accentColor: 'var(--primary, #2563EB)' }} />
-              JVCA
-            </label>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.825rem', cursor: 'pointer', fontWeight: 500 }}>
-              <input type="checkbox" {...register('fillStatus')} style={{ width: '16px', height: '16px', accentColor: 'var(--primary, #2563EB)' }} />
-              Fill
-            </label>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.825rem', cursor: 'pointer', fontWeight: 500 }}>
-              <input type="checkbox" {...register('mapStatus')} style={{ width: '16px', height: '16px', accentColor: 'var(--primary, #2563EB)' }} />
-              Map
-            </label>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.825rem', cursor: 'pointer', fontWeight: 500 }}>
-              <input type="checkbox" {...register('rateStatus')} style={{ width: '16px', height: '16px', accentColor: 'var(--primary, #2563EB)' }} />
-              Rate
-            </label>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.825rem', cursor: 'pointer', fontWeight: 500 }}>
-              <input type="checkbox" {...register('submitStatus')} style={{ width: '16px', height: '16px', accentColor: 'var(--primary, #2563EB)' }} />
-              Submit
-            </label>
+            <TriStateToggle
+              label="JVCA"
+              value={watch('jvcaStatus')}
+              onChange={(val) => setValue('jvcaStatus', val, { shouldDirty: true })}
+            />
+            <TriStateToggle
+              label="Fill"
+              value={watch('fillStatus')}
+              onChange={(val) => setValue('fillStatus', val, { shouldDirty: true })}
+            />
+            <TriStateToggle
+              label="Map"
+              value={watch('mapStatus')}
+              onChange={(val) => setValue('mapStatus', val, { shouldDirty: true })}
+            />
+            <TriStateToggle
+              label="Rate"
+              value={watch('rateStatus')}
+              onChange={(val) => setValue('rateStatus', val, { shouldDirty: true })}
+            />
+            <TriStateToggle
+              label="Submit"
+              value={watch('submitStatus')}
+              onChange={(val) => setValue('submitStatus', val, { shouldDirty: true })}
+            />
           </div>
         </div>
 
@@ -698,6 +805,8 @@ export function EditTendererModal({ isOpen, onClose, tenderId, mapping }: EditTe
     register,
     handleSubmit,
     reset,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm<TendererMappingUpdateInput>({
     resolver: zodResolver(TendererMappingUpdateSchema),
@@ -707,16 +816,16 @@ export function EditTendererModal({ isOpen, onClose, tenderId, mapping }: EditTe
       clientId: mapping?.clientId,
       mailId: mapping?.mailId || '',
       passwordStatus: mapping?.passwordStatus || 'OK',
-      chargeAmount: mapping?.chargeAmount || 2000,
+      chargeAmount: mapping?.chargeAmount || 3000,
       lessPercentage: mapping?.lessPercentage ?? null,
-      liquid1Status: mapping?.liquid1Status || false,
-      liquid2Status: mapping?.liquid2Status || false,
-      liquid3Status: mapping?.liquid3Status || false,
-      jvcaStatus: mapping?.jvcaStatus || false,
-      submitStatus: mapping?.submitStatus || false,
-      fillStatus: mapping?.fillStatus || false,
-      mapStatus: mapping?.mapStatus || false,
-      rateStatus: mapping?.rateStatus || false,
+      liquid1Status: mapping?.liquid1Status ?? null,
+      liquid2Status: mapping?.liquid2Status ?? null,
+      liquid3Status: mapping?.liquid3Status ?? null,
+      jvcaStatus: mapping?.jvcaStatus ?? null,
+      submitStatus: mapping?.submitStatus ?? null,
+      fillStatus: mapping?.fillStatus ?? null,
+      mapStatus: mapping?.mapStatus ?? null,
+      rateStatus: mapping?.rateStatus ?? null,
     },
   });
 
@@ -728,16 +837,16 @@ export function EditTendererModal({ isOpen, onClose, tenderId, mapping }: EditTe
         clientId: mapping.clientId,
         mailId: mapping.mailId || '',
         passwordStatus: mapping.passwordStatus || 'OK',
-        chargeAmount: mapping.chargeAmount,
+        chargeAmount: mapping.chargeAmount ?? 3000,
         lessPercentage: mapping.lessPercentage,
-        liquid1Status: !!mapping.liquid1Status,
-        liquid2Status: !!mapping.liquid2Status,
-        liquid3Status: !!mapping.liquid3Status,
-        jvcaStatus: !!mapping.jvcaStatus,
-        submitStatus: !!mapping.submitStatus,
-        fillStatus: !!mapping.fillStatus,
-        mapStatus: !!mapping.mapStatus,
-        rateStatus: !!mapping.rateStatus,
+        liquid1Status: mapping.liquid1Status ?? null,
+        liquid2Status: mapping.liquid2Status ?? null,
+        liquid3Status: mapping.liquid3Status ?? null,
+        jvcaStatus: mapping.jvcaStatus ?? null,
+        submitStatus: mapping.submitStatus ?? null,
+        fillStatus: mapping.fillStatus ?? null,
+        mapStatus: mapping.mapStatus ?? null,
+        rateStatus: mapping.rateStatus ?? null,
       });
       setServerError(null);
     }
@@ -764,6 +873,7 @@ export function EditTendererModal({ isOpen, onClose, tenderId, mapping }: EditTe
     <Modal
       isOpen={isOpen}
       onClose={onClose}
+      closeOnBackdropClick={false}
       title={`Edit License: ${mapping.tendererName}`}
       subtitle={`Username: ${mapping.username}${mapping.clientName ? ` | Client: ${mapping.clientName}` : ''}`}
       maxWidth="680px"
@@ -824,19 +934,22 @@ export function EditTendererModal({ isOpen, onClose, tenderId, mapping }: EditTe
           <label style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--foreground, #1F2937)', marginBottom: '0.5rem', display: 'block' }}>
             Liquid Verification Status
           </label>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', backgroundColor: 'var(--surface-subtle, #F8FAFC)', padding: '0.85rem', borderRadius: '8px', border: '1px solid var(--border, #E2E8F0)' }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.825rem', cursor: 'pointer', fontWeight: 500 }}>
-              <input type="checkbox" {...register('liquid1Status')} style={{ width: '16px', height: '16px', accentColor: 'var(--primary, #2563EB)' }} />
-              Liquid 1
-            </label>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.825rem', cursor: 'pointer', fontWeight: 500 }}>
-              <input type="checkbox" {...register('liquid2Status')} style={{ width: '16px', height: '16px', accentColor: 'var(--primary, #2563EB)' }} />
-              Liquid 2
-            </label>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.825rem', cursor: 'pointer', fontWeight: 500 }}>
-              <input type="checkbox" {...register('liquid3Status')} style={{ width: '16px', height: '16px', accentColor: 'var(--primary, #2563EB)' }} />
-              Liquid 3
-            </label>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.85rem', backgroundColor: 'var(--surface-subtle, #F8FAFC)', padding: '0.85rem', borderRadius: '8px', border: '1px solid var(--border, #E2E8F0)' }}>
+            <TriStateToggle
+              label="Liquid 1"
+              value={watch('liquid1Status')}
+              onChange={(val) => setValue('liquid1Status', val, { shouldDirty: true })}
+            />
+            <TriStateToggle
+              label="Liquid 2"
+              value={watch('liquid2Status')}
+              onChange={(val) => setValue('liquid2Status', val, { shouldDirty: true })}
+            />
+            <TriStateToggle
+              label="Liquid 3"
+              value={watch('liquid3Status')}
+              onChange={(val) => setValue('liquid3Status', val, { shouldDirty: true })}
+            />
           </div>
         </div>
 
@@ -846,26 +959,31 @@ export function EditTendererModal({ isOpen, onClose, tenderId, mapping }: EditTe
             Checklist Status
           </label>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.85rem', backgroundColor: 'var(--surface-subtle, #F8FAFC)', padding: '0.85rem', borderRadius: '8px', border: '1px solid var(--border, #E2E8F0)' }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.825rem', cursor: 'pointer', fontWeight: 500 }}>
-              <input type="checkbox" {...register('jvcaStatus')} style={{ width: '16px', height: '16px', accentColor: 'var(--primary, #2563EB)' }} />
-              JVCA
-            </label>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.825rem', cursor: 'pointer', fontWeight: 500 }}>
-              <input type="checkbox" {...register('fillStatus')} style={{ width: '16px', height: '16px', accentColor: 'var(--primary, #2563EB)' }} />
-              Fill
-            </label>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.825rem', cursor: 'pointer', fontWeight: 500 }}>
-              <input type="checkbox" {...register('mapStatus')} style={{ width: '16px', height: '16px', accentColor: 'var(--primary, #2563EB)' }} />
-              Map
-            </label>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.825rem', cursor: 'pointer', fontWeight: 500 }}>
-              <input type="checkbox" {...register('rateStatus')} style={{ width: '16px', height: '16px', accentColor: 'var(--primary, #2563EB)' }} />
-              Rate
-            </label>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.825rem', cursor: 'pointer', fontWeight: 500 }}>
-              <input type="checkbox" {...register('submitStatus')} style={{ width: '16px', height: '16px', accentColor: 'var(--primary, #2563EB)' }} />
-              Submit
-            </label>
+            <TriStateToggle
+              label="JVCA"
+              value={watch('jvcaStatus')}
+              onChange={(val) => setValue('jvcaStatus', val, { shouldDirty: true })}
+            />
+            <TriStateToggle
+              label="Fill"
+              value={watch('fillStatus')}
+              onChange={(val) => setValue('fillStatus', val, { shouldDirty: true })}
+            />
+            <TriStateToggle
+              label="Map"
+              value={watch('mapStatus')}
+              onChange={(val) => setValue('mapStatus', val, { shouldDirty: true })}
+            />
+            <TriStateToggle
+              label="Rate"
+              value={watch('rateStatus')}
+              onChange={(val) => setValue('rateStatus', val, { shouldDirty: true })}
+            />
+            <TriStateToggle
+              label="Submit"
+              value={watch('submitStatus')}
+              onChange={(val) => setValue('submitStatus', val, { shouldDirty: true })}
+            />
           </div>
         </div>
 

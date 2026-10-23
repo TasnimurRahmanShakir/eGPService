@@ -126,8 +126,14 @@ export function ClientLedgerModal({ isOpen, onClose, client }: ClientLedgerModal
                   </tr>
                 ) : (
                   client.ledgerTransactions.map((tx) => {
-                    const isCredit = tx.amount > 0;
-                    const isDebit = tx.amount < 0;
+                    const debitVal = tx.debitAmount !== undefined && tx.debitAmount > 0 
+                      ? tx.debitAmount 
+                      : (tx.amount < 0 ? Math.abs(tx.amount) : 0);
+                    const creditVal = tx.creditAmount !== undefined && tx.creditAmount > 0 
+                      ? tx.creditAmount 
+                      : (tx.amount > 0 ? tx.amount : 0);
+                    const isDebit = debitVal > 0;
+                    const isCredit = creditVal > 0;
                     return (
                       <tr key={tx.id} style={{ borderBottom: '1px solid #F1F5F9' }}>
                         <td style={{ padding: '0.625rem 0.75rem', whiteSpace: 'nowrap', color: '#64748B' }}>
@@ -140,10 +146,10 @@ export function ClientLedgerModal({ isOpen, onClose, client }: ClientLedgerModal
                           {tx.description}
                         </td>
                         <td style={{ padding: '0.625rem 0.75rem', textAlign: 'right', fontWeight: 600, color: isDebit ? '#BE123C' : '#CBD5E1' }}>
-                          {isDebit ? `৳${Math.abs(tx.amount).toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}` : '—'}
+                          {isDebit ? `৳${debitVal.toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}` : '—'}
                         </td>
                         <td style={{ padding: '0.625rem 0.75rem', textAlign: 'right', fontWeight: 600, color: isCredit ? '#047857' : '#CBD5E1' }}>
-                          {isCredit ? `৳${tx.amount.toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}` : '—'}
+                          {isCredit ? `৳${creditVal.toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}` : '—'}
                         </td>
                       </tr>
                     );

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Modal, Button } from '@egp/ui';
-import { Printer, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { Printer, ShieldCheck, CheckCircle2, Download } from 'lucide-react';
 import type { CashCollectionDto } from '@egp/api-client';
 
 interface CashReceiptModalProps {
@@ -14,9 +14,7 @@ interface CashReceiptModalProps {
 export function CashReceiptModal({ isOpen, onClose, collection }: CashReceiptModalProps) {
   if (!collection) return null;
 
-  const handlePrint = () => {
-    window.print();
-  };
+  const fileName = `e-GP Tender BD Money Receipt ${collection.voucherNo}`;
 
   const dateFormatted = new Date(collection.collectionDateUtc).toLocaleDateString('en-US', {
     year: 'numeric',
@@ -24,8 +22,124 @@ export function CashReceiptModal({ isOpen, onClose, collection }: CashReceiptMod
     day: 'numeric',
   });
 
+  const handlePrint = () => {
+    const originalTitle = document.title;
+    document.title = fileName;
+    window.print();
+    setTimeout(() => {
+      document.title = originalTitle;
+    }, 1000);
+  };
+
+  const handleDownload = () => {
+    const receiptElement = document.getElementById('printable-receipt');
+    if (!receiptElement) return;
+
+    // Build standalone HTML receipt for clean offline viewing and printing
+    const htmlContent = `<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${fileName}</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 30px 15px;
+      background: #F8FAFC;
+      color: #0F172A;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+    .receipt-container {
+      width: 100%;
+      max-width: 580px;
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+    .no-print-bar {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .btn-action {
+      background: #047857;
+      color: #FFFFFF;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    @media print {
+      body { background: #FFFFFF; padding: 0; }
+      .receipt-container { border: none; box-shadow: none; padding: 0; }
+      .no-print-bar { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="receipt-container">
+    <div class="no-print-bar">
+      <button class="btn-action" onclick="window.print()">Print / Save as PDF</button>
+    </div>
+    ${receiptElement.innerHTML}
+  </div>
+</body>
+</html>`;
+
+    const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${fileName}.html`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Money Receipt / অর্থ আদায়ের রসিদ">
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      closeOnBackdropClick={false}
+      maxWidth="620px"
+      title="Money Receipt"
+    >
+      <style>{`
+        @media print {
+          body * {
+            visibility: hidden !important;
+          }
+          #printable-receipt, #printable-receipt * {
+            visibility: visible !important;
+          }
+          #printable-receipt {
+            position: fixed !important;
+            left: 0 !important;
+            top: 0 !important;
+            width: 100% !important;
+            padding: 24px !important;
+            background: #ffffff !important;
+            box-shadow: none !important;
+            border: none !important;
+          }
+          .no-print {
+            display: none !important;
+          }
+        }
+      `}</style>
+
       <div id="printable-receipt" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', padding: '0.5rem' }}>
         {/* Header Branding */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '2px solid #E2E8F0', paddingBottom: '0.75rem' }}>
@@ -88,7 +202,7 @@ export function CashReceiptModal({ isOpen, onClose, collection }: CashReceiptMod
               </tr>
               <tr style={{ borderBottom: '1px solid #F1F5F9', backgroundColor: '#F0FDF4' }}>
                 <td style={{ padding: '0.625rem 0.875rem', fontWeight: 700, color: '#166534' }}>
-                  Amount Received (আদায়কৃত টাকা)
+                  Amount Received
                 </td>
                 <td style={{ padding: '0.625rem 0.875rem', textAlign: 'right', fontWeight: 800, color: '#15803D', fontSize: '1rem' }}>
                   ৳ {collection.amountCollected.toLocaleString()}
@@ -96,14 +210,14 @@ export function CashReceiptModal({ isOpen, onClose, collection }: CashReceiptMod
               </tr>
               {collection.discountAmount > 0 && (
                 <tr style={{ borderBottom: '1px solid #F1F5F9', backgroundColor: '#FFFBEB' }}>
-                  <td style={{ padding: '0.625rem 0.875rem', color: '#B45309' }}>Special Discount / ছাড়</td>
+                  <td style={{ padding: '0.625rem 0.875rem', color: '#B45309' }}>Special Discount</td>
                   <td style={{ padding: '0.625rem 0.875rem', textAlign: 'right', fontWeight: 600, color: '#D97706' }}>
                     ৳ {collection.discountAmount.toLocaleString()}
                   </td>
                 </tr>
               )}
               <tr style={{ backgroundColor: '#F8FAFC' }}>
-                <td style={{ padding: '0.625rem 0.875rem', fontWeight: 700, color: '#0F172A' }}>Remaining Balance / বর্তমান বকেয়া</td>
+                <td style={{ padding: '0.625rem 0.875rem', fontWeight: 700, color: '#0F172A' }}>Remaining Balance</td>
                 <td style={{ padding: '0.625rem 0.875rem', textAlign: 'right', fontWeight: 700, color: collection.totalDueAfter > 0 ? '#BE123C' : '#15803D' }}>
                   ৳ {collection.totalDueAfter.toLocaleString()}
                 </td>
@@ -128,10 +242,24 @@ export function CashReceiptModal({ isOpen, onClose, collection }: CashReceiptMod
           </div>
         </div>
 
-        {/* Print & Close Action Buttons */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '0.5rem' }}>
+        {/* Action Buttons */}
+        <div 
+          className="no-print" 
+          style={{ 
+            display: 'flex', 
+            justifyContent: 'flex-end', 
+            alignItems: 'center',
+            gap: '0.625rem', 
+            marginTop: '0.75rem',
+            paddingTop: '0.75rem',
+            borderTop: '1px solid #F1F5F9'
+          }}
+        >
           <Button variant="secondary" onClick={onClose} type="button">
             Close
+          </Button>
+          <Button variant="secondary" icon={<Download size={15} />} onClick={handleDownload} type="button">
+            Download Receipt
           </Button>
           <Button variant="primary" icon={<Printer size={15} />} onClick={handlePrint} type="button">
             Print Money Receipt

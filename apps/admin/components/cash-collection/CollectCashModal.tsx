@@ -133,6 +133,7 @@ export function CollectCashModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
+      closeOnBackdropClick={false}
       title="Receive Cash Collection"
       subtitle="Collect client dues with automated ledger adjustment and full audit logging"
     >

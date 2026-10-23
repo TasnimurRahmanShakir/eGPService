@@ -52,7 +52,7 @@ export default async function CashCollectionPage() {
           Cash Collection &amp; Due Recovery
         </h1>
         <p style={{ fontSize: '0.875rem', color: '#64748B', marginTop: '4px' }}>
-          মক্কেলের বকেয়া আদায়, নগদ/ব্যাংক রসিদ ভাউচার তৈরি এবং ডিসকাউন্ট সমন্বয়
+          Collection of client dues, preparation of cash/bank receipt vouchers, and adjustment of discounts
         </p>
       </div>
 

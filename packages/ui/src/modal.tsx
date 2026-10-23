@@ -10,6 +10,7 @@ export interface ModalProps {
   children: React.ReactNode;
   maxWidth?: string;
   className?: string;
+  closeOnBackdropClick?: boolean;
 }
 
 export function Modal({
@@ -19,8 +20,12 @@ export function Modal({
   subtitle,
   children,
   maxWidth = '540px',
-  className = ''
+  className = '',
+  closeOnBackdropClick = true
 }: ModalProps) {
+  const overlayRef = React.useRef<HTMLDivElement>(null);
+  const isMouseDownOnOverlayRef = React.useRef(false);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -37,8 +42,20 @@ export function Modal({
 
   if (!isOpen) return null;
 
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    isMouseDownOnOverlayRef.current = (e.target === overlayRef.current);
+  };
+
+  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (closeOnBackdropClick && isMouseDownOnOverlayRef.current && e.target === overlayRef.current) {
+      onClose();
+    }
+    isMouseDownOnOverlayRef.current = false;
+  };
+
   return (
     <div
+      ref={overlayRef}
       className="ui-modal-overlay"
       style={{
         position: 'fixed',
@@ -56,7 +73,8 @@ export function Modal({
         padding: '1rem',
         boxSizing: 'border-box'
       }}
-      onClick={onClose}
+      onMouseDown={handleMouseDown}
+      onClick={handleClick}
     >
       <div
         className={`ui-modal-card ${className}`}
