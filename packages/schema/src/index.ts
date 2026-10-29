@@ -3,3 +3,4 @@ export * from './tender';
 export * from './tenderer';
 export * from './cashCollection';
 
+export * from './tenderSale';

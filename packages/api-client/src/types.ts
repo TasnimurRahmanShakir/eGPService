@@ -204,3 +204,40 @@ export interface CashCollectionSummaryDto {
   totalVouchersCount: number;
 }
 
+
+export interface TenderSaleDto {
+  id: number;
+  date?: string | null;
+  organization: string;
+  tenderId: string;
+  license: string;
+  documentFee: number;
+  paymentBy: string;
+  ts: number;
+  margin: number;
+  commission: number;
+  cs: number;
+  pg: number;
+  tenderWinner: string;
+  noa: string;
+  sell: number;
+  totalInvest: number;
+  profit: number;
+  paid: number;
+  due: number;
+  soldClient: string;
+  remarks: string;
+  createdAtUtc: string;
+  createdBy: string;
+  lastModifiedAtUtc?: string | null;
+  modifiedBy?: string | null;
+}
+
+export interface TenderSaleSummaryDto {
+  totalCount: number;
+  totalSell: number;
+  totalInvest: number;
+  totalProfit: number;
+  totalPaid: number;
+  totalDue: number;
+}

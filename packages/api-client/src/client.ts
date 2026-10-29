@@ -8,7 +8,9 @@ import {
   AuditLogDto,
   TenderClosingIndexDto,
   CashCollectionDto,
-  CashCollectionSummaryDto
+  CashCollectionSummaryDto,
+  TenderSaleDto,
+  TenderSaleSummaryDto
 } from './types';
 import type {
   ClientCreateInput,
@@ -20,7 +22,9 @@ import type {
   TendererAssignInput,
   TendererCreateInput,
   TendererUpdateInput,
-  CashCollectionCreateInput
+  CashCollectionCreateInput,
+  TenderSaleCreateInput,
+  TenderSaleUpdateInput
 } from '@egp/schema';
 
 export class ApiError extends Error {
@@ -283,6 +287,41 @@ export function createApiClient(customBaseUrl?: string) {
         request<{ id: number; message: string; ok: boolean }>('/cashcollections', {
           method: 'POST',
           body: JSON.stringify(data)
+        })
+    },
+
+    tenderSales: {
+      getAll: (
+        params?: {
+          search?: string;
+          fromDate?: string;
+          toDate?: string;
+          page?: number;
+          pageSize?: number;
+        },
+        options?: RequestOptions
+      ) =>
+        request<TenderSaleDto[]>('/tendersales', {
+          ...options,
+          params: { ...options?.params, ...params }
+        }),
+      getById: (id: number, options?: RequestOptions) =>
+        request<TenderSaleDto>('/tendersales/' + id, options),
+      getSummary: (options?: RequestOptions) =>
+        request<TenderSaleSummaryDto>('/tendersales/summary', options),
+      create: (data: TenderSaleCreateInput) =>
+        request<{ id: number; message: string; ok: boolean }>('/tendersales', {
+          method: 'POST',
+          body: JSON.stringify(data)
+        }),
+      update: (id: number, data: TenderSaleUpdateInput) =>
+        request<void>('/tendersales/' + id, {
+          method: 'PUT',
+          body: JSON.stringify(data)
+        }),
+      delete: (id: number) =>
+        request<void>('/tendersales/' + id, {
+          method: 'DELETE'
         })
     },
 

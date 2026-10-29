@@ -1323,3 +1323,475 @@ textarea {
     font-size: 1.35rem !important;
   }
 }
+
+/* ============================================================
+   TENDER SALES MODULE (SHEET VIEW & MODAL)
+   ============================================================ */
+
+.tender-sales-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.tender-sales-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.tender-sales-kpi-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 1.1rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  transition: border-color var(--duration-fast) var(--ease-standard), box-shadow var(--duration-fast) var(--ease-standard);
+}
+
+.tender-sales-kpi-card:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-md);
+}
+
+.tender-sales-kpi-title {
+  font-size: 0.8rem;
+  color: var(--muted-foreground);
+  font-weight: 500;
+}
+
+.tender-sales-kpi-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-top: 4px;
+  font-family: var(--font-sans);
+}
+
+.tender-sales-kpi-value.text-default { color: var(--foreground); }
+.tender-sales-kpi-value.text-teal { color: var(--primary); }
+.tender-sales-kpi-value.text-indigo { color: #4338CA; }
+.tender-sales-kpi-value.text-green { color: var(--success); }
+.tender-sales-kpi-value.text-red { color: var(--danger); }
+.tender-sales-kpi-value.text-sky { color: #0284C7; }
+
+/* Filter Bar */
+.tender-sales-filter-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.tender-sales-filter-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.tender-sales-search-wrapper {
+  position: relative;
+  min-width: 240px;
+  flex: 1;
+}
+
+.tender-sales-search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--foreground-disabled);
+  pointer-events: none;
+}
+
+.tender-sales-search-input {
+  padding-left: 32px !important;
+}
+
+.tender-sales-date-group {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.tender-sales-date-input {
+  width: 145px !important;
+}
+
+.tender-sales-date-separator {
+  color: var(--muted-foreground);
+  font-size: 0.8rem;
+}
+
+.tender-sales-btn-clear {
+  background: transparent;
+  border: none;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  font-size: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  transition: color var(--duration-fast);
+}
+
+.tender-sales-btn-clear:hover {
+  color: var(--foreground);
+}
+
+.tender-sales-action-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Sheet Table */
+.tender-sales-table-wrapper {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.tender-sales-table-scroll {
+  overflow-x: auto;
+  max-height: calc(100vh - 350px);
+}
+
+.tender-sales-sheet-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.tender-sales-sheet-table thead {
+  background: var(--surface-subtle);
+  border-bottom: 2px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.tender-sales-sheet-table th {
+  padding: 10px 12px;
+  font-weight: 700;
+  color: var(--foreground-secondary);
+  border-right: 1px solid var(--border);
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+}
+
+.tender-sales-sheet-table th.col-primary {
+  color: var(--primary);
+}
+
+.tender-sales-sheet-table th.col-sell {
+  color: var(--primary);
+  background: var(--primary-subtle);
+}
+
+.tender-sales-sheet-table th.col-invest {
+  color: #4338CA;
+  background: #EEF2FF;
+}
+
+.tender-sales-sheet-table th.col-profit {
+  color: var(--success);
+  background: var(--success-bg);
+}
+
+.tender-sales-sheet-table th.col-paid {
+  color: #0284C7;
+  background: #F0F9FF;
+}
+
+.tender-sales-sheet-table th.col-due {
+  color: var(--danger);
+  background: var(--danger-bg);
+}
+
+.tender-sales-sheet-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  color: var(--foreground);
+  transition: background-color var(--duration-fast);
+}
+
+.tender-sales-sheet-table tr:hover td {
+  background-color: var(--surface-hover);
+}
+
+.tender-sales-cell-center {
+  text-align: center;
+}
+
+.tender-sales-cell-num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-family: var(--font-mono);
+}
+
+.tender-sales-cell-bold {
+  font-weight: 600;
+}
+
+.tender-sales-cell-sell {
+  background: var(--primary-subtle);
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.tender-sales-cell-invest {
+  background: #EEF2FF;
+  color: #4338CA;
+  font-weight: 600;
+}
+
+.tender-sales-cell-profit-pos {
+  background: var(--success-bg);
+  color: var(--success);
+  font-weight: 700;
+}
+
+.tender-sales-cell-profit-neg {
+  background: var(--danger-bg);
+  color: var(--danger);
+  font-weight: 700;
+}
+
+.tender-sales-cell-paid {
+  background: #F0F9FF;
+  color: #0284C7;
+}
+
+.tender-sales-cell-due-pos {
+  background: var(--danger-bg);
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.tender-sales-cell-due-zero {
+  color: var(--muted-foreground);
+}
+
+.tender-sales-cell-truncate {
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tender-sales-actions-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.tender-sales-btn-action {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 4px 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  color: var(--primary);
+  transition: all var(--duration-fast);
+}
+
+.tender-sales-btn-action:hover {
+  background: var(--primary-subtle);
+  border-color: var(--primary);
+}
+
+.tender-sales-btn-action.action-danger {
+  color: var(--danger);
+  border-color: var(--danger-border);
+}
+
+.tender-sales-btn-action.action-danger:hover {
+  background: var(--danger-bg);
+  border-color: var(--danger);
+}
+
+/* Modal Form */
+.tender-sales-form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.tender-sales-form-error-banner {
+  background: var(--danger-bg);
+  border: 1px solid var(--danger-border);
+  border-radius: var(--radius-control);
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--danger);
+  font-size: 0.875rem;
+}
+
+.tender-sales-form-section {
+  background: var(--surface-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.tender-sales-form-section.financials {
+  background: var(--primary-subtle);
+  border-color: var(--primary-border);
+}
+
+.tender-sales-form-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tender-sales-form-section-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.tender-sales-form-section-title.text-primary {
+  color: var(--primary);
+}
+
+.tender-sales-btn-recalc {
+  font-size: 0.75rem;
+  color: var(--primary);
+  background: #CCFBF1;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 3px 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+  transition: background var(--duration-fast);
+}
+
+.tender-sales-btn-recalc:hover {
+  background: #99F6E4;
+}
+
+.tender-sales-grid-responsive {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+}
+
+.tender-sales-grid-col2 {
+  grid-column: span 2;
+}
+
+.tender-sales-field-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--foreground-secondary);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.tender-sales-field-label.text-primary {
+  color: var(--primary);
+}
+
+.tender-sales-field-label.text-danger {
+  color: var(--danger);
+}
+
+.tender-sales-field-hint {
+  font-size: 0.7rem;
+  color: var(--muted-foreground);
+  font-weight: normal;
+}
+
+.tender-sales-field-error {
+  font-size: 0.75rem;
+  color: var(--danger);
+  margin-top: 2px;
+  display: block;
+}
+
+.tender-sales-form-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+/* Delete Dialog */
+.tender-sales-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.tender-sales-dialog-box {
+  background: var(--surface);
+  border-radius: var(--radius-card);
+  padding: 1.5rem;
+  width: 90%;
+  max-width: 420px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border);
+}
+
+.tender-sales-dialog-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--danger);
+  margin-bottom: 0.75rem;
+}
+
+.tender-sales-dialog-title {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.tender-sales-dialog-text {
+  font-size: 0.875rem;
+  color: var(--foreground-secondary);
+  line-height: 1.5;
+  margin: 0 0 1.25rem 0;
+}
+
+.tender-sales-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
