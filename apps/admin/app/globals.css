@@ -128,8 +128,7 @@ textarea {
   font-variant-numeric: tabular-nums;
 }
 
-/* ============================================================
-   RESPONSIVE DATA TABLES & PERFORMANCE OPTIMIZATION
+/* =====================================================   RESPONSIVE DATA TABLES & PERFORMANCE OPTIMIZATION
    ============================================================ */
 
 .data-table-container,
@@ -167,8 +166,7 @@ textarea {
   background: var(--muted-foreground);
 }
 
-/* ============================================================
-   RESPONSIVE ADMIN SHELL & SIDEBAR
+/* =====================================================   RESPONSIVE ADMIN SHELL & SIDEBAR
    ============================================================ */
 
 .admin-shell-layout {
@@ -413,8 +411,7 @@ textarea {
   to { opacity: 1; }
 }
 
-/* ============================================================
-   GRAPHITE & TEAL CARDS & METRICS
+/* =====================================================   GRAPHITE & TEAL CARDS & METRICS
    ============================================================ */
 
 .admin-card,
@@ -603,8 +600,7 @@ textarea {
   color: var(--input-placeholder);
 }
 
-/* ============================================================
-   RESPONSIVE MEDIA QUERIES (Mobile & Tablet)
+/* =====================================================   RESPONSIVE MEDIA QUERIES (Mobile & Tablet)
    ============================================================ */
 
 @media (max-width: 1023px) {
@@ -636,8 +632,7 @@ textarea {
   }
 }
 
-/* ============================================================
-   ADMIN AUTHENTICATION & LOGIN SCREEN
+/* =====================================================   ADMIN AUTHENTICATION & LOGIN SCREEN
    ============================================================ */
 
 .admin-login-layout {
@@ -953,8 +948,7 @@ textarea {
   padding: 0.55rem 0;
 }
 
-/* ============================================================
-   RESPONSIVE DESIGN SYSTEM (MOBILE, TABLET & DESKTOP)
+/* =====================================================   RESPONSIVE DESIGN SYSTEM (MOBILE, TABLET & DESKTOP)
    ============================================================ */
 
 /* Universal Page Container */
@@ -1324,8 +1318,7 @@ textarea {
   }
 }
 
-/* ============================================================
-   TENDER SALES MODULE (SHEET VIEW & MODAL)
+/* =====================================================   TENDER SALES MODULE (SHEET VIEW & MODAL)
    ============================================================ */
 
 .tender-sales-wrapper {
@@ -1794,4 +1787,40 @@ textarea {
   display: flex;
   justify-content: flex-end;
   gap: 0.75rem;
+}
+/* Print Styles for Invoices and Receipts */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  .admin-sidebar,
+  .admin-top-nav,
+  .no-print,
+  button,
+  .modal-overlay,
+  .modal-close-btn {
+    display: none !important;
+  }
+
+  .admin-page-container,
+  .admin-content-viewport,
+  .modal-content,
+  .modal-container {
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  #invoice-print-area,
+  #printable-receipt {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    width: 100% !important;
+  }
 }

@@ -17,6 +17,7 @@ import {
   LogOut,
   WalletCards,
   TrendingUp,
+  Receipt,
 } from 'lucide-react';
 import { setSidebarCookie } from '../../app/actions/sidebarActions';
 import { logoutAction } from '../../app/actions/authActions';
@@ -24,6 +25,7 @@ import { logoutAction } from '../../app/actions/authActions';
 const NAV_ITEMS = [
   { label: 'Overview', href: '/', icon: LayoutDashboard },
   { label: 'Clients', href: '/clients', icon: Users },
+  { label: 'Invoices', href: '/invoices', icon: Receipt },
   { label: 'Cash Collection', href: '/cash-collection', icon: WalletCards },
   { label: 'Tender Sales', href: '/tender-sales', icon: TrendingUp },
   { label: 'Tenders (Excel)', href: '/tenders', icon: FileSpreadsheet },

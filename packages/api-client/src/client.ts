@@ -10,7 +10,8 @@ import {
   CashCollectionDto,
   CashCollectionSummaryDto,
   TenderSaleDto,
-  TenderSaleSummaryDto
+  TenderSaleSummaryDto,
+  InvoiceDto
 } from './types';
 import type {
   ClientCreateInput,
@@ -330,6 +331,33 @@ export function createApiClient(customBaseUrl?: string) {
         request<AuditLogDto[]>('/auditlogs', {
           ...options,
           params: { ...options?.params, ...params }
+        })
+    },
+
+    invoices: {
+      getAll: (
+        params?: {
+          clientId?: number;
+          tenderId?: number;
+          invoiceType?: string;
+          status?: string;
+          search?: string;
+          fromDate?: string;
+          toDate?: string;
+          page?: number;
+          pageSize?: number;
+        },
+        options?: RequestOptions
+      ) =>
+        request<InvoiceDto[]>('/invoices', {
+          ...options,
+          params: { ...options?.params, ...params }
+        }),
+      getById: (id: number, options?: RequestOptions) =>
+        request<InvoiceDto>(`/invoices/${id}`, options),
+      sync: () =>
+        request<{ message: string }>('/invoices/sync', {
+          method: 'POST'
         })
     }
   };

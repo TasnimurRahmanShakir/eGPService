@@ -241,3 +241,49 @@ export interface TenderSaleSummaryDto {
   totalPaid: number;
   totalDue: number;
 }
+export enum InvoiceStatus {
+  Unpaid = 'Unpaid',
+  PartiallyPaid = 'PartiallyPaid',
+  Paid = 'Paid',
+  Cancelled = 'Cancelled'
+}
+
+export enum InvoiceType {
+  Tender = 'Tender',
+  OpeningBalance = 'OpeningBalance',
+  TenderSale = 'TenderSale'
+}
+
+export interface InvoiceItemDto {
+  id: number;
+  invoiceId: number;
+  tenderId?: number | null;
+  tenderTendererMappingId?: number | null;
+  description: string;
+  quantity: number;
+  unitPrice: number;
+  amount: number;
+}
+
+export interface InvoiceDto {
+  id: number;
+  invoiceNumber: string;
+  clientId: number;
+  clientName: string;
+  clientPhone: string;
+  clientEmail: string;
+  tenderId?: number | null;
+  tenderRefId?: string | null;
+  invoiceType: InvoiceType;
+  invoiceDateUtc: string;
+  status: InvoiceStatus;
+  subTotalAmount: number;
+  discountAmount: number;
+  totalAmount: number;
+  totalPaid: number;
+  dueAmount: number;
+  remarks: string;
+  itemCount: number;
+  items: InvoiceItemDto[];
+}
+
