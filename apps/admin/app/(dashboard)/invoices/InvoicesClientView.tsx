@@ -141,7 +141,7 @@ export function InvoicesClientView({ initialInvoices, clients }: InvoicesClientV
           >
             {inv.invoiceNumber}
           </button>
-          <span style={{ fontSize: '0.75rem', color: '#64748B', marginTop: '2px' }}>
+          <span style={{ fontSize: '0.75rem', color: '#64748B', marginTop: '2px' }} suppressHydrationWarning>
             {formatLocalDate(inv.invoiceDateUtc)}
           </span>
         </div>
@@ -395,11 +395,13 @@ export function InvoicesClientView({ initialInvoices, clients }: InvoicesClientV
       </div>
 
       {/* Invoice Printable View Modal */}
-      <InvoiceViewModal
-        invoice={activeInvoice}
-        isOpen={!!activeInvoice}
-        onClose={() => setActiveInvoice(null)}
-      />
+      {activeInvoice && (
+        <InvoiceViewModal
+          invoice={activeInvoice}
+          isOpen={!!activeInvoice}
+          onClose={() => setActiveInvoice(null)}
+        />
+      )}
     </div>
   );
 }

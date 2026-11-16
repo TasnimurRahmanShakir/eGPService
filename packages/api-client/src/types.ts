@@ -265,6 +265,18 @@ export interface InvoiceItemDto {
   amount: number;
 }
 
+export interface InvoicePaymentDto {
+  id: number;
+  invoiceId: number;
+  voucherNo: string;
+  paymentDateUtc: string;
+  paymentMethod: string;
+  amount: number;
+  discountAmount: number;
+  balanceAfter: number;
+  remarks: string;
+}
+
 export interface InvoiceDto {
   id: number;
   invoiceNumber: string;
@@ -285,5 +297,6 @@ export interface InvoiceDto {
   remarks: string;
   itemCount: number;
   items: InvoiceItemDto[];
+  payments?: InvoicePaymentDto[];
 }
 

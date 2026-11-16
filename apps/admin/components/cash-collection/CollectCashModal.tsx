@@ -128,13 +128,17 @@ export function CollectCashModal({
     };
 
     startTransition(async () => {
-      const res = await createCashCollectionAction(payload);
-      if (res.success) {
-        toast.success(res.message || 'Cash collection recorded successfully.');
-        onSuccess?.();
-        onClose();
-      } else {
-        setServerError(res.message);
+      try {
+        const res = await createCashCollectionAction(payload);
+        if (res?.success) {
+          toast.success(res.message || 'Cash collection recorded successfully.');
+          onSuccess?.();
+          onClose();
+        } else {
+          setServerError(res?.message || 'Failed to record cash collection.');
+        }
+      } catch (err: any) {
+        setServerError(err?.message || 'An unexpected error occurred while recording collection.');
       }
     });
   };

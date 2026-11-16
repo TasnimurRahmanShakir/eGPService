@@ -121,12 +121,12 @@ export function CashCollectionClientView({
           }}
           title="Click to view & print money receipt"
         >
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
             <Receipt size={14} style={{ color: '#4F46E5' }} />
             <span style={{ fontFamily: 'monospace', fontWeight: 700, color: '#4F46E5', fontSize: '0.8125rem', textDecoration: 'underline' }}>
               {c.voucherNo}
             </span>
-          </div>
+          </span>
         </button>
       ),
     },
@@ -137,7 +137,7 @@ export function CashCollectionClientView({
       cell: (c) => {
         const d = new Date(c.collectionDateUtc);
         return (
-          <span style={{ fontSize: '0.8125rem', color: '#475569' }}>
+          <span style={{ fontSize: '0.8125rem', color: '#475569' }} suppressHydrationWarning>
             {d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
           </span>
         );
@@ -259,7 +259,7 @@ export function CashCollectionClientView({
               <TrendingUp size={18} />
             </span>
           </div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#047857', marginTop: '0.35rem', fontVariantNumeric: 'tabular-nums' }}>
+          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#047857', marginTop: '0.35rem', fontVariantNumeric: 'tabular-nums' }} suppressHydrationWarning>
             ৳{summary.totalCollectedToday.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
           </div>
           <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: '0.25rem' }}>
@@ -275,7 +275,7 @@ export function CashCollectionClientView({
               <Calendar size={18} />
             </span>
           </div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#1E293B', marginTop: '0.35rem', fontVariantNumeric: 'tabular-nums' }}>
+          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#1E293B', marginTop: '0.35rem', fontVariantNumeric: 'tabular-nums' }} suppressHydrationWarning>
             ৳{summary.totalCollectedThisMonth.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
           </div>
           <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: '0.25rem' }}>
@@ -291,7 +291,7 @@ export function CashCollectionClientView({
               <WalletCards size={18} />
             </span>
           </div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#1E293B', marginTop: '0.35rem', fontVariantNumeric: 'tabular-nums' }}>
+          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#1E293B', marginTop: '0.35rem', fontVariantNumeric: 'tabular-nums' }} suppressHydrationWarning>
             ৳{summary.totalCollectedAllTime.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
           </div>
           <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: '0.25rem' }}>
@@ -307,7 +307,7 @@ export function CashCollectionClientView({
               <AlertTriangle size={18} />
             </span>
           </div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#BE123C', marginTop: '0.35rem', fontVariantNumeric: 'tabular-nums' }}>
+          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#BE123C', marginTop: '0.35rem', fontVariantNumeric: 'tabular-nums' }} suppressHydrationWarning>
             ৳{summary.totalMarketDue.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
           </div>
           <div style={{ fontSize: '0.75rem', color: '#BE123C', marginTop: '0.25rem', fontWeight: 500 }}>
@@ -366,22 +366,26 @@ export function CashCollectionClientView({
       />
 
       {/* Receive Cash Modal */}
-      <CollectCashModal
-        isOpen={isCollectOpen}
-        onClose={() => setIsCollectOpen(false)}
-        clients={clients}
-        onSuccess={() => {
-          setIsCollectOpen(false);
-          refreshData();
-        }}
-      />
+      {isCollectOpen && (
+        <CollectCashModal
+          isOpen={isCollectOpen}
+          onClose={() => setIsCollectOpen(false)}
+          clients={clients}
+          onSuccess={() => {
+            setIsCollectOpen(false);
+            refreshData();
+          }}
+        />
+      )}
 
       {/* Printable Money Receipt Modal */}
-      <CashReceiptModal
-        isOpen={!!receiptCollection}
-        onClose={() => setReceiptCollection(null)}
-        collection={receiptCollection}
-      />
+      {receiptCollection && (
+        <CashReceiptModal
+          isOpen={!!receiptCollection}
+          onClose={() => setReceiptCollection(null)}
+          collection={receiptCollection}
+        />
+      )}
     </>
   );
 }

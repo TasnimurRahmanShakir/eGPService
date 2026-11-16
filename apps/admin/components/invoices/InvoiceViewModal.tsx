@@ -192,29 +192,84 @@ export function InvoiceViewModal({ invoice, isOpen, onClose }: InvoiceViewModalP
             </table>
           </div>
 
+          {/* Payment & Settlement History */}
+          {invoice.payments && invoice.payments.length > 0 && (
+            <div style={{ marginBottom: '2rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.75rem' }}>
+                <Receipt size={18} style={{ color: '#0F766E' }} />
+                <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#0F766E', margin: 0 }}>
+                  Payment &amp; Settlement History (পরিশোধ ও সমন্বয়ের ইতিহাস)
+                </h3>
+              </div>
+              <div style={{ overflowX: 'auto', border: '1px solid #CBD5E1', borderRadius: '6px' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.825rem' }}>
+                  <thead>
+                    <tr style={{ backgroundColor: '#F8FAFC', color: '#475569', borderBottom: '1px solid #CBD5E1' }}>
+                      <th style={{ padding: '8px 10px', textAlign: 'left', width: '35px' }}>#</th>
+                      <th style={{ padding: '8px 10px', textAlign: 'left', width: '110px' }}>Date</th>
+                      <th style={{ padding: '8px 10px', textAlign: 'left' }}>Voucher / Ref</th>
+                      <th style={{ padding: '8px 10px', textAlign: 'center', width: '90px' }}>Method</th>
+                      <th style={{ padding: '8px 10px', textAlign: 'right', width: '110px' }}>Paid (৳)</th>
+                      <th style={{ padding: '8px 10px', textAlign: 'right', width: '100px' }}>Discount (৳)</th>
+                      <th style={{ padding: '8px 10px', textAlign: 'right', width: '120px' }}>Balance After</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {invoice.payments.map((pmt, idx) => (
+                      <tr key={pmt.id} style={{ borderBottom: idx === invoice.payments!.length - 1 ? 'none' : '1px solid #E2E8F0', backgroundColor: idx % 2 === 1 ? '#F8FAFC' : '#ffffff' }}>
+                        <td style={{ padding: '8px 10px', color: '#64748B' }}>{idx + 1}</td>
+                        <td style={{ padding: '8px 10px', color: '#334155', fontWeight: 500 }}>{formatLocalDate(pmt.paymentDateUtc)}</td>
+                        <td style={{ padding: '8px 10px', fontWeight: 600, color: '#0F766E' }}>
+                          {pmt.voucherNo}
+                          {pmt.remarks && pmt.remarks !== 'Auto-allocated via Cash Collection' && (
+                            <span style={{ display: 'block', fontSize: '0.725rem', color: '#64748B', fontWeight: 400 }}>{pmt.remarks}</span>
+                          )}
+                        </td>
+                        <td style={{ padding: '8px 10px', textAlign: 'center' }}>
+                          <span style={{ fontSize: '0.725rem', padding: '2px 8px', borderRadius: '4px', backgroundColor: '#EEF2FF', color: '#4338CA', fontWeight: 600 }}>
+                            {pmt.paymentMethod}
+                          </span>
+                        </td>
+                        <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, color: '#059669' }}>
+                          ৳{pmt.amount.toLocaleString()}
+                        </td>
+                        <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 600, color: pmt.discountAmount > 0 ? '#D97706' : '#94A3B8' }}>
+                          {pmt.discountAmount > 0 ? `৳${pmt.discountAmount.toLocaleString()}` : '-'}
+                        </td>
+                        <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 700, color: '#1E293B' }}>
+                          ৳{pmt.balanceAfter.toLocaleString()}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
           {/* Financial Summary */}
           <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1.5rem' }}>
-            <div style={{ width: '320px', backgroundColor: '#F8FAFC', padding: '1rem', borderRadius: '6px', border: '1px solid #E2E8F0' }}>
+            <div style={{ width: '340px', backgroundColor: '#F8FAFC', padding: '1.1rem', borderRadius: '8px', border: '1px solid #CBD5E1' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', fontSize: '0.875rem' }}>
                 <span style={{ color: '#64748B' }}>Subtotal:</span>
-                <span style={{ fontWeight: 600 }}>৳{invoice.subTotalAmount.toLocaleString()}</span>
+                <span style={{ fontWeight: 600, color: '#1E293B' }}>৳{invoice.subTotalAmount.toLocaleString()}</span>
               </div>
-              {invoice.discountAmount > 0 && (
-                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', fontSize: '0.875rem', color: '#059669' }}>
-                  <span>Discount:</span>
-                  <span style={{ fontWeight: 600 }}>-৳{invoice.discountAmount.toLocaleString()}</span>
-                </div>
-              )}
-              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderTop: '2px solid #E2E8F0', borderBottom: '2px solid #E2E8F0', margin: '6px 0', fontSize: '1rem', fontWeight: 800, color: '#0F172A' }}>
-                <span>Total Amount:</span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderTop: '1px solid #E2E8F0', borderBottom: '1px solid #E2E8F0', margin: '4px 0', fontSize: '0.95rem', fontWeight: 700, color: '#0F172A' }}>
+                <span>Total Invoiced:</span>
                 <span>৳{invoice.totalAmount.toLocaleString()}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', fontSize: '0.875rem', color: '#059669' }}>
-                <span>Total Paid:</span>
-                <span style={{ fontWeight: 700 }}>৳{invoice.totalPaid.toLocaleString()}</span>
+                <span>Less: Total Paid:</span>
+                <span style={{ fontWeight: 700 }}>-৳{invoice.totalPaid.toLocaleString()}</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', fontSize: '1.05rem', fontWeight: 800, color: invoice.dueAmount > 0 ? '#E11D48' : '#059669' }}>
-                <span>Balance Due:</span>
+              {invoice.discountAmount > 0 && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', fontSize: '0.875rem', color: '#D97706' }}>
+                  <span>Less: Total Discount:</span>
+                  <span style={{ fontWeight: 700 }}>-৳{invoice.discountAmount.toLocaleString()}</span>
+                </div>
+              )}
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderTop: '2px solid #CBD5E1', marginTop: '6px', fontSize: '1.1rem', fontWeight: 800, color: invoice.dueAmount > 0 ? '#E11D48' : '#059669' }}>
+                <span>Net Balance Due:</span>
                 <span>৳{invoice.dueAmount.toLocaleString()}</span>
               </div>
             </div>
