@@ -35,8 +35,11 @@ async function getHmacKey(): Promise<CryptoKey> {
   );
 }
 
+export type SessionRole = 'SuperAdmin' | 'Operator';
+
 export interface SessionPayload {
   user: string;
+  role: SessionRole;
   iat: number;
   exp: number;
   nonce: string;
@@ -44,12 +47,13 @@ export interface SessionPayload {
 
 /**
  * Creates a cryptographically signed HMAC-SHA256 session token.
- * Payload includes issuance timestamp, expiration (7 days), and a unique random nonce.
+ * Payload includes username, role, issuance timestamp, expiration (7 days), and a unique random nonce.
  */
-export async function createSessionToken(username: string): Promise<string> {
+export async function createSessionToken(username: string, role: SessionRole = 'SuperAdmin'): Promise<string> {
   const now = Math.floor(Date.now() / 1000);
   const payload: SessionPayload = {
     user: username,
+    role,
     iat: now,
     exp: now + 7 * 24 * 60 * 60, // 7 days
     nonce: crypto.randomUUID(),
@@ -71,13 +75,13 @@ export async function createSessionToken(username: string): Promise<string> {
 
 /**
  * Verifies the integrity, HMAC signature, and expiration of the session token.
- * Returns true only if the token was signed with the server secret and is unexpired.
+ * Returns the decoded SessionPayload if valid, or null if invalid/expired.
  */
-export async function verifySessionToken(token: string | undefined | null): Promise<boolean> {
-  if (!token || typeof token !== 'string') return false;
+export async function getSessionPayload(token: string | undefined | null): Promise<SessionPayload | null> {
+  if (!token || typeof token !== 'string') return null;
 
   const parts = token.split('.');
-  if (parts.length !== 2) return false;
+  if (parts.length !== 2) return null;
 
   const [payloadB64, signatureB64] = parts;
 
@@ -91,19 +95,33 @@ export async function verifySessionToken(token: string | undefined | null): Prom
       strToUint8(payloadB64) as unknown as BufferSource
     );
 
-    if (!isValid) return false;
+    if (!isValid) return null;
 
     const payloadStr = new TextDecoder().decode(fromBase64Url(payloadB64));
     const payload: SessionPayload = JSON.parse(payloadStr);
 
     const now = Math.floor(Date.now() / 1000);
     if (payload.exp < now) {
-      return false; // Expired
+      return null; // Expired
     }
 
-    return true;
+    // Default to SuperAdmin if role wasn't previously set in older tokens
+    if (!payload.role) {
+      payload.role = payload.user.toLowerCase() === 'admin' ? 'SuperAdmin' : 'Operator';
+    }
+
+    return payload;
   } catch {
-    return false;
+    return null;
   }
+}
+
+/**
+ * Verifies the integrity, HMAC signature, and expiration of the session token.
+ * Returns true only if the token was signed with the server secret and is unexpired.
+ */
+export async function verifySessionToken(token: string | undefined | null): Promise<boolean> {
+  const session = await getSessionPayload(token);
+  return session !== null;
 }
 

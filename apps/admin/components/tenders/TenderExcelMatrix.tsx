@@ -21,6 +21,7 @@ import { formatLocalDate, formatLocalTime } from '@/lib/date-utils';
 
 interface TenderExcelMatrixProps {
   tenders: TenderDto[];
+  userRole?: 'SuperAdmin' | 'Operator';
   onEditTender?: (tender: TenderDto) => void;
   onAddClient?: (tender: TenderDto) => void;
   onRemoveClient?: (tenderId: number, clientId: number, clientName: string) => void;
@@ -31,6 +32,7 @@ interface TenderExcelMatrixProps {
 
 export function TenderExcelMatrix({
   tenders,
+  userRole = 'SuperAdmin',
   onEditTender,
   onAddClient,
   onRemoveClient,
@@ -38,6 +40,7 @@ export function TenderExcelMatrix({
   onEditTenderer,
   onRemoveTenderer,
 }: TenderExcelMatrixProps) {
+  const isOperator = userRole === 'Operator';
   const [showPasswords, setShowPasswords] = useState<Record<string, boolean>>({});
 
   const togglePasswordVisibility = (key: string) => {
@@ -559,7 +562,9 @@ export function TenderExcelMatrix({
                             <th style={{ ...subHeaderStyle, minWidth: '60px', textAlign: 'center' }}>Rate</th>
                             <th style={{ ...subHeaderStyle, minWidth: '75px', textAlign: 'center' }}>Less %</th>
                             <th style={{ ...subHeaderStyle, minWidth: '65px', textAlign: 'center' }}>Submit</th>
-                            <th style={{ ...subHeaderStyle, minWidth: '95px', textAlign: 'right' }}>Charge (৳)</th>
+                            {!isOperator && (
+                              <th style={{ ...subHeaderStyle, minWidth: '95px', textAlign: 'right' }}>Charge (৳)</th>
+                            )}
                             <th style={{ ...subHeaderStyle, minWidth: '100px', textAlign: 'center' }}>Actions</th>
                           </tr>
                         </thead>
@@ -568,7 +573,7 @@ export function TenderExcelMatrix({
                           {cg.tenderers.length === 0 ? (
                             <tr>
                               <td
-                                colSpan={13}
+                                colSpan={isOperator ? 12 : 13}
                                 style={{
                                   padding: '1rem',
                                   textAlign: 'center',
@@ -711,9 +716,11 @@ export function TenderExcelMatrix({
                                   </td>
 
                                   {/* Financials */}
-                                  <td style={{ ...subCellStyle, textAlign: 'right', fontFamily: 'monospace' }}>
-                                    <MoneyDisplay amount={m.chargeAmount} size="sm" />
-                                  </td>
+                                  {!isOperator && (
+                                    <td style={{ ...subCellStyle, textAlign: 'right', fontFamily: 'monospace' }}>
+                                      <MoneyDisplay amount={m.chargeAmount} size="sm" />
+                                    </td>
+                                  )}
 
                                   {/* Actions */}
                                   <td style={{ ...subCellStyle, textAlign: 'center' }}>

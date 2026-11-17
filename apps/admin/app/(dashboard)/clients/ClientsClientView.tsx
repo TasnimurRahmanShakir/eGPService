@@ -9,7 +9,13 @@ import { ClientLedgerModal } from '@/components/clients/ClientLedgerModal';
 import { getClientDetailAction } from '@/app/actions/clientActions';
 import { formatLocalDate } from '@/lib/date-utils';
 
-export function ClientsClientView({ initialClients }: { initialClients: ClientDto[] }) {
+interface ClientsClientViewProps {
+  initialClients: ClientDto[];
+  userRole?: 'SuperAdmin' | 'Operator';
+}
+
+export function ClientsClientView({ initialClients, userRole = 'SuperAdmin' }: ClientsClientViewProps) {
+  const isOperator = userRole === 'Operator';
   const [search, setSearch] = useState('');
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [editingClient, setEditingClient] = useState<ClientDto | null>(null);
@@ -30,7 +36,7 @@ export function ClientsClientView({ initialClients }: { initialClients: ClientDt
   const totalAdvanceSum = initialClients.reduce((sum, c) => sum + (c.currentAdvance || 0), 0);
   const totalDueSum = initialClients.reduce((sum, c) => sum + (c.currentDue || 0), 0);
 
-  const columns: Column<ClientDto>[] = [
+  const allColumns: Column<ClientDto>[] = [
     {
       header: 'Client ID',
       accessorKey: 'id',
@@ -160,26 +166,28 @@ export function ClientsClientView({ initialClients }: { initialClients: ClientDt
       align: 'right',
       cell: (c) => (
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
-          <Button
-            size="sm"
-            variant="ghost"
-            icon={<FileText size={14} />}
-            isLoading={loadingLedgerId === c.id}
-            onClick={async () => {
-              setLoadingLedgerId(c.id);
-              try {
-                const res = await getClientDetailAction(c.id);
-                if (res.success && res.data) {
-                  setSelectedLedgerClient(res.data);
+          {!isOperator && (
+            <Button
+              size="sm"
+              variant="ghost"
+              icon={<FileText size={14} />}
+              isLoading={loadingLedgerId === c.id}
+              onClick={async () => {
+                setLoadingLedgerId(c.id);
+                try {
+                  const res = await getClientDetailAction(c.id);
+                  if (res.success && res.data) {
+                    setSelectedLedgerClient(res.data);
+                  }
+                } finally {
+                  setLoadingLedgerId(null);
                 }
-              } finally {
-                setLoadingLedgerId(null);
-              }
-            }}
-            title="View Ledger Statement"
-          >
-            Ledger
-          </Button>
+              }}
+              title="View Ledger Statement"
+            >
+              Ledger
+            </Button>
+          )}
           <Button
             size="sm"
             variant="ghost"
@@ -189,19 +197,26 @@ export function ClientsClientView({ initialClients }: { initialClients: ClientDt
           >
             Edit
           </Button>
-          <Button
-            size="sm"
-            variant="outline"
-            icon={<Sparkles size={14} />}
-            onClick={() => {}}
-            title="Solution (Disabled)"
-          >
-            {c.hasPurchasedSolution ? 'Renew Solution' : 'Add Solution'}
-          </Button>
+          {!isOperator && (
+            <Button
+              size="sm"
+              variant="outline"
+              icon={<Sparkles size={14} />}
+              onClick={() => {}}
+              title="Solution (Disabled)"
+            >
+              {c.hasPurchasedSolution ? 'Renew Solution' : 'Add Solution'}
+            </Button>
+          )}
         </div>
       ),
     },
   ];
+
+  // Operator role must NOT see financial columns: Opening Balance, Charge, Payment, Discount, Advance, Due
+  const columns = isOperator
+    ? allColumns.filter((col) => !['Opening Balance', 'Charge', 'Payment', 'Discount', 'Advance', 'Due'].includes(col.header))
+    : allColumns;
 
   return (
     <>
@@ -215,35 +230,39 @@ export function ClientsClientView({ initialClients }: { initialClients: ClientDt
           </div>
         </div>
 
-        <div style={{ padding: '1.25rem', backgroundColor: '#FFFFFF', borderRadius: '10px', border: '1px solid #E2E8F0', boxShadow: 'var(--shadow-sm)' }}>
-          <span style={{ fontSize: '0.875rem', color: '#64748B', fontWeight: 500 }}>Total Payments</span>
-          <div style={{ marginTop: '0.25rem' }}>
-            <MoneyDisplay amount={totalPaymentSum} type="advance" size="lg" />
-          </div>
-          <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: '0.25rem' }}>
-            Total cash collected from clients
-          </div>
-        </div>
+        {!isOperator && (
+          <>
+            <div style={{ padding: '1.25rem', backgroundColor: '#FFFFFF', borderRadius: '10px', border: '1px solid #E2E8F0', boxShadow: 'var(--shadow-sm)' }}>
+              <span style={{ fontSize: '0.875rem', color: '#64748B', fontWeight: 500 }}>Total Payments</span>
+              <div style={{ marginTop: '0.25rem' }}>
+                <MoneyDisplay amount={totalPaymentSum} type="advance" size="lg" />
+              </div>
+              <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: '0.25rem' }}>
+                Total cash collected from clients
+              </div>
+            </div>
 
-        <div style={{ padding: '1.25rem', backgroundColor: '#FFFFFF', borderRadius: '10px', border: '1px solid #E2E8F0', boxShadow: 'var(--shadow-sm)' }}>
-          <span style={{ fontSize: '0.875rem', color: '#64748B', fontWeight: 500 }}>Total Available Advance</span>
-          <div style={{ marginTop: '0.25rem' }}>
-            <MoneyDisplay amount={totalAdvanceSum} type="advance" size="lg" />
-          </div>
-          <div style={{ fontSize: '0.75rem', color: '#047857', marginTop: '0.25rem', fontWeight: 500 }}>
-            Remaining advance credit available
-          </div>
-        </div>
+            <div style={{ padding: '1.25rem', backgroundColor: '#FFFFFF', borderRadius: '10px', border: '1px solid #E2E8F0', boxShadow: 'var(--shadow-sm)' }}>
+              <span style={{ fontSize: '0.875rem', color: '#64748B', fontWeight: 500 }}>Total Available Advance</span>
+              <div style={{ marginTop: '0.25rem' }}>
+                <MoneyDisplay amount={totalAdvanceSum} type="advance" size="lg" />
+              </div>
+              <div style={{ fontSize: '0.75rem', color: '#047857', marginTop: '0.25rem', fontWeight: 500 }}>
+                Remaining advance credit available
+              </div>
+            </div>
 
-        <div style={{ padding: '1.25rem', backgroundColor: '#FFFFFF', borderRadius: '10px', border: '1px solid #E2E8F0', boxShadow: 'var(--shadow-sm)' }}>
-          <span style={{ fontSize: '0.875rem', color: '#64748B', fontWeight: 500 }}>Total Outstanding Due</span>
-          <div style={{ marginTop: '0.25rem' }}>
-            <MoneyDisplay amount={totalDueSum} type="due" size="lg" />
-          </div>
-          <div style={{ fontSize: '0.75rem', color: '#BE123C', marginTop: '0.25rem', fontWeight: 500 }}>
-            Accumulated due across all clients
-          </div>
-        </div>
+            <div style={{ padding: '1.25rem', backgroundColor: '#FFFFFF', borderRadius: '10px', border: '1px solid #E2E8F0', boxShadow: 'var(--shadow-sm)' }}>
+              <span style={{ fontSize: '0.875rem', color: '#64748B', fontWeight: 500 }}>Total Outstanding Due</span>
+              <div style={{ marginTop: '0.25rem' }}>
+                <MoneyDisplay amount={totalDueSum} type="due" size="lg" />
+              </div>
+              <div style={{ fontSize: '0.75rem', color: '#BE123C', marginTop: '0.25rem', fontWeight: 500 }}>
+                Accumulated due across all clients
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Reusable Data Table */}

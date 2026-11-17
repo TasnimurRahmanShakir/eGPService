@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { setSidebarCookie } from '../../app/actions/sidebarActions';
 import { logoutAction } from '../../app/actions/authActions';
+import type { SessionRole } from '@/lib/auth-crypto';
 
 const NAV_ITEMS = [
   { label: 'Overview', href: '/', icon: LayoutDashboard },
@@ -38,6 +39,8 @@ export interface AdminSidebarProps {
   onToggleCollapse?: () => void;
   isMobileOpen?: boolean;
   onCloseMobile?: () => void;
+  userRole?: SessionRole;
+  username?: string;
 }
 
 export function AdminSidebar({
@@ -45,8 +48,15 @@ export function AdminSidebar({
   onToggleCollapse,
   isMobileOpen = false,
   onCloseMobile,
+  userRole = 'SuperAdmin',
+  username = 'admin',
 }: AdminSidebarProps) {
   const pathname = usePathname();
+
+  // If role is Operator, only permit Clients, Tenders, and e-GP Licenses
+  const visibleNavItems = userRole === 'Operator'
+    ? NAV_ITEMS.filter((item) => ['/clients', '/tenders', '/tenderers'].includes(item.href))
+    : NAV_ITEMS;
 
   return (
     <aside className={`admin-sidebar ${isCollapsed ? 'collapsed' : ''} ${isMobileOpen ? 'mobile-open' : ''}`}>
@@ -58,7 +68,14 @@ export function AdminSidebar({
           </div>
           <div className="sidebar-text-hide" style={{ minWidth: 0 }}>
             <h2 className="brand-title">eGP Tender BD</h2>
-            <span className="brand-subtitle">Enterprise Portal</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span className="brand-subtitle">{username}</span>
+              {userRole === 'Operator' && (
+                <span style={{ fontSize: '0.65rem', padding: '1px 5px', borderRadius: '4px', backgroundColor: '#FEF3C7', color: '#92400E', fontWeight: 700 }}>
+                  OPERATOR
+                </span>
+              )}
+            </div>
           </div>
         </div>
 
@@ -92,7 +109,7 @@ export function AdminSidebar({
       {/* Navigation Links */}
       <nav className="sidebar-nav-container">
         <div className="sidebar-nav-label sidebar-text-hide">Main Menu</div>
-        {NAV_ITEMS.map((item) => {
+        {visibleNavItems.map((item) => {
           const isActive = pathname === item.href;
           const Icon = item.icon;
 
@@ -131,9 +148,13 @@ export function AdminSidebar({
 
 export function AdminLayoutWrapper({
   initialCollapsed = false,
+  userRole = 'SuperAdmin',
+  username = 'admin',
   children,
 }: {
   initialCollapsed?: boolean;
+  userRole?: SessionRole;
+  username?: string;
   children: React.ReactNode;
 }) {
   const [isCollapsed, setIsCollapsed] = useState(initialCollapsed);
@@ -188,6 +209,8 @@ export function AdminLayoutWrapper({
         onToggleCollapse={handleToggleCollapse}
         isMobileOpen={isMobileOpen}
         onCloseMobile={() => setIsMobileOpen(false)}
+        userRole={userRole}
+        username={username}
       />
 
       {/* Main Content Column */}

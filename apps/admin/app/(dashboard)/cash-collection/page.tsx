@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react';
 import { apiClient, type ClientDto, type CashCollectionDto, type CashCollectionSummaryDto } from '@egp/api-client';
 import { CashCollectionClientView } from './CashCollectionClientView';
+import { requireAdminRole } from '@/lib/auth-guard';
 
 export const dynamic = 'force-dynamic';
 
@@ -38,6 +39,7 @@ async function fetchSummary(): Promise<CashCollectionSummaryDto> {
 }
 
 export default async function CashCollectionPage() {
+  await requireAdminRole();
   const [clients, collections, summary] = await Promise.all([
     fetchClients(),
     fetchCollections(),

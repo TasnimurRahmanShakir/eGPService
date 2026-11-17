@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react';
 import { apiClient, type AuditLogDto } from '@egp/api-client';
 import { AuditLogsClientView } from './AuditLogsClientView';
+import { requireAdminRole } from '@/lib/auth-guard';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,6 +15,7 @@ async function fetchAuditLogs(): Promise<AuditLogDto[]> {
 }
 
 export default async function AuditLogsPage() {
+  await requireAdminRole();
   const logs = await fetchAuditLogs();
 
   return (

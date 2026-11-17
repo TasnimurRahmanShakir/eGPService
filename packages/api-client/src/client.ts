@@ -68,7 +68,7 @@ export const getBaseUrl = (): string => {
 export const getApiBaseUrl = getBaseUrl;
 export const API_BASE_URL = typeof process !== 'undefined' && process.env?.NEXT_PUBLIC_API_URL ? process.env.NEXT_PUBLIC_API_URL : '';
 
-export function createApiClient(customBaseUrl?: string) {
+export function createApiClient(customBaseUrl?: string, customHeaders?: Record<string, string>) {
   const resolveBaseUrl = () => customBaseUrl || getBaseUrl();
 
   async function request<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
@@ -92,8 +92,8 @@ export function createApiClient(customBaseUrl?: string) {
     const defaultHeaders: Record<string, string> = {
       'Content-Type': 'application/json',
       Accept: 'application/json, application/problem+json',
-      // Step 2: Mock Identity Bridge Header
-      Authorization: 'Bearer mock-admin-token'
+      Authorization: 'Bearer mock-admin-token',
+      ...customHeaders,
     };
 
     let res: Response;

@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react';
 import { apiClient, type ClientDto, type InvoiceDto } from '@egp/api-client';
 import { InvoicesClientView } from './InvoicesClientView';
+import { requireAdminRole } from '@/lib/auth-guard';
 
 export const dynamic = 'force-dynamic';
 
@@ -23,6 +24,7 @@ async function fetchInvoices(): Promise<InvoiceDto[]> {
 }
 
 export default async function InvoicesPage() {
+  await requireAdminRole();
   const [clients, invoices] = await Promise.all([
     fetchClients(),
     fetchInvoices(),

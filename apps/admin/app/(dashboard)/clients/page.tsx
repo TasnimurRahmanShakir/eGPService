@@ -1,20 +1,22 @@
 import React, { Suspense } from 'react';
-import { apiClient, type ClientDto } from '@egp/api-client';
+import type { ClientDto } from '@egp/api-client';
 import { ClientsClientView } from './ClientsClientView';
+import { getAuthorizedApiClient } from '@/lib/api';
+import { getCurrentSession } from '@/lib/auth-guard';
 
 export const dynamic = 'force-dynamic';
 
-async function fetchClients(): Promise<ClientDto[]> {
+export default async function ClientsPage() {
+  const session = await getCurrentSession();
+  const userRole = session?.role || 'SuperAdmin';
+  const api = await getAuthorizedApiClient();
+
+  let clients: ClientDto[] = [];
   try {
-    return await apiClient.clients.getAll({ next: { tags: ['clients'] } });
+    clients = await api.clients.getAll({ next: { tags: ['clients'] } });
   } catch (err) {
     console.warn('[ClientsPage] Backend API is currently unreachable. Showing empty clients list.');
-    return [];
   }
-}
-
-export default async function ClientsPage() {
-  const clients = await fetchClients();
 
   return (
     <div className="admin-page-container">
@@ -26,7 +28,7 @@ export default async function ClientsPage() {
       </div>
 
       <Suspense fallback={<div style={{ color: '#94a3b8', padding: '2rem' }}>Loading clients...</div>}>
-        <ClientsClientView initialClients={clients} />
+        <ClientsClientView initialClients={clients} userRole={userRole} />
       </Suspense>
     </div>
   );

@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { RecentTendersTable } from '@/components/dashboard/RecentTendersTable';
 import { LocalDateText } from '@/components/common/LocalDateText';
+import { requireAdminRole } from '@/lib/auth-guard';
 
 export const dynamic = 'force-dynamic';
 
@@ -28,6 +29,7 @@ async function getDashboardData() {
 }
 
 export default async function AdminDashboardOverview() {
+  await requireAdminRole();
   const { clients, tenders, auditLogs } = await getDashboardData();
 
   const totalClients = clients.length;

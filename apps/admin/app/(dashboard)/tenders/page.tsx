@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react';
 import { apiClient, type TenderDto, type TenderClosingIndexDto } from '@egp/api-client';
 import { TendersClientView } from './TendersClientView';
+import { getCurrentSession } from '@/lib/auth-guard';
 
 export const dynamic = 'force-dynamic';
 
@@ -25,6 +26,9 @@ async function getInitialTenders(dateStr: string): Promise<TenderDto[]> {
 }
 
 export default async function TendersPage() {
+  const session = await getCurrentSession();
+  const userRole = session?.role || 'SuperAdmin';
+
   const bdNow = new Date(Date.now() + BD_TZ_OFFSET_MINUTES * 60 * 1000);
   const todayStr = bdNow.toISOString().split('T')[0];
 
@@ -50,6 +54,7 @@ export default async function TendersPage() {
           initialClosingIndex={closingIndex}
           initialTenders={initialTenders}
           defaultDate={todayStr}
+          userRole={userRole}
         />
       </Suspense>
     </div>

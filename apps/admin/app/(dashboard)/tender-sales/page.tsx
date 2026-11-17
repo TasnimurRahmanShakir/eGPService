@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react';
 import { apiClient, type TenderSaleDto, type TenderSaleSummaryDto } from '@egp/api-client';
 import { TenderSalesClientView } from './TenderSalesClientView';
+import { requireAdminRole } from '@/lib/auth-guard';
 
 export const dynamic = 'force-dynamic';
 
@@ -30,6 +31,7 @@ async function fetchSummary(): Promise<TenderSaleSummaryDto> {
 }
 
 export default async function TenderSalesPage() {
+  await requireAdminRole();
   const [sales, summary] = await Promise.all([
     fetchSales(),
     fetchSummary(),

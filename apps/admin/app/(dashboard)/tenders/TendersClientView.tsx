@@ -27,12 +27,14 @@ export function TendersClientView({
   defaultDate,
   clients,
   tenderers,
+  userRole = 'SuperAdmin',
 }: {
   initialClosingIndex?: TenderClosingIndexDto[];
   initialTenders: TenderDto[];
   defaultDate?: string;
   clients?: ClientDto[];
   tenderers?: TendererDto[];
+  userRole?: 'SuperAdmin' | 'Operator';
 }) {
   const [closingIndex, setClosingIndex] = useState<TenderClosingIndexDto[]>(initialClosingIndex);
   const [selectedDate, setSelectedDate] = useState<string | null>(defaultDate ?? null);
@@ -406,6 +408,7 @@ export function TendersClientView({
         ) : (
           <TenderExcelMatrix
             tenders={filtered}
+            userRole={userRole}
             onEditTender={(t) => setEditingTender(t)}
             onAddClient={(t) => setAddingClientFor(t)}
             onRemoveClient={handleRemoveClient}
