@@ -12,15 +12,17 @@ import {
 import { RecentTendersTable } from '@/components/dashboard/RecentTendersTable';
 import { LocalDateText } from '@/components/common/LocalDateText';
 import { requireAdminRole } from '@/lib/auth-guard';
+import { getAuthorizedApiClient } from '@/lib/api';
 
 export const dynamic = 'force-dynamic';
 
 async function getDashboardData() {
   try {
+    const api = await getAuthorizedApiClient();
     const [clients, tenders, auditLogs] = await Promise.all([
-      apiClient.clients.getAll({ next: { tags: ['clients'], revalidate: 0 } }).catch(() => []),
-      apiClient.tenders.getAll(undefined, { next: { tags: ['tenders'], revalidate: 0 } }).catch(() => []),
-      apiClient.auditLogs.getLogs({ pageSize: 5 }, { next: { revalidate: 0 } }).catch(() => []),
+      api.clients.getAll({ next: { tags: ['clients'], revalidate: 0 } }).catch(() => []),
+      api.tenders.getAll(undefined, undefined, { next: { tags: ['tenders'], revalidate: 0 } }).catch(() => []),
+      api.auditLogs.getLogs({ pageSize: 5 }, { next: { revalidate: 0 } }).catch(() => []),
     ]);
     return { clients, tenders, auditLogs };
   } catch {

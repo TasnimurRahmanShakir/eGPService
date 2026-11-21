@@ -1,22 +1,21 @@
 import React, { Suspense } from 'react';
-import { apiClient, type AuditLogDto } from '@egp/api-client';
+import type { AuditLogDto } from '@egp/api-client';
 import { AuditLogsClientView } from './AuditLogsClientView';
 import { requireAdminRole } from '@/lib/auth-guard';
+import { getAuthorizedApiClient } from '@/lib/api';
 
 export const dynamic = 'force-dynamic';
 
-async function fetchAuditLogs(): Promise<AuditLogDto[]> {
-  try {
-    return await apiClient.auditLogs.getLogs({ pageSize: 15 }, { next: { revalidate: 0 } });
-  } catch (err) {
-    console.warn('[AuditLogsPage] Backend API is currently unreachable. Showing empty audit trail.');
-    return [];
-  }
-}
-
 export default async function AuditLogsPage() {
   await requireAdminRole();
-  const logs = await fetchAuditLogs();
+  const api = await getAuthorizedApiClient();
+
+  let logs: AuditLogDto[] = [];
+  try {
+    logs = await api.auditLogs.getLogs({ pageSize: 15 }, { next: { revalidate: 0 } });
+  } catch (err) {
+    console.warn('[AuditLogsPage] Backend API is currently unreachable. Showing empty audit trail:', err);
+  }
 
   return (
     <div className="admin-page-container">

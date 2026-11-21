@@ -1,40 +1,27 @@
 import React, { Suspense } from 'react';
-import { apiClient, type TenderSaleDto, type TenderSaleSummaryDto } from '@egp/api-client';
+import type { TenderSaleDto, TenderSaleSummaryDto } from '@egp/api-client';
 import { TenderSalesClientView } from './TenderSalesClientView';
 import { requireAdminRole } from '@/lib/auth-guard';
+import { getAuthorizedApiClient } from '@/lib/api';
 
 export const dynamic = 'force-dynamic';
 
-async function fetchSales(): Promise<TenderSaleDto[]> {
-  try {
-    return await apiClient.tenderSales.getAll(undefined, { cache: 'no-store' });
-  } catch (err) {
-    console.warn('[TenderSalesPage] Failed to fetch tender sales:', err);
-    return [];
-  }
-}
-
-async function fetchSummary(): Promise<TenderSaleSummaryDto> {
-  try {
-    return await apiClient.tenderSales.getSummary({ cache: 'no-store' });
-  } catch (err) {
-    console.warn('[TenderSalesPage] Failed to fetch tender sale summary:', err);
-    return {
-      totalCount: 0,
-      totalSell: 0,
-      totalInvest: 0,
-      totalProfit: 0,
-      totalPaid: 0,
-      totalDue: 0,
-    };
-  }
-}
-
 export default async function TenderSalesPage() {
   await requireAdminRole();
+  const api = await getAuthorizedApiClient();
+
+  const defaultSummary: TenderSaleSummaryDto = {
+    totalCount: 0,
+    totalSell: 0,
+    totalInvest: 0,
+    totalProfit: 0,
+    totalPaid: 0,
+    totalDue: 0,
+  };
+
   const [sales, summary] = await Promise.all([
-    fetchSales(),
-    fetchSummary(),
+    api.tenderSales.getAll(undefined, { cache: 'no-store' }).catch(() => [] as TenderSaleDto[]),
+    api.tenderSales.getSummary({ cache: 'no-store' }).catch(() => defaultSummary),
   ]);
 
   return (
@@ -45,11 +32,11 @@ export default async function TenderSalesPage() {
           Tender Sales
         </h1>
         <p style={{ fontSize: '0.875rem', color: '#64748B', marginTop: '4px' }}>
-          Record and track tender sales, investments, commissions, profit margins, and collections
+          Tender purchase/sell transactions, investments, profits, and client receivables.
         </p>
       </div>
 
-      <Suspense fallback={<div style={{ color: '#94a3b8', padding: '2rem' }}>Loading tender sales...</div>}>
+      <Suspense fallback={<div style={{ color: '#94a3b8', padding: '2rem' }}>Loading sales directory...</div>}>
         <TenderSalesClientView
           initialSales={sales}
           initialSummary={summary}
@@ -58,4 +45,3 @@ export default async function TenderSalesPage() {
     </div>
   );
 }
-

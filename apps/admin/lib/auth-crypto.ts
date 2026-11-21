@@ -1,6 +1,12 @@
 export const ADMIN_COOKIE_NAME = 'egp_admin_session';
 
-const SECRET = process.env.ADMIN_SESSION_SECRET || 'egp-tender-bd-enterprise-ultra-secure-secret-key-2026';
+function getSecret(): string {
+  const secret = process.env.API_AUTH_SECRET || process.env.ADMIN_SESSION_SECRET;
+  if (!secret || secret.trim() === '') {
+    throw new Error('Security Error: API_AUTH_SECRET is not configured in environment variables.');
+  }
+  return secret.trim();
+}
 
 function strToUint8(str: string): Uint8Array {
   return new TextEncoder().encode(str);
@@ -26,9 +32,10 @@ function fromBase64Url(str: string): Uint8Array {
 }
 
 async function getHmacKey(): Promise<CryptoKey> {
+  const secret = getSecret();
   return crypto.subtle.importKey(
     'raw',
-    strToUint8(SECRET) as unknown as BufferSource,
+    strToUint8(secret) as unknown as BufferSource,
     { name: 'HMAC', hash: 'SHA-256' },
     false,
     ['sign', 'verify']
@@ -105,9 +112,8 @@ export async function getSessionPayload(token: string | undefined | null): Promi
       return null; // Expired
     }
 
-    // Default to SuperAdmin if role wasn't previously set in older tokens
-    if (!payload.role) {
-      payload.role = payload.user.toLowerCase() === 'admin' ? 'SuperAdmin' : 'Operator';
+    if (!payload.role || !payload.user) {
+      return null;
     }
 
     return payload;
@@ -124,4 +130,3 @@ export async function verifySessionToken(token: string | undefined | null): Prom
   const session = await getSessionPayload(token);
   return session !== null;
 }
-

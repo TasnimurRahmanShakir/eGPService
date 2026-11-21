@@ -1,20 +1,18 @@
 import React, { Suspense } from 'react';
-import { apiClient, type TendererDto } from '@egp/api-client';
+import type { TendererDto } from '@egp/api-client';
 import { TenderersClientView } from './TenderersClientView';
+import { getAuthorizedApiClient } from '@/lib/api';
 
 export const dynamic = 'force-dynamic';
 
-async function fetchTenderers(): Promise<TendererDto[]> {
-  try {
-    return await apiClient.tenderers.getAll({ next: { tags: ['tenderers'] } });
-  } catch (err) {
-    console.warn('[TenderersPage] Backend API is currently unreachable. Showing empty tenderers list.');
-    return [];
-  }
-}
-
 export default async function TenderersPage() {
-  const tenderers = await fetchTenderers();
+  const api = await getAuthorizedApiClient();
+  let tenderers: TendererDto[] = [];
+  try {
+    tenderers = await api.tenderers.getAll({ next: { tags: ['tenderers'] } });
+  } catch (err) {
+    console.warn('[TenderersPage] Backend API is currently unreachable. Showing empty tenderers list:', err);
+  }
 
   return (
     <div className="admin-page-container">

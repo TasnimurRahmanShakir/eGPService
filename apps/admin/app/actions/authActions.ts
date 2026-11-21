@@ -10,23 +10,33 @@ interface AppUser {
   role: SessionRole;
 }
 
-const APP_USERS: AppUser[] = [
-  {
-    username: (process.env.ADMIN_USERNAME || 'admin').trim().toLowerCase(),
-    password: (process.env.ADMIN_PASSWORD || 'eGP#Command2026!').trim(),
-    role: 'SuperAdmin',
-  },
-  {
-    username: (process.env.OPERATOR1_USERNAME || 'operator1').trim().toLowerCase(),
-    password: (process.env.OPERATOR1_PASSWORD || 'Operator#2026!').trim(),
-    role: 'Operator',
-  },
-  {
-    username: (process.env.OPERATOR2_USERNAME || 'operator2').trim().toLowerCase(),
-    password: (process.env.OPERATOR2_PASSWORD || 'Operator#2026!').trim(),
-    role: 'Operator',
-  },
-];
+/**
+ * Loads allowed users purely from environment variables.
+ * NO hardcoded fallback usernames, passwords, or mock values.
+ */
+function getAppUsers(): AppUser[] {
+  const users: AppUser[] = [];
+
+  const adminUser = process.env.ADMIN_USERNAME?.trim().toLowerCase();
+  const adminPass = process.env.ADMIN_PASSWORD?.trim();
+  if (adminUser && adminPass) {
+    users.push({ username: adminUser, password: adminPass, role: 'SuperAdmin' });
+  }
+
+  const op1User = process.env.OPERATOR1_USERNAME?.trim().toLowerCase();
+  const op1Pass = process.env.OPERATOR1_PASSWORD?.trim();
+  if (op1User && op1Pass) {
+    users.push({ username: op1User, password: op1Pass, role: 'Operator' });
+  }
+
+  const op2User = process.env.OPERATOR2_USERNAME?.trim().toLowerCase();
+  const op2Pass = process.env.OPERATOR2_PASSWORD?.trim();
+  if (op2User && op2Pass) {
+    users.push({ username: op2User, password: op2Pass, role: 'Operator' });
+  }
+
+  return users;
+}
 
 export async function loginAction(formData: FormData): Promise<{ success: boolean; error?: string }> {
   const inputUsername = formData.get('username')?.toString().trim().toLowerCase();
@@ -36,9 +46,17 @@ export async function loginAction(formData: FormData): Promise<{ success: boolea
     return { success: false, error: 'Username and password are required.' };
   }
 
-  // Find matching user with secure credentials check
-  const matchedUser = APP_USERS.find(
-    (u) => u.username === inputUsername && (u.password === inputPassword || inputPassword === 'eGP#Command2026!')
+  const appUsers = getAppUsers();
+  if (appUsers.length === 0) {
+    return { 
+      success: false, 
+      error: 'Authentication is not configured. Please define valid user credentials in environment variables.' 
+    };
+  }
+
+  // Strict credentials matching - NO hardcoded fallback or master passwords
+  const matchedUser = appUsers.find(
+    (u) => u.username === inputUsername && u.password === inputPassword
   );
 
   if (!matchedUser) {

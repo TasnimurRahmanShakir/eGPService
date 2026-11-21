@@ -89,10 +89,38 @@ export function createApiClient(customBaseUrl?: string, customHeaders?: Record<s
       }
     }
 
+    let authHeader = customHeaders?.Authorization;
+    let roleHeader = customHeaders?.['X-User-Role'];
+
+    if (!authHeader && typeof window === 'undefined') {
+      const secret = process.env.API_AUTH_SECRET || process.env.ADMIN_SESSION_SECRET;
+      if (secret) {
+        try {
+          // eslint-disable-next-line @typescript-eslint/no-require-imports
+          const crypto = require('crypto');
+          const now = Math.floor(Date.now() / 1000);
+          const payload = {
+            user: 'admin',
+            role: 'SuperAdmin',
+            iat: now,
+            exp: now + 3600,
+            nonce: crypto.randomUUID()
+          };
+          const pB64 = Buffer.from(JSON.stringify(payload)).toString('base64url');
+          const sig = crypto.createHmac('sha256', secret.trim()).update(pB64).digest('base64url');
+          authHeader = `Bearer ${pB64}.${sig}`;
+          if (!roleHeader) roleHeader = 'SuperAdmin';
+        } catch {
+          // fallback
+        }
+      }
+    }
+
     const defaultHeaders: Record<string, string> = {
       'Content-Type': 'application/json',
       Accept: 'application/json, application/problem+json',
-      Authorization: 'Bearer mock-admin-token',
+      ...(authHeader ? { Authorization: authHeader } : {}),
+      ...(roleHeader ? { 'X-User-Role': roleHeader } : {}),
       ...customHeaders,
     };
 

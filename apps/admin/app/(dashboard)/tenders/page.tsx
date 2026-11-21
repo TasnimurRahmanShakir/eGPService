@@ -1,41 +1,31 @@
 import React, { Suspense } from 'react';
-import { apiClient, type TenderDto, type TenderClosingIndexDto } from '@egp/api-client';
+import type { TenderDto, TenderClosingIndexDto } from '@egp/api-client';
 import { TendersClientView } from './TendersClientView';
 import { getCurrentSession } from '@/lib/auth-guard';
+import { getAuthorizedApiClient } from '@/lib/api';
 
 export const dynamic = 'force-dynamic';
 
 const BD_TZ_OFFSET_MINUTES = 360;
 
-async function getInitialClosingIndex(): Promise<TenderClosingIndexDto[]> {
-  try {
-    return await apiClient.tenders.getClosingIndex(30, BD_TZ_OFFSET_MINUTES, { cache: 'no-store' });
-  } catch (err) {
-    console.warn('[TendersPage] Failed to load closing index from backend.');
-    return [];
-  }
-}
-
-async function getInitialTenders(dateStr: string): Promise<TenderDto[]> {
-  try {
-    return await apiClient.tenders.getAll(undefined, dateStr, { cache: 'no-store' }, BD_TZ_OFFSET_MINUTES);
-  } catch (err) {
-    console.warn('[TendersPage] Backend API is unreachable for date tenders.');
-    return [];
-  }
-}
-
 export default async function TendersPage() {
   const session = await getCurrentSession();
   const userRole = session?.role || 'SuperAdmin';
+  const api = await getAuthorizedApiClient();
 
   const bdNow = new Date(Date.now() + BD_TZ_OFFSET_MINUTES * 60 * 1000);
   const todayStr = bdNow.toISOString().split('T')[0];
 
   // Zero full-pre-fetch: only fetch 30-day lightweight summary (~1.5KB) and today's tenders
   const [closingIndex, initialTenders] = await Promise.all([
-    getInitialClosingIndex(),
-    getInitialTenders(todayStr),
+    api.tenders.getClosingIndex(30, BD_TZ_OFFSET_MINUTES, { cache: 'no-store' }).catch((err) => {
+      console.warn('[TendersPage] Failed to load closing index from backend:', err);
+      return [] as TenderClosingIndexDto[];
+    }),
+    api.tenders.getAll(undefined, todayStr, { cache: 'no-store' }, BD_TZ_OFFSET_MINUTES).catch((err) => {
+      console.warn('[TendersPage] Backend API is unreachable for date tenders:', err);
+      return [] as TenderDto[];
+    }),
   ]);
 
   return (

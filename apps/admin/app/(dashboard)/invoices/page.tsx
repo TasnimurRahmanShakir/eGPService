@@ -1,33 +1,18 @@
 import React, { Suspense } from 'react';
-import { apiClient, type ClientDto, type InvoiceDto } from '@egp/api-client';
+import type { ClientDto, InvoiceDto } from '@egp/api-client';
 import { InvoicesClientView } from './InvoicesClientView';
 import { requireAdminRole } from '@/lib/auth-guard';
+import { getAuthorizedApiClient } from '@/lib/api';
 
 export const dynamic = 'force-dynamic';
 
-async function fetchClients(): Promise<ClientDto[]> {
-  try {
-    return await apiClient.clients.getAll({ next: { tags: ['clients'] } });
-  } catch (err) {
-    console.warn('[InvoicesPage] Failed to fetch clients:', err);
-    return [];
-  }
-}
-
-async function fetchInvoices(): Promise<InvoiceDto[]> {
-  try {
-    return await apiClient.invoices.getAll(undefined, { cache: 'no-store' });
-  } catch (err) {
-    console.warn('[InvoicesPage] Failed to fetch invoices:', err);
-    return [];
-  }
-}
-
 export default async function InvoicesPage() {
   await requireAdminRole();
+  const api = await getAuthorizedApiClient();
+
   const [clients, invoices] = await Promise.all([
-    fetchClients(),
-    fetchInvoices(),
+    api.clients.getAll({ next: { tags: ['clients'] } }).catch(() => [] as ClientDto[]),
+    api.invoices.getAll(undefined, { cache: 'no-store' }).catch(() => [] as InvoiceDto[]),
   ]);
 
   return (
@@ -43,10 +28,7 @@ export default async function InvoicesPage() {
       </div>
 
       <Suspense fallback={<div style={{ color: '#94a3b8', padding: '2rem' }}>Loading invoices...</div>}>
-        <InvoicesClientView
-          initialInvoices={invoices}
-          clients={clients}
-        />
+        <InvoicesClientView clients={clients} initialInvoices={invoices} />
       </Suspense>
     </div>
   );
